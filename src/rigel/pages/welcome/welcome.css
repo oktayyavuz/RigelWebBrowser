@@ -384,3 +384,7 @@ h2 { font-size: 28px; line-height: 1.2; font-weight: 650; letter-spacing: -.4px;
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* Gerçek tarayıcı simgesi varsa harf kutusu yerine o gösterilir. */
+.tile.img { background: none; box-shadow: none; }
+.tile.img img { width: 32px; height: 32px; object-fit: contain; }

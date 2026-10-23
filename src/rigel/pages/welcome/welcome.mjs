@@ -122,6 +122,26 @@ const BROWSERS = [
   { id: "opera", name: "Opera", tile: ["Op", "#d81b2a"], path: ".config/opera/Local State" },
   { id: "firefox", name: "Firefox", tile: ["Fx", "#ff7139"], path: ".mozilla/firefox/profiles.ini" },
 ];
+// Tarayıcı simgeleri: önce sistemdeki ikon (hicolor), yoksa Firefox aktarıcısının marka resmi, yoksa harf kutusu.
+const ICON_NAMES = {
+  helium: ["helium-browser"], chrome: ["google-chrome"], chromium: ["chromium"], brave: ["brave-desktop", "brave-browser", "brave"],
+  vivaldi: ["vivaldi"], edge: ["microsoft-edge"], opera: ["opera"], firefox: ["firefox"],
+};
+const MIGRATOR_KEYS = { helium: "helium", chrome: "chrome", chromium: "chromium", brave: "brave", vivaldi: "vivaldi", edge: "chromium-edge", opera: "opera" };
+async function browserIcon(id) {
+  for (const name of ICON_NAMES[id] ?? []) {
+    for (const size of ["256x256", "128x128", "64x64", "48x48", "scalable"]) {
+      const file = `/usr/share/icons/hicolor/${size}/apps/${name}.${size === "scalable" ? "svg" : "png"}`;
+      try { if (await IOUtils.exists(file)) return PathUtils.toFileURI(file); } catch {}
+    }
+  }
+  const key = MIGRATOR_KEYS[id];
+  if (!key) return null;
+  try {
+    const { MigrationUtils } = ChromeUtils.importESModule("resource:///modules/MigrationUtils.sys.mjs");
+    return (await MigrationUtils.getMigrator(key))?.constructor.brandImage ?? null;
+  } catch { return null; }
+}
 async function detectBrowsers() {
   let home;
   try { home = Services.dirsvc.get("Home", Ci.nsIFile).path; } catch { return []; }
@@ -129,6 +149,7 @@ async function detectBrowsers() {
     try { return (await IOUtils.exists(PathUtils.join(home, ...b.path.split("/")))) ? b : null; } catch { return null; }
   }));
   const list = found.filter(Boolean);
+  await Promise.all(list.map(async b => { b.icon = await browserIcon(b.id); }));
   return list;
 }
 function openMigration() {
@@ -153,8 +174,10 @@ function importScene() {
       return;
     }
     list.replaceChildren(...found.map((b, i) => {
-      const tile = h("span", { class: "tile", text: b.tile[0] });
-      tile.style.setProperty("--c", b.tile[1]);
+      const tile = b.icon
+        ? h("span", { class: "tile img" }, h("img", { src: b.icon, alt: "", width: "32", height: "32" }))
+        : h("span", { class: "tile", text: b.tile[0] });
+      if (!b.icon) tile.style.setProperty("--c", b.tile[1]);
       const c = h("button", { type: "button", class: "bcard", role: "listitem", onclick: openMigration },
         tile, h("span", { class: "txt" }, h("b", { text: b.name }), h("small", { text: b.note ?? "Bulundu" })),
         h("span", { class: "go" }, icon("arrow", 15)));
@@ -167,7 +190,8 @@ function importScene() {
     h("div", { class: "content" },
       h("p", { class: "label", text: "Bu bilgisayarda bulunanlar" }),
       list,
-      h("button", { type: "button", class: "btn soft", onclick: openMigration }, icon("import", 16), "Aktarma penceresini aç")),
+      h("button", { type: "button", class: "btn soft", onclick: openMigration }, icon("import", 16), "Aktarma penceresini aç"),
+      h("p", { class: "fine", text: "Sitelerdeki açık oturumlar aktarılamaz: diğer tarayıcı onları kendine özel bir anahtarla şifreler. Sitelere bir kez yeniden giriş yapman gerekir." })),
     actions({ skip: true }));
 }
 
