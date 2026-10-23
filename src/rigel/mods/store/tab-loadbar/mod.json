@@ -1,0 +1,66 @@
+{
+  "name": "Yükleme çubuğu",
+  "description": "Sayfa yüklenirken sekmenin altında kayan bir vurgu çubuğu, seçili sekme yükleniyorsa araç çubuğunun altında ince bir ilerleme çizgisi. Vurgu ya da gökkuşağı renkli. Bütün düzenlerin üst çizgisi, Klasik ve Yan Panel sekmeleri.",
+  "author": "Rigel",
+  "version": "1.0.0",
+  "target": "chrome",
+  "prefs": [
+    {
+      "key": "where",
+      "label": "Nerede",
+      "type": "dropdown",
+      "default": "both",
+      "options": [
+        {
+          "value": "both",
+          "label": "Sekme ve üst çizgi"
+        },
+        {
+          "value": "tab",
+          "label": "Yalnız sekme"
+        },
+        {
+          "value": "top",
+          "label": "Yalnız üst çizgi"
+        }
+      ]
+    },
+    {
+      "key": "thickness",
+      "label": "Kalınlık",
+      "type": "dropdown",
+      "default": "3px",
+      "options": [
+        {
+          "value": "2px",
+          "label": "İnce"
+        },
+        {
+          "value": "3px",
+          "label": "Orta"
+        },
+        {
+          "value": "4px",
+          "label": "Kalın"
+        }
+      ]
+    },
+    {
+      "key": "color",
+      "label": "Renk",
+      "type": "dropdown",
+      "default": "accent",
+      "options": [
+        {
+          "value": "accent",
+          "label": "Vurgu"
+        },
+        {
+          "value": "rainbow",
+          "label": "Gökkuşağı"
+        }
+      ]
+    }
+  ],
+  "license": "MPL-2.0"
+}

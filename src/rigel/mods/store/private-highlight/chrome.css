@@ -1,0 +1,78 @@
+/* Gizli pencere vurgusu — Rigel modu
+ * Kaynak: Zen mod mağazası, "Private Mode Highlighting" v1.0.5 — danm36
+ *   https://github.com/danm36/zen-browser-private-browsing-toolbar-highlighting
+ *   https://github.com/zen-browser/theme-store/tree/main/themes/58649066-2b6f-4a5b-af6d-c3d21d16fc00
+ * Rigel/Firefox DOM'una uyarlandı: seçiciler, ayarlar ve görünüm Rigel belirteçleriyle yeniden yazıldı (2026).
+ *
+ * MIT License
+ * Copyright (c) 2024 Daniel Masterson
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions: The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+ * LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
+ * EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+/* Gizli pencerede (kökte data-rigel-private) şeritler üstten aşağı renkli bir degrade ya da düz renk alır,
+   sayfanın çevresine renkli bir çerçeve çizilir ve adres çubuğunun soluna maske simgesi gelir.
+   Normal pencereler etkilenmez. Ayarlar: style (gradient|solid), color, border (normal|thin|none), icon. */
+:root:root:root[data-rigel-private] {
+  --ph-base: var(--private);
+  --ph-bw: 2px;
+}
+:root:root:root[data-rigel-private][rigel-mod-private-highlight-color="blue"] { --ph-base: #5b9bf0; }
+:root:root:root[data-rigel-private][rigel-mod-private-highlight-color="teal"] { --ph-base: #3cc4c0; }
+:root:root:root[data-rigel-private][rigel-mod-private-highlight-color="green"] { --ph-base: #4fbf8f; }
+:root:root:root[data-rigel-private][rigel-mod-private-highlight-color="orange"] { --ph-base: #f2a06b; }
+:root:root:root[data-rigel-private][rigel-mod-private-highlight-color="pink"] { --ph-base: #e879b0; }
+:root:root:root[data-rigel-private][rigel-mod-private-highlight-color="red"] { --ph-base: #ef6461; }
+:root:root:root[data-rigel-private][rigel-mod-private-highlight-border="thin"] { --ph-bw: 1px; }
+:root:root:root[data-rigel-private][rigel-mod-private-highlight-border="none"] { --ph-bw: 0px; }
+
+/* Degrade: üst şerit güçlü, alt şerit hafif; Ada, Dock, Komuta ve Yan Panel şeritleri de */
+:root:root:root[data-rigel-private] #TabsToolbar {
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--ph-base) 55%, var(--bar)), color-mix(in srgb, var(--ph-base) 28%, var(--bar))) !important;
+}
+:root:root:root[data-rigel-private] #nav-bar {
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--ph-base) 26%, var(--surface)), var(--surface)) !important;
+}
+:root:root:root[data-rigel-private] :is(#rigel-ada, #rigel-docktop, #rigel-komuta) {
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--ph-base) 50%, var(--bar)), color-mix(in srgb, var(--ph-base) 10%, var(--bar))) !important;
+}
+:root:root:root[data-rigel-private][data-rigel-layout="yanpanel"] #sidebar-container {
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--ph-base) 40%, var(--bar)), var(--bar) 260px) !important;
+}
+:root:root:root[data-rigel-private][data-rigel-layout="yanpanel"] #sidebar-container #nav-bar { background: transparent !important; }
+/* Düz renk */
+:root:root:root[data-rigel-private][rigel-mod-private-highlight-style="solid"] :is(#TabsToolbar, #nav-bar, #rigel-ada, #rigel-docktop, #rigel-komuta) {
+  background: color-mix(in srgb, var(--ph-base) 34%, var(--bar)) !important;
+}
+:root:root:root[data-rigel-private][rigel-mod-private-highlight-style="solid"][data-rigel-layout="yanpanel"] #sidebar-container {
+  background: color-mix(in srgb, var(--ph-base) 30%, var(--bar)) !important;
+}
+
+/* Sayfa çerçevesi */
+:root:root:root[data-rigel-private]:not([inDOMFullscreen]) #tabbrowser-tabbox {
+  padding: var(--ph-bw) !important;
+  background: color-mix(in srgb, var(--ph-base) 80%, var(--text)) !important;
+}
+
+/* Maske simgesi (özgün moddaki çizim) */
+:root:root:root[data-rigel-private][rigel-mod-private-highlight-icon] #urlbar-container::before {
+  content: "";
+  flex: none;
+  align-self: center;
+  width: 26px;
+  height: 26px;
+  margin-inline-end: 6px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ph-base) 85%, #000000) url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48c3R5bGU+KntmaWxsOm5vbmU7c3Ryb2tlOiNGRkZGRkY7c3Ryb2tlLW1pdGVybGltaXQ6MTA7c3Ryb2tlLXdpZHRoOjEuOTJweDt9PC9zdHlsZT48L2RlZnM+PHBvbHlsaW5lIHBvaW50cz0iMC41IDExLjA0IDEyIDExLjA0IDIzLjUgMTEuMDQiLz48cGF0aCBkPSJNMTkuNjcsMTFINC4zM0w1LDQuNjhBMi41NCwyLjU0LDAsMCwxLDcuNTcsMi40MmgwYTIuNDcsMi40NywwLDAsMSwxLjEzLjI3aDBhNy40Myw3LjQzLDAsMCwwLDYuNiwwaDBhMi40NywyLjQ3LDAsMCwxLDEuMTMtLjI3aDBBMi41NCwyLjU0LDAsMCwxLDE5LDQuNjhaIi8+PGNpcmNsZSBjeD0iNi43MyIgY3k9IjE4LjIzIiByPSIzLjM1Ii8+PGNpcmNsZSBjeD0iMTcuMjciIGN5PSIxOC4yMyIgcj0iMy4zNSIvPjxwYXRoIGQ9Ik0xMC4wOCwxOC43MWExLjkyLDEuOTIsMCwxLDEsMy44NCwwIi8+PGxpbmUgeDE9IjEuNDYiIHkxPSIxNS44MyIgeDI9IjQuMzMiIHkyPSIxNS44MyIvPjxsaW5lIHgxPSIxOS42NyIgeTE9IjE1LjgzIiB4Mj0iMjIuNTQiIHkyPSIxNS44MyIvPjwvc3ZnPg==") center / 65% no-repeat;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ph-base) 25%, transparent);
+  pointer-events: none;
+}

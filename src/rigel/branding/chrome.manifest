@@ -1,0 +1,37 @@
+# Rigel marka katmanı. branding.sys.mjs bunu çalışma anında kaydeder (yollar bu dosyaya göredir).
+content rigel ../pages/
+content rigel-branding ./
+override chrome://branding/locale/brand.properties locale/brand.properties
+override chrome://branding/content/about-logo.svg content/about-logo.svg
+override chrome://branding/content/about-logo.png content/about-logo.png
+override chrome://branding/content/about-logo@2x.png content/about-logo@2x.png
+override chrome://branding/content/about-logo-private.png content/about-logo-private.png
+override chrome://branding/content/about-logo-private@2x.png content/about-logo-private@2x.png
+override chrome://branding/content/about.png content/about.png
+override chrome://branding/content/about-wordmark.svg content/about-wordmark.svg
+override chrome://branding/content/firefox-wordmark.svg content/firefox-wordmark.svg
+override chrome://branding/content/icon16.png content/icon16.png
+override chrome://branding/content/icon32.png content/icon32.png
+override chrome://branding/content/icon48.png content/icon48.png
+override chrome://branding/content/icon64.png content/icon64.png
+override chrome://branding/content/icon128.png content/icon128.png
+# Firefox glifleri ve maskot (Kit) çizimleri
+override chrome://browser/skin/sidebar/firefox.svg content/glyph.svg
+override chrome://browser/skin/window-firefox.svg content/glyph.svg
+override chrome://global/skin/illustrations/no-connection.svg content/illustration.svg
+override chrome://global/skin/illustrations/error-malformed-url.svg content/illustration.svg
+override chrome://global/skin/illustrations/security-error.svg content/illustration.svg
+override chrome://global/skin/illustrations/kit-concerned.svg content/illustration.svg
+override chrome://global/skin/illustrations/kit-sympathetic.svg content/illustration.svg
+override chrome://global/skin/illustrations/kit-happy.svg content/illustration.svg
+override chrome://global/skin/illustrations/kit-in-circle.svg content/illustration.svg
+override chrome://global/skin/illustrations/kit-holding-lock.svg content/illustration.svg
+override chrome://global/skin/illustrations/kit-confetti.svg content/illustration.svg
+override chrome://mozapps/skin/extensions/kit-addons.svg content/illustration.svg
+override chrome://mozapps/skin/extensions/kit-themes.svg content/illustration.svg
+override chrome://browser/skin/privatebrowsing/kit-pbw.svg content/illustration.svg
+override chrome://browser/skin/sidebar/kit-page-history.svg content/illustration.svg
+override chrome://browser/skin/sidebar/kit-tabs-devices.svg content/illustration.svg
+override chrome://browser/skin/sidebar/kit-tabs-devices-error.svg content/illustration.svg
+override chrome://browser/skin/sidebar/kit-qr-tabs-devices-empty.svg content/illustration.svg
+override chrome://browser/content/kit-signed-out.svg content/illustration.svg

@@ -1,0 +1,100 @@
+{
+  "name": "Alan renk tonu",
+  "description": "Aktif alana göre bütün arayüz renklenir: şeritler, araç çubuğu, menüler ve alan çipi. Kişisel alan bir renk, diğer alanlar başka bir renk alır; şeridin altında alan renginde çizgi. Bütün düzenlerde.",
+  "author": "Rigel",
+  "version": "2.0.0",
+  "target": "chrome",
+  "prefs": [
+    {
+      "key": "personal",
+      "label": "Kişisel alanın rengi",
+      "type": "dropdown",
+      "default": "#5b9bf0",
+      "options": [
+        {
+          "value": "#5b9bf0",
+          "label": "Mavi"
+        },
+        {
+          "value": "#4fbf8f",
+          "label": "Yeşil"
+        },
+        {
+          "value": "#a78bfa",
+          "label": "Mor"
+        },
+        {
+          "value": "#f2a06b",
+          "label": "Turuncu"
+        },
+        {
+          "value": "#e879b0",
+          "label": "Pembe"
+        },
+        {
+          "value": "#3cc4c0",
+          "label": "Camgöbeği"
+        }
+      ]
+    },
+    {
+      "key": "other",
+      "label": "Diğer alanların rengi",
+      "type": "dropdown",
+      "default": "#f2a06b",
+      "options": [
+        {
+          "value": "#5b9bf0",
+          "label": "Mavi"
+        },
+        {
+          "value": "#4fbf8f",
+          "label": "Yeşil"
+        },
+        {
+          "value": "#a78bfa",
+          "label": "Mor"
+        },
+        {
+          "value": "#f2a06b",
+          "label": "Turuncu"
+        },
+        {
+          "value": "#e879b0",
+          "label": "Pembe"
+        },
+        {
+          "value": "#3cc4c0",
+          "label": "Camgöbeği"
+        }
+      ]
+    },
+    {
+      "key": "strength",
+      "label": "Ton gücü",
+      "type": "dropdown",
+      "default": "22%",
+      "options": [
+        {
+          "value": "12%",
+          "label": "Hafif"
+        },
+        {
+          "value": "22%",
+          "label": "Orta"
+        },
+        {
+          "value": "34%",
+          "label": "Güçlü"
+        }
+      ]
+    },
+    {
+      "key": "line",
+      "label": "Alan renginde çizgi",
+      "type": "checkbox",
+      "default": true
+    }
+  ],
+  "license": "MPL-2.0"
+}

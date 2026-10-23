@@ -1,0 +1,46 @@
+/* Rigel: about:preferences ve about:addons içindeki Firefox/kurum izleri.
+   nsIStyleSheetService ile USER_SHEET olarak kaydedilir (branding.sys.mjs). */
+@-moz-document url-prefix("about:preferences"), url-prefix("chrome://browser/content/preferences/") {
+  /* policies.json yüzünden çıkan "Tarayıcınız kuruluşunuz tarafından yönetiliyor" afişi */
+  #policies-container,
+  #policies-container-content,
+  /* Mozilla tanıtımları */
+  #category-more-from-mozilla,
+  #moreFromMozillaCategory-header,
+  #moreFromMozillaCategory,
+  #category-experimental,
+  /* Hesaplar kapalı (DisableFirefoxAccounts); kart yalnız "kullanılamıyor" diyor */
+  setting-group[groupid="accountDisabled"],
+  /* "Varsayılan yap" Firefox ikilisini kaydeder (Rigel profili ve --class olmadan).
+     Varsayılanı KDE Sistem Ayarları > Varsayılan Uygulamalar'dan rigel.desktop ile seçin. */
+  setting-group[groupid="defaultBrowserSync"],
+  setting-group[groupid="defaultBrowser"],
+  /* Güncelleme: Rigel taşınabilir, güncelleyici yok ("başka bir kopyası güncelliyor", Mozilla sürüm notları,
+     dağıtım kimliği "Mozilla Firefox Official Build"). Yalnız sürüm satırı kalır. */
+  #setting-control-updateState,
+  #setting-control-installationFieldset,
+  #setting-control-showUpdateHistory,
+  #setting-control-updateSettingCrossUserWarning,
+  update-information #releasenotes,
+  update-information #distribution,
+  update-information #distributionId,
+  /* "Rigel desteği": support.mozilla.org ve connect.mozilla.org bağlantıları */
+  setting-group[groupid="support"],
+  #helpButton {
+    display: none !important;
+  }
+}
+
+/* Hakkında penceresi: Mozilla topluluk/bağış metinleri ("Rigel, Rigel tarafından...") ve resmi dağıtım satırı */
+@-moz-document url("chrome://browser/content/aboutDialog.xhtml") {
+  #distribution,
+  #distributionId,
+  #releasenotes,
+  #submit-feedback,
+  #communityDesc,
+  #communityExperimentalDesc,
+  #contributeDesc,
+  #contributeDescReferrals {
+    display: none !important;
+  }
+}

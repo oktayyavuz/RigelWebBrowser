@@ -1,0 +1,141 @@
+/* Rigel kitaplığı (geçmiş, yer imleri, indirmeler). Renkler tema belirteçlerinden (tokens.css); tema page.mjs ile canlı izlenir. */
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body { background: var(--bg); color: var(--text); font: 14px/1.45 var(--font); }
+button, input, select { font: inherit; color: inherit; }
+button { background: none; border: 0; padding: 0; cursor: pointer; }
+a { color: inherit; text-decoration: none; }
+[hidden] { display: none !important; }
+small { color: var(--text-faint); font-size: 12px; }
+.hint { color: var(--text-faint); margin: 8px 0; }
+.err { color: var(--danger); display: block; margin-top: 6px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.page { display: flex; max-width: 1180px; margin: 0 auto; gap: 28px; padding: 28px 28px 90px; }
+nav { position: sticky; top: 28px; align-self: flex-start; width: 210px; display: flex; flex-direction: column; gap: 10px; flex: none; }
+nav header { display: flex; align-items: center; gap: 10px; margin: 0 0 6px 8px; }
+h1 { font-size: 21px; font-weight: 600; margin: 0; }
+.links { display: flex; flex-direction: column; gap: 2px; }
+.links a, .foot a { display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 12px; border-radius: 9px; color: var(--text-dim); }
+.links a:hover, .foot a:hover { background: var(--hover); color: var(--text); }
+.links a.on { background: var(--active); color: var(--text); font-weight: 500; }
+.links svg { color: var(--accent); flex: none; }
+.foot { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+.foot a { font-size: 13px; min-height: 34px; }
+
+main { flex: 1; min-width: 0; }
+.view { display: flex; flex-direction: column; gap: 14px; }
+.phead { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; padding: 2px 2px 0; }
+.ptitle { min-width: 0; flex: 1 1 auto; }
+.phead h2 { font-size: 21px; font-weight: 600; margin: 0 0 3px; }
+.phead p { color: var(--text-dim); margin: 0; min-height: 1.4em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tools { display: flex; gap: 8px; flex: none; }
+
+.search { height: 40px; border-radius: 11px; background: var(--surface); border: 1px solid var(--border-2); display: flex; align-items: center; gap: 9px; padding: 0 13px; color: var(--text-faint); }
+.search:focus-within { border-color: var(--accent); }
+.search input { flex: 1; min-width: 0; background: none; border: 0; outline: 0; color: var(--text); height: 100%; }
+.search input::-moz-search-clear-button, .search input::-webkit-search-cancel-button { display: none; }
+
+.btn { display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0 14px; border-radius: 9px; background: var(--accent); color: var(--accent-ink); font-weight: 600; flex: none; white-space: nowrap; }
+.btn:hover { filter: brightness(1.08); }
+.btn.ghost { background: none; color: var(--text-dim); font-weight: 500; }
+.btn.ghost:hover { background: var(--hover); color: var(--text); }
+.btn.soft { background: var(--surface); color: var(--text-dim); font-weight: 500; border: 1px solid var(--border-2); }
+.btn.soft:hover { color: var(--text); }
+.btn.danger { background: color-mix(in srgb, var(--danger) 12%, transparent); color: var(--danger); font-weight: 500; }
+.btn.armed, .act.armed { background: var(--danger); color: var(--on-danger); }
+
+.card { border-radius: 14px; background: var(--surface); border: 1px solid var(--border); padding: 6px; }
+.groups { display: flex; flex-direction: column; gap: 14px; }
+.ghead { display: flex; align-items: center; justify-content: space-between; padding: 8px 8px 4px 12px; }
+.ghead h3 { margin: 0; font-size: 12.5px; font-weight: 600; color: var(--text-dim); }
+.ghead .act { opacity: 0; }
+.card:hover .ghead .act, .ghead .act:focus-visible, .ghead .act.armed { opacity: 1; }
+.ghead .act.armed { width: auto; padding: 0 10px; font-size: 12px; }
+
+/* Satır */
+.lrow { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 6px 0 12px; border-radius: 9px; }
+.lrow:hover { background: var(--hover); }
+.lrow.drag { opacity: 0.45; }
+.lrow .meta { color: var(--text-faint); font: 12px var(--mono); flex: none; min-width: 42px; }
+.lrow .link { flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; text-align: left; color: var(--text); min-height: 44px; }
+.lrow .t { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.lrow .h { color: var(--text-faint); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: none; max-width: 38%; margin-left: auto; padding-left: 12px; }
+.lrow .link .t { flex: 0 1 auto; }
+.act { width: 30px; height: 30px; border-radius: 8px; display: inline-grid; place-items: center; color: var(--text-faint); flex: none; opacity: 0; }
+.act.tiny { width: 26px; height: 26px; }
+.lrow:hover .act, .lrow:focus-within .act, .act:focus-visible { opacity: 1; }
+.act:hover { background: var(--active); color: var(--text); }
+.act.del:hover { background: color-mix(in srgb, var(--danger) 15%, transparent); color: var(--danger); }
+.lrow.dl .act { opacity: 1; }
+.lrow.dl[data-state="complete"] .act, .lrow.dl[data-state="canceled"] .act { opacity: 0; }
+.lrow.dl:hover .act, .lrow.dl:focus-within .act { opacity: 1; }
+
+.fav { flex: none; display: inline-grid; place-items: center; border-radius: 5px; overflow: hidden; color: var(--accent); }
+.fav img { border-radius: 4px; object-fit: contain; }
+.fav .letter { width: 100%; height: 100%; display: grid; place-items: center; color: #fff; font-weight: 600; line-height: 1; background: hsl(var(--h) 42% 40%); border-radius: 5px; }
+
+.empty { text-align: center; color: var(--text-faint); padding: 56px 0; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.sentinel { height: 1px; }
+
+/* Yer imleri: ağaç + liste */
+.split { display: flex; gap: 14px; align-items: flex-start; }
+.treecard { width: 250px; flex: none; position: sticky; top: 28px; max-height: calc(100vh - 56px); overflow: auto; }
+.listcard { flex: 1; min-width: 0; min-height: 200px; }
+.trow { display: flex; align-items: center; gap: 6px; min-height: 34px; padding: 0 8px 0 calc(4px + var(--d) * 16px); border-radius: 8px; color: var(--text-dim); cursor: pointer; }
+.trow:hover { background: var(--hover); color: var(--text); }
+.trow.on { background: var(--active); color: var(--text); font-weight: 500; }
+.trow.drop, .lrow.drop { background: var(--active); outline: 1px dashed var(--accent); outline-offset: -2px; }
+.trow svg:not(.chev) { color: var(--accent); flex: none; }
+.trow .n { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.trow .c { font-size: 11.5px; color: var(--text-faint); }
+.twist { width: 18px; height: 18px; display: grid; place-items: center; color: var(--text-faint); border-radius: 4px; flex: none; transition: transform .12s; }
+.twist.open { transform: rotate(90deg); }
+.twist.none { visibility: hidden; }
+.twist:hover { color: var(--text); }
+
+/* İndirmeler */
+.lrow.dl { padding-right: 8px; min-height: 62px; }
+.dl .file { flex: 1; min-width: 0; display: flex; align-items: center; gap: 14px; padding: 8px 0; border-radius: 8px; cursor: default; }
+.dl .file.openable { cursor: pointer; }
+.badge { width: 38px; height: 42px; flex: none; border-radius: 8px; display: grid; place-items: center; font: 700 10px var(--mono); color: var(--accent); background: color-mix(in srgb, var(--accent) 13%, transparent); border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent); }
+.dl.dead .badge { color: var(--text-faint); background: var(--hover); border-color: var(--border); }
+.dl .txt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.dl .line { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
+.dl .line .t { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
+.dl.dead .line .t { color: var(--text-faint); text-decoration: line-through; }
+.dl .src { color: var(--text-faint); font-size: 12px; flex: none; }
+.dl .s { font-size: 12px; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dl[data-state="failed"] .s { color: var(--danger); }
+.dl[data-state="paused"] .s { color: var(--text-faint); }
+.bar { height: 4px; border-radius: 4px; background: var(--border-2); overflow: hidden; margin-top: 3px; max-width: 520px; }
+.bar > span { display: block; height: 100%; background: var(--accent); border-radius: 4px; transition: width .3s; }
+.bar.indet > span { animation: slide 1.2s ease-in-out infinite; }
+@keyframes slide { from { transform: translateX(-100%); } to { transform: translateX(360%); } }
+.acts { display: flex; gap: 2px; flex: none; }
+
+/* İletişim kutusu ve bildirim */
+.dlg { border: 1px solid var(--border-2); border-radius: 16px; background: var(--surface); color: var(--text); padding: 0; width: min(460px, calc(100vw - 32px)); box-shadow: var(--shadow); }
+.dlg::backdrop { background: var(--scrim); }
+.dlg form { padding: 22px; display: flex; flex-direction: column; gap: 14px; }
+.dlg h3 { margin: 0; font-size: 16px; font-weight: 600; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field > span { font-size: 12.5px; color: var(--text-dim); }
+.field input, .field select { height: 38px; padding: 0 12px; border-radius: 9px; background: var(--bg); border: 1px solid var(--border-2); color: var(--text); outline: 0; min-width: 0; }
+.field input:focus, .field select:focus { border-color: var(--accent); }
+.field option { background: var(--surface); color: var(--text); }
+.dactions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
+#toasts { position: fixed; left: 0; right: 0; bottom: 22px; display: flex; justify-content: center; pointer-events: none; z-index: 10; }
+.toast { pointer-events: auto; display: flex; align-items: center; gap: 14px; padding: 10px 16px; border-radius: 11px; background: var(--surface-2); border: 1px solid var(--border-2); box-shadow: var(--shadow-sm); max-width: min(560px, calc(100vw - 32px)); }
+.toast.err { border-color: var(--danger); }
+.toast .tlink { color: var(--accent); font-weight: 600; }
+.toast .tlink:hover { text-decoration: underline; }
+
+@media (max-width: 860px) {
+  .phead { flex-wrap: wrap; }
+  .page { flex-direction: column; gap: 14px; padding: 18px 16px 80px; }
+  nav { position: static; width: auto; }
+  .links { flex-direction: row; }
+  .split { flex-direction: column; }
+  .treecard { position: static; width: 100%; max-height: 260px; }
+}

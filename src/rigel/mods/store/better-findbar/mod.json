@@ -1,0 +1,72 @@
+{
+  "name": "Daha iyi bul çubuğu",
+  "description": "Bul çubuğu (Ctrl+F) sayfanın altında ortalanmış, geniş, yüzen bir çubuk olur; aşağıdan kayarak açılır. Seçenekler hap düğmelere döner, istersen kapalı olanlar gizlenir. Cam görünüm ve konum seçilebilir.",
+  "author": "RobotoSkunk",
+  "version": "1.0.0",
+  "target": "chrome",
+  "homepage": "https://github.com/RobotoSkunk/zen-better-findbar",
+  "license": "MIT",
+  "source": "https://github.com/zen-browser/theme-store/tree/main/themes/a6335949-4465-4b71-926c-4a52d34bc9c0",
+  "prefs": [
+    {
+      "key": "position",
+      "label": "Konum",
+      "type": "dropdown",
+      "default": "bottom-center",
+      "options": [
+        {
+          "value": "bottom-center",
+          "label": "Altta ortada"
+        },
+        {
+          "value": "bottom-left",
+          "label": "Altta solda"
+        },
+        {
+          "value": "bottom-right",
+          "label": "Altta sağda"
+        },
+        {
+          "value": "top-center",
+          "label": "Üstte ortada"
+        },
+        {
+          "value": "top-right",
+          "label": "Üstte sağda"
+        }
+      ]
+    },
+    {
+      "key": "width",
+      "label": "Genişlik",
+      "type": "dropdown",
+      "default": "760px",
+      "options": [
+        {
+          "value": "560px",
+          "label": "Dar"
+        },
+        {
+          "value": "760px",
+          "label": "Orta"
+        },
+        {
+          "value": "960px",
+          "label": "Geniş"
+        }
+      ]
+    },
+    {
+      "key": "glass",
+      "label": "Yarı saydam, bulanık arka plan",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "key": "tidy",
+      "label": "Kapalı seçenekleri gizle (üstüne gelince görünür)",
+      "type": "checkbox",
+      "default": false
+    }
+  ]
+}

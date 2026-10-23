@@ -1,0 +1,46 @@
+/* Yüzen sayfa kartı — Rigel modu */
+/* Web sayfası kenarlardan boşluklu, yuvarlak köşeli, gölgeli bir kart olarak yüzer; arkası arayüz rengiyle dolar.
+   Bütün düzenlerde çalışır. Klasik'te çerçeve araç çubuğunun rengini alır, araya çizgi girmez.
+   Ayarlar: radius, gap, shadow, glow (arkada vurgu ışıltısı). */
+:root:root:root[data-rigel-layout] {
+  --zc-gap: var(--rigel-mod-zen-content-gap, 10px);
+  --zc-frame: var(--bar);
+}
+:root:root:root[data-rigel-layout="klasik"] { --zc-frame: var(--surface); }
+:root:root:root[data-rigel-layout="klasik"] #nav-bar { border-bottom-color: transparent !important; }
+:root:root:root[data-rigel-layout] #browser,
+:root:root:root[data-rigel-layout] #tabbrowser-tabbox,
+:root:root:root[data-rigel-layout] #tabbrowser-tabpanels {
+  background: var(--zc-frame) !important;
+}
+:root:root:root[data-rigel-layout] #tabbrowser-tabbox {
+  padding: 2px var(--zc-gap) var(--zc-gap) !important;
+}
+/* Yan Panel'in kendi kart çerçevesi kalkar; kartı bu mod çizer */
+:root:root:root[data-rigel-layout="yanpanel"] #tabbrowser-tabbox {
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: var(--zc-gap) var(--zc-gap) var(--zc-gap) 2px !important;
+}
+:root:root:root[data-rigel-layout][rigel-mod-zen-content-glow] #tabbrowser-tabbox {
+  background:
+    radial-gradient(60% 50% at 50% 0%, color-mix(in srgb, var(--accent) 22%, transparent), transparent),
+    radial-gradient(40% 60% at 100% 100%, color-mix(in srgb, var(--accent-2) 16%, transparent), transparent),
+    var(--zc-frame) !important;
+}
+:root:root:root[data-rigel-layout][rigel-mod-zen-content-glow] #tabbrowser-tabpanels { background: transparent !important; }
+:root:root:root[data-rigel-layout] #tabbrowser-tabpanels .browserContainer,
+:root:root:root[data-rigel-layout] #tabbrowser-tabpanels .browserStack {
+  border-radius: var(--rigel-mod-zen-content-radius, 14px) !important;
+  overflow: hidden !important;
+}
+:root:root:root[data-rigel-layout] #tabbrowser-tabpanels .browserStack { background: var(--bg) !important; }
+:root:root:root[data-rigel-layout][rigel-mod-zen-content-shadow] #tabbrowser-tabpanels .browserContainer {
+  box-shadow: 0 0 0 1px var(--border-2), 0 10px 32px rgba(0, 0, 0, 0.38) !important;
+}
+:root:root:root[data-rigel-layout][inDOMFullscreen] #tabbrowser-tabbox { padding: 0 !important; }
+:root:root:root[data-rigel-layout][inDOMFullscreen] #tabbrowser-tabpanels :is(.browserContainer, .browserStack) {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}

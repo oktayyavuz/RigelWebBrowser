@@ -1,0 +1,91 @@
+/* Hızlı erişim ızgarası — Rigel modu
+ * Kaynak: Zen mod mağazası, "Super Sleek UI" v1.0.1 — lingais
+ *   https://github.com/lingais/Zen-Browser-Super-Sleek-UI-Theme
+ *   https://github.com/zen-browser/theme-store/tree/main/themes/570afd9d-96fa-48b5-bad3-0c106757cce9
+ * Rigel/Firefox DOM'una uyarlandı: seçiciler, ayarlar ve görünüm Rigel belirteçleriyle yeniden yazıldı (2026).
+ *
+ * MIT License
+ * Copyright (c) 2024 lingais
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions: The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+ * LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
+ * EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+/* Adres çubuğu boşken açılan "en çok ziyaret edilenler" listesi, büyük simgeli bir hızlı erişim ızgarası olur.
+   Açıkken sayfa arkada bulanıklaşır; istersen araç çubuğu da incelir. Ayarlar: grid, dim, compact. */
+:root:root:root[rigel-mod-quick-grid-grid] #urlbar:not([usertyping]) .urlbarView-results {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)) !important;
+  gap: 8px !important;
+  padding: 8px 10px !important;
+  white-space: normal !important;
+}
+:root:root:root[rigel-mod-quick-grid-grid] #urlbar:not([usertyping]) .urlbarView-row {
+  padding: 0 !important;
+  min-width: 0 !important;
+}
+:root:root:root[rigel-mod-quick-grid-grid] #urlbar:not([usertyping]) .urlbarView-row-inner {
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px;
+  padding: 14px 8px 10px !important;
+  min-height: 92px;
+  border-radius: 14px !important;
+  background: color-mix(in srgb, var(--text) 4%, transparent);
+  mask-image: linear-gradient(to left, transparent, black 2ch);
+}
+:root:root:root[rigel-mod-quick-grid-grid] #urlbar:not([usertyping]) .urlbarView-row-body,
+:root:root:root[rigel-mod-quick-grid-grid] #urlbar:not([usertyping]) .urlbarView-row-body-top,
+:root:root:root[rigel-mod-quick-grid-grid] #urlbar:not([usertyping]) .urlbarView-row-body-top-no-wrap {
+  justify-content: center !important;
+  max-width: 100% !important;
+  overflow: hidden;
+}
+:root:root:root[rigel-mod-quick-grid-grid] #urlbar:not([usertyping]) .urlbarView-favicon {
+  width: 32px !important;
+  height: 32px !important;
+  margin: 0 !important;
+  padding: 6px;
+  box-sizing: content-box;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+}
+:root:root:root[rigel-mod-quick-grid-grid] #urlbar:not([usertyping]) .urlbarView-title { font-size: 12.5px; text-align: center; }
+:root:root:root[rigel-mod-quick-grid-grid] #urlbar:not([usertyping]) :is(.urlbarView-url, .urlbarView-title-separator, .urlbarView-type-icon, .urlbarView-action, .urlbarView-row-body-description, .urlbarView-row-body-bottom) {
+  display: none !important;
+}
+/* Açıkken sayfa arkada bulanık */
+:root:root:root[rigel-mod-quick-grid-dim] #tabbrowser-tabbox::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0;
+  background: var(--scrim-soft, rgba(4, 7, 12, 0.18));
+  backdrop-filter: blur(3px);
+  transition: opacity 0.18s ease;
+}
+:root:root:root[rigel-mod-quick-grid-dim]:has(#urlbar[open]) #tabbrowser-tabbox::after { opacity: 1; }
+/* Kenarlıksız adres çubuğu (odak dışı) */
+:root:root:root #urlbar:not([focused], [open]) > .urlbar-background { border-color: transparent !important; }
+/* İnce araç çubuğu (Klasik ve Yan Panel) */
+:root:root:root[rigel-mod-quick-grid-compact][data-rigel-layout="klasik"] #nav-bar {
+  height: 36px !important;
+  min-height: 36px !important;
+  --urlbar-min-height: 28px;
+  --toolbarbutton-inner-padding: 5px;
+}
+:root:root:root[rigel-mod-quick-grid-compact][data-rigel-layout="klasik"] { --urlbar-container-height: 36px; }
+@media (prefers-reduced-motion: reduce) {
+  :root:root:root #tabbrowser-tabbox::after { transition: none; }
+}

@@ -1,0 +1,5 @@
+/* Değerler --rigel-mod-dark-scrollbars-* değişkenlerinden gelir. */
+:root, * {
+  scrollbar-color: var(--rigel-mod-dark-scrollbars-thumb, #5a6273) var(--rigel-mod-dark-scrollbars-track, #151b27) !important;
+  scrollbar-width: var(--rigel-mod-dark-scrollbars-width, thin) !important;
+}

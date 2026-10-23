@@ -1,0 +1,250 @@
+/* Yörünge Dock düzeni: 36 px başlık şeridi + altta 68 px dock.
+   Tasarım kaynağı: Rigel Browser/ui/src/shell/bars/{DockTop,DockBar}.svelte. Yapıyı shell/dock.mjs kurar. */
+
+:root[data-rigel-layout="dock"] {
+  #TabsToolbar {
+    display: none !important;
+  }
+}
+:root[data-rigel-layout="dock"]:is([sizemode="fullscreen"], [inDOMFullscreen]) #rigel-dock {
+  display: none !important;
+}
+
+/* --- Üst başlık şeridi ------------------------------------------------------------ */
+#rigel-docktop {
+  height: 36px;
+  justify-content: space-between;
+  padding: 0 6px 0 8px;
+
+  .rigel-tool {
+    width: 28px;
+    height: 26px;
+  }
+  .rigel-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 60vw;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--text-faint);
+    white-space: nowrap;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .rigel-title b {
+    color: var(--text);
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .lock {
+    color: var(--accent);
+    display: grid;
+  }
+}
+
+/* --- Alt dock --------------------------------------------------------------------- */
+#rigel-dock {
+  height: 68px;
+  justify-content: center;
+  padding: 0 12px;
+  border-top: 1px solid var(--border);
+}
+#rigel-dock .rigel-dock-body {
+  height: 50px;
+  max-width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
+  border-radius: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border-2);
+  -moz-window-dragging: no-drag;
+
+  .rigel-seg {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    min-width: 0;
+    overflow: hidden;
+    padding-block: 6px;
+  }
+  .rigel-dtab {
+    height: 38px;
+    min-width: 38px;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 9px;
+    position: relative;
+    flex: none;
+    transform-origin: bottom center;
+    transition: transform 0.14s, background-color 0.14s;
+    color: var(--text-dim);
+  }
+  .rigel-dtab:hover {
+    background: var(--hover);
+    transform: translateY(-3px) scale(1.08);
+    color: var(--text);
+  }
+  .rigel-dtab.on {
+    background: var(--active);
+    color: var(--text);
+  }
+  .rigel-dtab.on:hover {
+    transform: none;
+  }
+  .rigel-dtab.private {
+    box-shadow: 0 0 0 1.5px var(--private) inset;
+  }
+  .rigel-dtab.on::after {
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    margin-left: -2.5px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    pointer-events: none;
+  }
+  .rigel-dtab > * {
+    pointer-events: none;
+  }
+  .fav {
+    position: relative;
+    display: grid;
+  }
+  .rigel-dtab.asleep .fav > :first-child {
+    opacity: 0.4;
+  }
+  .rigel-badge {
+    position: absolute;
+    right: -5px;
+    bottom: -4px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--surface-2);
+    color: var(--accent);
+  }
+  .lbl {
+    max-width: 190px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .more {
+    font: 11px var(--mono);
+    color: var(--text-faint);
+  }
+  .spin {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid var(--border-2);
+    border-top-color: var(--accent);
+    animation: rigel-spin 0.8s linear infinite;
+  }
+  /* Sekme grupları: çip + üyeler renkli bir bölüm (düz çocuklar; sürükle-bırak çocukları doğrudan tarar) */
+  .rigel-dtab[data-rigel-group] {
+    box-shadow: none;
+  }
+  .rigel-dtab.private[data-rigel-group] {
+    box-shadow: 0 0 0 1.5px var(--private) inset;
+  }
+  .rigel-gchip {
+    height: 38px;
+    padding: 0 10px 0 11px;
+    margin-inline: 2px -3px;
+    border-inline-end: none;
+    border-radius: 11px 0 0 11px;
+  }
+  .rigel-gchip.solo {
+    margin-inline-end: 2px;
+    border-inline-end: 1.5px solid color-mix(in srgb, var(--rigel-grp) 62%, transparent);
+    border-radius: 11px;
+  }
+  .rigel-dtab.gm {
+    margin-inline-end: -3px;
+    border-radius: 0;
+    background: color-mix(in srgb, var(--rigel-grp) 17%, transparent);
+    border-block: 1.5px solid color-mix(in srgb, var(--rigel-grp) 62%, transparent);
+  }
+  .rigel-dtab.gm.on {
+    background: color-mix(in srgb, var(--rigel-grp) 28%, transparent);
+  }
+  .rigel-dtab.gm:hover {
+    background: color-mix(in srgb, var(--rigel-grp) 32%, transparent);
+  }
+  .rigel-dtab.gm.ge {
+    margin-inline-end: 2px;
+    border-radius: 0 11px 11px 0;
+    border-inline-end: 1.5px solid color-mix(in srgb, var(--rigel-grp) 62%, transparent);
+  }
+  .rigel-pinsep {
+    width: 1px;
+    height: 22px;
+    background: var(--border-2);
+    margin: 0 3px;
+    flex: none;
+  }
+  .rigel-vsep {
+    width: 1px;
+    height: 26px;
+    background: var(--border-2);
+    margin: 0 4px;
+    flex: none;
+  }
+  .rigel-omni {
+    height: 36px;
+    width: 250px;
+    flex: none;
+    border-radius: 10px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 10px;
+    color: var(--text-dim);
+    cursor: text;
+    text-align: start;
+  }
+  .rigel-omni:hover {
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+  .rigel-omni b {
+    color: var(--text);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .rigel-omni span {
+    color: var(--text-faint);
+    white-space: nowrap;
+  }
+  .rigel-omni kbd {
+    margin-inline-start: auto;
+  }
+  .rigel-tools {
+    display: flex;
+    align-items: center;
+  }
+  .rigel-tool {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+  }
+}

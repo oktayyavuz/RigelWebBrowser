@@ -1,0 +1,62 @@
+{
+  "name": "Temiz adres çubuğu",
+  "description": "Adres çubuğu açıldığında yarı saydam, bulanık ve kalın yumuşak kenarlı bir karta dönüşür. Öneriler yuvarlak satırlarda, seçili satır vurgu renginde dolu; arama motoru düğmeleri ayrı bir kutuda.",
+  "author": "Dinno-DEV",
+  "version": "1.0.0",
+  "target": "chrome",
+  "homepage": "https://github.com/Dinno-DEV/zen-cleaned-url-bar",
+  "license": "MIT",
+  "source": "https://github.com/zen-browser/theme-store/tree/main/themes/a5f6a231-e3c8-4ce8-8a8e-3e93efd6adec",
+  "prefs": [
+    {
+      "key": "transparency",
+      "label": "Saydamlık",
+      "type": "dropdown",
+      "default": "12%",
+      "options": [
+        {
+          "value": "0%",
+          "label": "Yok"
+        },
+        {
+          "value": "12%",
+          "label": "Az"
+        },
+        {
+          "value": "24%",
+          "label": "Orta"
+        },
+        {
+          "value": "40%",
+          "label": "Çok"
+        }
+      ]
+    },
+    {
+      "key": "select",
+      "label": "Seçili satır rengi",
+      "type": "dropdown",
+      "default": "accent",
+      "options": [
+        {
+          "value": "accent",
+          "label": "Vurgu rengi"
+        },
+        {
+          "value": "soft",
+          "label": "Hafif vurgu"
+        },
+        {
+          "value": "zen",
+          "label": "Zen moru (özgün)"
+        }
+      ]
+    },
+    {
+      "key": "blur",
+      "label": "Arka planı bulanıklaştır",
+      "type": "checkbox",
+      "default": true
+    }
+  ]
+}

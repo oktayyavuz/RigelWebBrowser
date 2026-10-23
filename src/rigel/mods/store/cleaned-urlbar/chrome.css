@@ -1,0 +1,77 @@
+/* Temiz adres çubuğu — Rigel modu
+ * Kaynak: Zen mod mağazası, "Cleaned URL bar" v1.0.4 — Dinno-DEV
+ *   https://github.com/Dinno-DEV/zen-cleaned-url-bar
+ *   https://github.com/zen-browser/theme-store/tree/main/themes/a5f6a231-e3c8-4ce8-8a8e-3e93efd6adec
+ * Rigel/Firefox DOM'una uyarlandı: seçiciler, ayarlar ve görünüm Rigel belirteçleriyle yeniden yazıldı (2026).
+ *
+ * MIT License
+ * Copyright (c) 2024 DinnoDEV
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions: The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+ * LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
+ * EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+/* Adres çubuğu açıldığında (yazarken ya da önerilerde) yarı saydam, bulanık, kalın yumuşak kenarlı bir karta
+   dönüşür; öneri satırları yuvarlak, seçili satır dolu renkli, arama motoru düğmeleri ayrı bir kutuda.
+   Ayarlar: transparency (yüzde; bulanıklık açıkken arkası okunmaz), select (accent|zen|soft), blur. */
+:root:root:root {
+  --cu-sel: var(--accent);
+  --cu-ink: var(--accent-ink);
+}
+:root:root:root[rigel-mod-cleaned-urlbar-select="zen"] { --cu-sel: rgba(80, 80, 250, 0.75); --cu-ink: #ffffff; }
+:root:root:root[rigel-mod-cleaned-urlbar-select="soft"] { --cu-sel: color-mix(in srgb, var(--accent) 24%, transparent); --cu-ink: var(--text); }
+
+:root:root:root #urlbar {
+  --cu-card: color-mix(in srgb, var(--surface) calc(100% - var(--rigel-mod-cleaned-urlbar-transparency, 12%)), transparent);
+  --cu-edge: 3px solid color-mix(in srgb, var(--text) 11%, transparent);
+}
+/* Kart iki parça: üstte giriş (.urlbar-background), altta öneriler (.urlbarView-background) */
+:root:root:root #urlbar:is([open], [popover-open], [breakout-extend]) > .urlbar-background {
+  border: var(--cu-edge) !important;
+  border-bottom: none !important;
+  border-radius: 18px 18px 0 0 !important;
+  background-color: var(--cu-card) !important;
+  box-shadow: none !important;
+}
+:root:root:root #urlbar .urlbarView-background {
+  border: var(--cu-edge) !important;
+  border-top: none !important;
+  border-radius: 0 0 18px 18px !important;
+  background-color: var(--cu-card) !important;
+  box-shadow: 0 26px 64px rgba(0, 0, 0, 0.42) !important;
+}
+:root:root:root[rigel-mod-cleaned-urlbar-blur] #urlbar:is([open], [popover-open], [breakout-extend]) > .urlbar-background,
+:root:root:root[rigel-mod-cleaned-urlbar-blur] #urlbar .urlbarView-background {
+  backdrop-filter: blur(25px) saturate(2);
+}
+:root:root:root #urlbar .urlbarView-body-inner { border: none !important; }
+:root:root:root #urlbar .urlbarView-results { padding-inline: 6px !important; }
+:root:root:root #urlbar .urlbarView-row { border-radius: 11px !important; }
+:root:root:root #urlbar .urlbarView-row > .urlbarView-row-inner { border-radius: 11px !important; }
+:root:root:root #urlbar .urlbarView-row:is([selected], :has(> .urlbarView-row-inner[selected])) > .urlbarView-row-inner,
+:root:root:root #urlbar .urlbarView-row[selected] {
+  background-color: var(--cu-sel) !important;
+  color: var(--cu-ink) !important;
+}
+:root:root:root #urlbar .urlbarView-row:is([selected], :has(> .urlbarView-row-inner[selected])) :is(.urlbarView-title, .urlbarView-url, .urlbarView-action, .urlbarView-title-separator, .urlbarView-favicon, .urlbarView-type-icon) {
+  color: inherit !important;
+  fill: currentColor !important;
+}
+:root:root:root #urlbar .search-one-offs {
+  border-top: none !important;
+  border-radius: 12px !important;
+  padding: 4px 6px !important;
+  margin: 2px 6px 7px !important;
+  background: color-mix(in srgb, var(--text) 6%, transparent);
+}
+:root:root:root #urlbar .searchbar-engine-one-off-item { border-radius: 8px !important; margin-right: 3px !important; }
+/* Bulanıklığın web sayfası üstünde de çalışması için sayfa kendi katmanına alınır (özgün modun düzeltmesi). */
+:root:root:root[rigel-mod-cleaned-urlbar-blur] .browserStack > browser { transform: translateX(0); }

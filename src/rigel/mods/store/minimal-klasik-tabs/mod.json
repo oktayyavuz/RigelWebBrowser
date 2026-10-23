@@ -1,0 +1,76 @@
+{
+  "name": "Hap sekmeler",
+  "description": "Klasik düzende sekmeler şeride yapışık kulakçıklar yerine dikey ortalanmış, tam yuvarlak haplar olur. Seçili hap vurgu tonunda, dolu vurgu renginde ya da çerçeveli. Kapatma düğmesi istersen yalnız üstüne gelince.",
+  "author": "Rigel",
+  "version": "2.0.0",
+  "target": "chrome",
+  "prefs": [
+    {
+      "key": "style",
+      "label": "Seçili sekme",
+      "type": "dropdown",
+      "default": "tint",
+      "options": [
+        {
+          "value": "tint",
+          "label": "Vurgu tonu"
+        },
+        {
+          "value": "solid",
+          "label": "Dolu vurgu"
+        },
+        {
+          "value": "outline",
+          "label": "Çerçeve"
+        }
+      ]
+    },
+    {
+      "key": "height",
+      "label": "Yükseklik",
+      "type": "dropdown",
+      "default": "30px",
+      "options": [
+        {
+          "value": "26px",
+          "label": "İnce"
+        },
+        {
+          "value": "30px",
+          "label": "Orta"
+        },
+        {
+          "value": "34px",
+          "label": "Yüksek"
+        }
+      ]
+    },
+    {
+      "key": "maxw",
+      "label": "En geniş sekme",
+      "type": "dropdown",
+      "default": "200px",
+      "options": [
+        {
+          "value": "160px",
+          "label": "Dar"
+        },
+        {
+          "value": "200px",
+          "label": "Orta"
+        },
+        {
+          "value": "240px",
+          "label": "Geniş"
+        }
+      ]
+    },
+    {
+      "key": "closehover",
+      "label": "Kapatma düğmesi yalnız üstüne gelince",
+      "type": "checkbox",
+      "default": true
+    }
+  ],
+  "license": "MPL-2.0"
+}

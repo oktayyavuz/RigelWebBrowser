@@ -1,0 +1,339 @@
+/* Yan Panel düzeni: 264 px sol sütun (marka + pencere düğmeleri, gezinme, adres, sabitlenmiş
+   ızgara, dikey sekmeler, yeni/gizli sekme) ve 14 px köşeli sayfa kartı.
+   Tasarım kaynağı: Rigel Browser/ui/src/shell/bars/SidebarBar.svelte.
+   Yapıyı shell/yanpanel.mjs kurar (nav-bar'ı #sidebar-container'a taşır). */
+
+:root[data-rigel-layout="yanpanel"] {
+  --rigel-side-w: 264px;
+  --rigel-card-radius: 14px;
+  --rigel-row-radius: 9px;
+  --tab-border-radius: var(--rigel-row-radius);
+  --tab-min-height: 34px;
+  --tab-margin-block-vertical: 0.5px;
+  --tab-margin-inline-inner: 0px;
+  --tab-padding-inline-vertical: 9px;
+  --tab-pinned-min-width-expanded: 44px;
+  --tab-container-margin-inline-pinned-expanded: 0px;
+  --tab-margin-inline-pinned-expanded: 2px;
+}
+
+/* --- Çerçevesiz pencere: üst şeritleri gizle ------------------------------------- */
+:root[data-rigel-layout="yanpanel"] {
+  /* Sekmeler dikey alandaysa yatay şerit boş kalır */
+  #TabsToolbar:not(:has(#tabbrowser-tabs)) {
+    display: none !important;
+  }
+  #vertical-spacer,
+  #nav-bar .titlebar-spacer {
+    display: none !important;
+  }
+}
+
+/* --- Sayfa kartı ----------------------------------------------------------------- */
+:root[data-rigel-layout="yanpanel"] {
+  #browser {
+    background: var(--bar) !important;
+  }
+  #tabbrowser-tabbox {
+    margin: 8px 8px 8px 0 !important;
+    border-radius: var(--rigel-card-radius) !important;
+    border: 1px solid var(--border) !important;
+    overflow: clip !important;
+    box-shadow: none !important;
+    outline: none !important;
+    background: var(--bg) !important;
+  }
+  #tabbrowser-tabpanels,
+  .browserStack,
+  .browserContainer {
+    background: var(--bg) !important;
+  }
+  #sidebar-launcher-splitter {
+    display: none !important;
+  }
+}
+:root[data-rigel-layout="yanpanel"][sizemode="fullscreen"] #tabbrowser-tabbox {
+  margin: 0 !important;
+  border-radius: 0 !important;
+  border: none !important;
+}
+
+/* --- Sol sütun ------------------------------------------------------------------- */
+:root[data-rigel-layout="yanpanel"] #sidebar-container {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px;
+  width: var(--rigel-side-w) !important;
+  min-width: var(--rigel-side-w) !important;
+  max-width: var(--rigel-side-w) !important;
+  padding: 0 8px 10px 10px !important;
+  background: var(--bar) !important;
+  color: var(--text);
+  border: none !important;
+  font: 13px/1.4 var(--font);
+  -moz-window-dragging: drag;
+
+  & > sidebar-main {
+    flex: 1 !important;
+    min-height: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    background: transparent !important;
+    -moz-window-dragging: no-drag;
+  }
+
+  button {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: 0;
+    appearance: none;
+    -moz-window-dragging: no-drag;
+  }
+}
+
+/* Marka + pencere düğmeleri */
+#rigel-side-top {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: none;
+
+  .rigel-brand {
+    padding-left: 2px;
+  }
+}
+
+/* --- Gezinme + adres (Firefox'un nav-bar'ı, taşınmış hali) ------------------------ */
+#sidebar-container > #nav-bar {
+  position: relative;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  min-height: 0 !important;
+  -moz-window-dragging: no-drag;
+  --toolbarbutton-outer-padding: 0px;
+  --toolbarbutton-inner-padding: 5px;
+  --toolbar-start-end-padding: 0px;
+
+  #nav-bar-customization-target {
+    flex-wrap: wrap;
+    row-gap: 8px;
+    align-items: center;
+    /* Sağ üstteki menü düğmesine yer */
+    padding-inline-end: 28px;
+  }
+
+  #nav-bar-customization-target > toolbarspring {
+    min-width: 0 !important;
+    max-width: none !important;
+  }
+
+  /* Adres alanı kendi satırında, tam genişlik */
+  #urlbar-container {
+    order: 99;
+    flex: 1 0 100% !important;
+    width: calc(var(--rigel-side-w) - 18px) !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    margin-inline-end: -28px !important;
+    padding: 0 !important;
+  }
+
+  #PanelUI-button {
+    position: absolute;
+    top: 0;
+    inset-inline-end: 0;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+  }
+
+  toolbarbutton.toolbarbutton-1 > .toolbarbutton-icon,
+  toolbarbutton.toolbarbutton-1 > .toolbarbutton-badge-stack {
+    width: 26px !important;
+    height: 26px !important;
+    border-radius: 7px !important;
+    padding: 5px !important;
+  }
+}
+
+/* --- Sekmeler -------------------------------------------------------------------- */
+:root[data-rigel-layout="yanpanel"] #vertical-tabs {
+  background: transparent !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+:root[data-rigel-layout="yanpanel"] #tabbrowser-tabs[orient="vertical"] {
+  --tab-label-line-height: 1.4;
+  width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  font-size: 13px;
+
+  /* Sabitlenmişler arası ayıraç: yerine etiket gelir */
+  #vertical-pinned-tabs-splitter {
+    display: none !important;
+  }
+
+  /* Yeni sekme düğmesi altta (#rigel-side-bottom) */
+  #vertical-tabs-newtab-button,
+  #tabbrowser-arrowscrollbox-periphery {
+    display: none !important;
+  }
+
+  .tabbrowser-tab:not([pinned]) {
+    padding: 0 !important;
+    margin-block: 0.5px !important;
+  }
+
+  .tabbrowser-tab:not([pinned]) .tab-background {
+    margin: 0 !important;
+    border-radius: var(--rigel-row-radius) !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    min-height: 34px !important;
+  }
+  .tabbrowser-tab:not([pinned]):hover .tab-background:not([selected]) {
+    background: var(--hover) !important;
+  }
+  .tabbrowser-tab:not([pinned]) .tab-background:is([selected], [multiselected]) {
+    background:
+      linear-gradient(var(--accent), var(--accent)) 1px center / 2.5px 14px no-repeat,
+      var(--active) !important;
+  }
+  .tabbrowser-tab:not([pinned]) .tab-content {
+    padding-inline: 9px 6px !important;
+    gap: 9px;
+  }
+  .tab-icon-image,
+  .tab-throbber,
+  .tab-icon-pending {
+    margin-inline-end: 0 !important;
+  }
+  .tab-label {
+    color: var(--text-dim);
+  }
+  .tabbrowser-tab:is(:hover, [selected]) .tab-label {
+    color: var(--text);
+  }
+  .tab-close-button {
+    width: 22px !important;
+    height: 22px !important;
+    padding: 5px !important;
+    border-radius: 5px !important;
+    opacity: 0;
+  }
+  .tabbrowser-tab:hover .tab-close-button {
+    opacity: 1;
+  }
+  .tab-close-button:hover {
+    background: var(--hover) !important;
+  }
+  .tab-audio-button {
+    color: var(--accent) !important;
+  }
+  .tabbrowser-tab[pending] :is(.tab-icon-image, .tab-label) {
+    opacity: 0.45;
+  }
+  .tabbrowser-tab[usercontextid] .tab-context-line {
+    border-radius: 2px;
+  }
+}
+
+/* SEKMELER etiketi: sekme listesinin hemen üstünde */
+:root[data-rigel-layout="yanpanel"] #tabbrowser-arrowscrollbox[orient="vertical"]::before {
+  content: "SEKMELER";
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-faint);
+  padding: 6px 6px 4px;
+  letter-spacing: 0.3px;
+}
+:root[data-rigel-layout="yanpanel"] #tabbrowser-arrowscrollbox[orient="vertical"][data-rigel-count]::before {
+  content: "SEKMELER" " " attr(data-rigel-count);
+}
+
+/* Sabitlenmişler: üstte ikon ızgarası (yerel grid, yalnızca görünüm) */
+:root[data-rigel-layout="yanpanel"] #pinned-tabs-container[orient="vertical"] {
+  margin-bottom: 0 !important;
+  padding: 0 !important;
+
+  &::part(items-wrapper) {
+    grid-template-columns: repeat(auto-fill, minmax(44px, 1fr)) !important;
+    grid-auto-rows: 38px !important;
+    gap: 4px !important;
+    padding: 0 !important;
+  }
+  .tabbrowser-tab {
+    padding: 0 !important;
+    margin: 0 !important;
+    min-width: 0 !important;
+  }
+  .tab-background {
+    margin: 0 !important;
+    border-radius: var(--rigel-row-radius) !important;
+    background: var(--surface) !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+  .tabbrowser-tab:hover .tab-background {
+    border-color: var(--border-2) !important;
+  }
+  .tab-background:is([selected], [multiselected]) {
+    background: var(--active) !important;
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent) !important;
+  }
+  .tab-content {
+    padding: 0 !important;
+    justify-content: center !important;
+  }
+}
+
+/* --- Alt düğmeler ---------------------------------------------------------------- */
+#rigel-side-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+  flex: none;
+
+  .rigel-new {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    height: 32px;
+    padding: 0 9px;
+    border-radius: 8px;
+    color: var(--text-faint) !important;
+  }
+  .rigel-new:hover {
+    background: var(--hover) !important;
+    color: var(--text-dim) !important;
+  }
+  .rigel-new > span {
+    flex: 1;
+    text-align: start;
+  }
+  .rigel-priv svg {
+    color: var(--private);
+  }
+  kbd {
+    font: 10.5px/1 var(--mono);
+    color: var(--text-faint);
+    border: 1px solid var(--border-2);
+    border-radius: 4px;
+    padding: 3px 5px;
+    white-space: nowrap;
+  }
+}

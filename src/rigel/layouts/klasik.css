@@ -1,0 +1,170 @@
+/* Klasik düzen: yatay sekmeler (40 px) + araç çubuğu (44 px) = 84 px.
+   Tasarım kaynağı: Rigel Browser/ui/src/shell/bars/ClassicBar.svelte. Firefox'un yerel sekme şeridi
+   ve nav-bar'ı yeniden biçimlenir; shell/klasik.mjs yalnız pencere düğmelerini ekler. */
+
+:root[data-rigel-layout="klasik"] {
+  --tab-min-height: 34px;
+  --tab-min-width: 44px;
+  --tab-block-margin: 0px;
+  --tab-border-radius: 9px;
+  --tab-shadow-max-size: 0px;
+  --tab-pinned-horizontal-margin: 0px;
+  --toolbarbutton-outer-padding: 1px;
+  --toolbarbutton-inner-padding: 7px;
+  --urlbar-min-height: 32px;
+  --urlbar-container-height: 44px;
+
+  .titlebar-spacer,
+  #tabbrowser-arrowscrollbox-periphery > .closing-tabs-spacer {
+    display: none !important;
+  }
+}
+
+/* --- Sekme şeridi ----------------------------------------------------------------- */
+:root[data-rigel-layout="klasik"] #TabsToolbar {
+  height: 40px;
+  min-height: 40px !important;
+  max-height: 40px;
+  padding: 6px 6px 0 8px !important;
+  background: var(--bar) !important;
+  color: var(--text);
+  font: 13px/1.4 var(--font);
+
+  .toolbar-items {
+    align-items: flex-end !important;
+  }
+  #tabbrowser-tabs {
+    min-height: 34px !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    --tab-overflow-pinned-tabs-width: 0px;
+  }
+  #rigel-klasik-wctl {
+    align-self: center;
+    margin-inline-start: 8px;
+    margin-top: -6px;
+    background: transparent;
+  }
+}
+
+:root[data-rigel-layout="klasik"] .tabbrowser-tab {
+  padding: 0 1px !important;
+  min-height: 34px !important;
+
+  /* Yalnız açık (fadein) sekmeler: Firefox kapanırken fadein'i kaldırıp genişliği 0'a çeker ve
+     geçiş bitince sekmeyi siler. Burada sabit genişlik o geçişi engellerse sekme DOM'da takılı kalır. */
+  &[fadein]:not([pinned]) {
+    max-width: 220px !important;
+  }
+  .tab-background {
+    margin: 0 !important;
+    border: none !important;
+    border-radius: 9px 9px 0 0 !important;
+    box-shadow: none !important;
+    outline: none !important;
+    min-height: 34px !important;
+  }
+  &:hover > .tab-stack > .tab-background:not([selected], [multiselected]) {
+    background: var(--hover) !important;
+  }
+  .tab-background:is([selected], [multiselected]) {
+    background:
+      linear-gradient(var(--accent), var(--accent)) 12px 0 / calc(100% - 24px) 2px no-repeat,
+      var(--surface) !important;
+  }
+  &[pinned] .tab-background:is([selected], [multiselected]) {
+    background:
+      linear-gradient(var(--accent), var(--accent)) 8px 0 / calc(100% - 16px) 2px no-repeat,
+      var(--surface) !important;
+  }
+  .tab-content {
+    padding-inline: 11px 6px !important;
+    gap: 8px;
+  }
+  &[pinned] .tab-content {
+    padding-inline: 12px !important;
+  }
+  .tab-icon-image,
+  .tab-throbber,
+  .tab-icon-pending {
+    margin-inline-end: 0 !important;
+  }
+  .tab-label {
+    color: var(--text-dim);
+  }
+  &:is(:hover, [selected]) .tab-label {
+    color: var(--text);
+  }
+  &[pending] :is(.tab-icon-image, .tab-label) {
+    opacity: 0.45;
+  }
+  .tab-close-button {
+    width: 20px !important;
+    height: 20px !important;
+    padding: 4px !important;
+    border-radius: 5px !important;
+    opacity: 0.6;
+    margin-inline-end: 0 !important;
+  }
+  .tab-close-button:hover {
+    opacity: 1;
+    background: var(--hover) !important;
+  }
+  .tab-audio-button {
+    color: var(--accent) !important;
+  }
+}
+/* Sabitlenmişlerin ardından küçük boşluk */
+:root[data-rigel-layout="klasik"] #pinned-tabs-container:not(:empty) {
+  margin-inline-end: 6px !important;
+}
+
+:root[data-rigel-layout="klasik"] :is(#tabs-newtab-button, #new-tab-button) {
+  margin: 0 0 2px 4px !important;
+  padding: 0 !important;
+  align-self: flex-end;
+
+  & > .toolbarbutton-icon {
+    width: 30px !important;
+    height: 30px !important;
+    padding: 7px !important;
+    border-radius: 8px !important;
+  }
+}
+
+/* --- Araç çubuğu ------------------------------------------------------------------ */
+:root[data-rigel-layout="klasik"] #nav-bar {
+  height: 44px;
+  min-height: 44px !important;
+  padding: 0 8px !important;
+  background: var(--surface) !important;
+  border: none !important;
+  border-bottom: 1px solid var(--border) !important;
+  box-shadow: none !important;
+
+  #vertical-spacer,
+  #nav-bar-customization-target > toolbarspring {
+    display: none !important;
+  }
+  toolbarbutton.toolbarbutton-1 > :is(.toolbarbutton-icon, .toolbarbutton-badge-stack) {
+    border-radius: 7px !important;
+  }
+  #urlbar-container {
+    flex: 1 !important;
+    max-width: none !important;
+    margin-inline: 8px !important;
+  }
+}
+:root[data-rigel-layout="klasik"] #urlbar {
+  --urlbar-background-color: var(--bg);
+  --urlbar-background-color-focus: var(--bg);
+  --urlbar-border-radius: 16px;
+
+  & > .urlbar-background {
+    border-radius: 16px;
+  }
+  &[popover-open] > .urlbar-background {
+    border-radius: 16px 16px 0 0 !important;
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "name": "Sade araç çubuğu",
+  "description": "Eklenti düğmeleri, kullanılmayan geri/ileri, adres çubuğundaki simgeler (okuma modu, yıldız, izinler) ve Klasik'te pencere düğmeleri gizlenir. Gizlenenler, bulundukları çubuğun üstüne gelince yumuşakça geri gelir.",
+  "author": "Rigel",
+  "version": "2.0.0",
+  "target": "chrome",
+  "prefs": [
+    {
+      "key": "ext",
+      "label": "Eklenti düğmeleri",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "key": "backfwd",
+      "label": "Kullanılmayan geri/ileri",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "key": "urlicons",
+      "label": "Adres çubuğu simgeleri",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "key": "wctl",
+      "label": "Pencere düğmeleri (Klasik)",
+      "type": "checkbox",
+      "default": false
+    }
+  ],
+  "license": "MPL-2.0"
+}

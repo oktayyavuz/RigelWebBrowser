@@ -1,0 +1,47 @@
+/* Yüzen durum çubuğu — Rigel modu
+ * Kaynak: Zen mod mağazası, "Custom Statusbar" v1.0.0 — Archer7x
+ *   https://github.com/Archer7x/Zen-Themes/tree/main/CustomStatusbar
+ *   https://github.com/zen-browser/theme-store/tree/main/themes/32aca67a-ffdd-49e7-95c7-1821793610ca
+ * Rigel/Firefox DOM'una uyarlandı: seçiciler, ayarlar ve görünüm Rigel belirteçleriyle yeniden yazıldı (2026).
+ *
+ * MIT License
+ * Copyright (c) 2027 Archer
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions: The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+ * LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
+ * EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+/* Bağlantının üstüne gelince sol altta beliren adres (durum çubuğu) kenarlardan ayrılmış, yuvarlak,
+   çerçeveli ve gölgeli bir kart olur. Ayarlar: radius, margin, border, colors (accent|filled|plain). */
+:root:root:root #statuspanel {
+  --fs-bg: var(--surface);
+  --fs-ink: var(--text);
+  --fs-border: color-mix(in srgb, var(--accent) 70%, transparent);
+  margin: var(--rigel-mod-floating-statusbar-margin, 10px) !important;
+}
+:root:root:root[rigel-mod-floating-statusbar-colors="filled"] #statuspanel {
+  --fs-bg: var(--accent);
+  --fs-ink: var(--accent-ink);
+  --fs-border: color-mix(in srgb, var(--accent) 70%, #ffffff);
+}
+:root:root:root[rigel-mod-floating-statusbar-colors="plain"] #statuspanel {
+  --fs-bg: var(--surface-2);
+  --fs-border: var(--border-2);
+}
+:root:root:root #statuspanel #statuspanel-label {
+  border-radius: var(--rigel-mod-floating-statusbar-radius, 999px) !important;
+  padding: 4px 12px !important;
+  border: var(--rigel-mod-floating-statusbar-border, 2px) solid var(--fs-border) !important;
+  background: var(--fs-bg) !important;
+  color: var(--fs-ink) !important;
+  font: 500 12px/1.4 var(--font) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35) !important;
+}

@@ -1,0 +1,72 @@
+/* Yer imi çubuğu — Rigel modu
+ * Kaynak: Zen mod mağazası, "Bookmark Toolbar Tweaks" v1.2.3 — n7itro
+ *   https://github.com/zen-browser/theme-store/tree/main/themes/ea1a5ace-f698-4b45-ab88-6e8bd3a563f0
+ *   https://github.com/zen-browser/theme-store/tree/main/themes/ea1a5ace-f698-4b45-ab88-6e8bd3a563f0
+ * Rigel/Firefox DOM'una uyarlandı: seçiciler, ayarlar ve görünüm Rigel belirteçleriyle yeniden yazıldı (2026).
+ *
+ * MIT License
+ * Copyright (c) 2024 Zen Browser (Zen theme-store deposu; mod yazarı n7itro)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions: The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+ * LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
+ * EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+/* Rigel yer imi çubuğunu bütün düzenlerde gizler. Bu mod, çubuk açıksa (Ctrl+Shift+B) onu Klasik ve Yan Panel'de geri getirir ve biçimler:
+   hap düğmeler, ortalama, yalnız simge/yalnız ad, üstüne gelince açılma. Ayarlar: center, show (both|icons|names), autohide. */
+:root:root:root:is([data-rigel-layout="klasik"], [data-rigel-layout="yanpanel"]) #navigator-toolbox > #PersonalToolbar:not([collapsed="true"]) {
+  display: flex !important;
+  visibility: visible !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  padding: 0 8px !important;
+  background: var(--surface) !important;
+  border-bottom: 1px solid var(--border) !important;
+  color: var(--text) !important;
+}
+:root:root:root[data-rigel-layout="klasik"] #nav-bar { border-bottom-color: transparent !important; }
+:root:root:root #PersonalToolbar #PlacesToolbarItems { gap: 4px; align-items: center; }
+:root:root:root #PersonalToolbar toolbarbutton.bookmark-item {
+  margin: 0 !important;
+  padding: 3px 10px !important;
+  border-radius: 999px !important;
+  background: color-mix(in srgb, var(--text) 6%, transparent) !important;
+  color: var(--text-dim) !important;
+  font: 12px var(--font);
+  transition: transform 0.14s ease, opacity 0.14s ease;
+}
+:root:root:root #PersonalToolbar toolbarbutton.bookmark-item:hover {
+  background: color-mix(in srgb, var(--accent) 20%, transparent) !important;
+  color: var(--text) !important;
+}
+:root:root:root #PersonalToolbar toolbarbutton.bookmark-item:hover:active { transform: scale(0.96); }
+:root:root:root #PersonalToolbar toolbarbutton.bookmark-item[open] { background: color-mix(in srgb, var(--accent) 30%, transparent) !important; }
+:root:root:root #PersonalToolbar toolbarbutton.bookmark-item[container] .toolbarbutton-icon { fill: var(--accent) !important; }
+:root:root:root #PersonalToolbar #PlacesChevron { border-radius: 999px !important; }
+
+:root:root:root[rigel-mod-bookmark-bar-center] #PlacesToolbarItems { justify-content: center !important; }
+:root:root:root[rigel-mod-bookmark-bar-show="icons"] #PersonalToolbar .bookmark-item:not([container]) .toolbarbutton-text { display: none !important; }
+:root:root:root[rigel-mod-bookmark-bar-show="icons"] #PersonalToolbar toolbarbutton.bookmark-item:not([container]) { padding: 3px 7px !important; }
+:root:root:root[rigel-mod-bookmark-bar-show="names"] #PersonalToolbar .bookmark-item .toolbarbutton-icon { display: none !important; }
+
+/* Gizlenip üstüne gelince açılma: yer kaplamaz, araç çubuğunun üstüne gelince aşağı katlanır */
+:root:root:root[rigel-mod-bookmark-bar-autohide] #navigator-toolbox > #PersonalToolbar:not([collapsed="true"]) {
+  position: relative;
+  z-index: 3;
+  margin-bottom: -32px !important;
+  transform: rotateX(90deg);
+  transform-origin: top;
+  transition: transform 0.16s ease !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+}
+:root:root:root[rigel-mod-bookmark-bar-autohide] #navigator-toolbox:is(:hover, :focus-within) > #PersonalToolbar { transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  :root:root:root #PersonalToolbar, :root:root:root #PersonalToolbar toolbarbutton.bookmark-item { transition: none !important; }
+}

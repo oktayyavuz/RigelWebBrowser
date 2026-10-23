@@ -1,0 +1,481 @@
+/* Rigel: Firefox'un kendi açılır yüzeylerini (menüler, paneller, doorhanger'lar, ipuçları, bul çubuğu,
+   bildirim şeritleri, sekme içi diyaloglar) Rigel tasarımına çevirir. Yalnız theme/tokens.css belirteçleri
+   (--surface, --text, --accent, --hover, --active, ...) kullanılır; koyu/açık tema ve beş vurgu rengi otomatik izlenir.
+   Yöntem: önce Firefox'un tasarım belirteçlerini (--panel-*, --button-*, --menuitem-*) ezer, ancak gerekince
+   seçici yazarız. Menüler aynı belge içinde (browser.xhtml) çizildiği için bu yazar sayfası onlara da ulaşır.
+   Kart ölçüleri: panel yarıçapı 14px, satırlar 9px (palette/FindBar.svelte ile aynı). */
+@namespace html url("http://www.w3.org/1999/xhtml");
+
+
+/* --- 1. Genel belirteçler (kökte; tüm Firefox yüzeyleri okur) ---------------------------------------- */
+:root {
+  --rgl-scheme: dark; /* sistem koyu/açık tercihine değil, Rigel temasına göre çizilen yerel bileşenler (onay kutusu, kaydırma çubuğu) */
+  --rgl-card-radius: 14px;
+  --rgl-row-radius: 9px;
+  --rgl-card-border: color-mix(in srgb, var(--accent) 28%, var(--border-2));
+  --rgl-pressed: color-mix(in srgb, var(--accent) 24%, transparent);
+
+  --color-accent-primary: var(--accent);
+  --color-accent-primary-hover: color-mix(in srgb, var(--accent) 86%, var(--text));
+  --color-accent-primary-active: color-mix(in srgb, var(--accent) 74%, var(--text));
+  --color-accent-primary-selected: var(--accent);
+  --link-color: var(--accent);
+  --link-color-hover: var(--accent-2);
+  --link-color-active: var(--accent);
+  --link-color-visited: var(--accent);
+
+  --text-color: var(--text);
+  --text-color-deemphasized: var(--text-dim);
+  --text-color-disabled: var(--text-faint);
+  --text-color-error: var(--danger);
+  --icon-color: var(--text-dim);
+  --background-color-box: var(--surface);
+  --background-color-dimmed: var(--hover);
+  --background-color-dimmed-further: var(--active);
+  --border-color: var(--border-2);
+  --border-color-deemphasized: var(--border);
+  --border-color-interactive: var(--border-2);
+  --border-color-selected: var(--accent);
+  --card-background-color: var(--surface-2);
+  --card-border-color: var(--border);
+  --card-border-radius: var(--rgl-card-radius);
+  --card-box-shadow: none;
+  --box-shadow-level-3: var(--shadow-sm);
+  --popup-box-shadow: var(--shadow-sm);
+
+  /* Düğmeler: ikincil = şeffaf vurgu, birincil = vurgu rengi */
+  --button-background-color: var(--hover);
+  --button-background-color-hover: var(--active);
+  --button-background-color-active: var(--rgl-pressed);
+  --button-text-color: var(--text);
+  --button-text-color-primary: var(--accent-ink);
+  --button-border-radius: var(--rgl-row-radius);
+  /* --button-border kökte çözülür; renk belirteçleri de kökte şeffaf olmalı (yoksa currentColor çerçeve çizer) */
+  --button-border-color: transparent;
+  --button-border-color-hover: transparent;
+  --button-border-color-active: transparent;
+  --button-border-color-ghost: transparent;
+  --button-border-color-primary: transparent;
+  --button-background-color-destructive: var(--danger);
+  --button-text-color-destructive: var(--on-danger);
+  --button-background-color-menu-hover: var(--active);
+  --button-background-color-menu-active: var(--rgl-pressed);
+  --button-background-color-menu-selected: var(--rgl-pressed);
+  --button-text-color-menu-hover: var(--text);
+  --button-text-color-menu-active: var(--text);
+  --button-text-color-menu-selected: var(--text);
+  --button-background-color-ghost-hover: var(--active);
+  --button-background-color-ghost-active: var(--rgl-pressed);
+  --panel-banner-item-background-color: var(--hover);
+
+  --focus-outline-color: var(--accent);
+  --toolbarseparator-color: var(--border-2);
+}
+
+:root[data-rigel-theme="light"] { --rgl-scheme: light; }
+notification-message, tooltip, .dialogBox, moz-button, moz-toggle, moz-checkbox { color-scheme: var(--rgl-scheme); }
+
+/* --- 2. Paneller ve menüler: kart görünümü ---------------------------------------------------------- */
+:root :is(menupopup, panel) {
+  color-scheme: var(--rgl-scheme);
+  --panel-background-color: var(--surface);
+  --panel-background-color-dimmed: var(--hover);
+  --panel-background-color-dimmed-further: var(--active);
+  --panel-text-color: var(--text);
+  --panel-border-color: var(--rgl-card-border);
+  --panel-border-radius: var(--rgl-card-radius);
+  --panel-box-shadow-margin: 18px;
+  --panel-box-shadow: var(--shadow-sm);
+  --panel-separator-color: var(--border);
+  --panel-menuitem-border-radius: var(--rgl-row-radius);
+  --menuitem-border-radius: var(--rgl-row-radius);
+  --panel-description-color: var(--text-dim);
+  --menuitem-icon-fill: var(--text-dim);
+  --panel-icon-fill: var(--text-dim);
+  --panel-padding-block: 6px;
+  --panel-menuitem-padding-block: 8px;
+  --panel-menuitem-padding-inline: 10px;
+  --panel-menuitem-margin-inline: 6px;
+  --panel-subview-body-padding-block: 6px;
+  --menuitem-padding-block: 7px;
+  --menuitem-padding-inline: 10px;
+  font-family: var(--font);
+}
+/* Düz menüler (sağ tık) kenar boşluğu kart içinde satırı yuvarlak gösterir. */
+:root menupopup {
+  --menuitem-margin: 0 2px;
+}
+/* Okla bağlı paneller (hamburger, uzantılar, kimlik...) kendi içinde panelview'lara böler; ::part(content) kartı çizer. */
+:root :is(menupopup, panel)::part(content) {
+  background: var(--surface);
+  color: var(--text);
+}
+
+menupopup menu[_moz-menuactive]:not([disabled]),
+menupopup menuitem[_moz-menuactive]:not([disabled]) {
+  background-color: var(--active);
+  color: var(--text);
+}
+menupopup menu[_moz-menuactive][disabled],
+menupopup menuitem[_moz-menuactive][disabled] {
+  background-color: transparent;
+}
+menupopup :is(menu, menuitem)[disabled] { color: var(--text-faint); }
+menupopup menucaption { color: var(--text-faint); font-weight: 600; font-size: 11.5px; }
+menupopup menuseparator { padding-inline: 4px; }
+menupopup menuseparator::before { border-top-color: var(--border); }
+/* Sağ tık ve açılır menü cilası (tur 6, X): ayraç boşluğu, alt menü oku, açık alt menünün satırı, onay/radyo vurgusu */
+menupopup > menuseparator { margin-block: 4px; margin-inline: 4px; }
+menupopup > menuseparator::before { border-top-width: 1px; }
+menupopup :is(menu, menuitem) { min-height: 30px; }
+menupopup menu > .menu-right {
+  -moz-context-properties: fill, stroke;
+  fill: var(--text-faint);
+  stroke: var(--text-faint);
+  opacity: 0.9;
+}
+menupopup menu[_moz-menuactive]:not([disabled]) > .menu-right { fill: var(--text-dim); stroke: var(--text-dim); }
+menupopup menu[open="true"]:not([disabled]) { background-color: var(--active); color: var(--text); }
+menupopup menuitem:is([type="checkbox"], [type="radio"]) > .menu-icon { accent-color: var(--accent); }
+menupopup menuitem[disabled] .menu-accel, menupopup menuitem[disabled] .menu-iconic-accel { opacity: 0.6; }
+menupopup :is(menu, menuitem) > .menu-accel,
+menupopup :is(menu, menuitem) .menu-accel-container { color: var(--text-faint); font-family: var(--mono); font-size: 11px; }
+menupopup menuitem[checked="true"]::before,
+menupopup menuitem[type="radio"][checked="true"]::before { accent-color: var(--accent); }
+
+/* Hamburger ve alt görünümler: satırlar */
+.subviewbutton:where(:not([disabled])) {
+  border-radius: var(--rgl-row-radius);
+}
+panelview .subviewbutton-nav::after { opacity: 0.7; }
+panelview .panel-header { color: var(--text); }
+panelview .panel-header > label { font-weight: 600; }
+panelview toolbarseparator,
+panel toolbarseparator { color: var(--border); }
+panelview .panel-subview-footer-button { background: transparent; border-top-color: var(--border); }
+
+/* Üst düzey uygulama menüsü: arka plan ve kenarlık */
+#appMenu-popup, #unified-extensions-panel, #downloadsPanel, #identity-popup, #permission-popup, #trustpanel-popup,
+#protections-popup, #editBookmarkPanel, #customizationui-widget-panel, #PanelUI-popup {
+  --panel-border-color: var(--rgl-card-border);
+}
+
+/* --- 3. Doorhanger'lar (PopupNotifications) ve sayfa izinleri ------------------------------------- */
+.popup-notification-panel {
+  --panel-padding: 16px;
+}
+.popup-notification-body-container { padding: 14px 16px 6px; }
+.popup-notification-header-container, .popup-notification-footer-container { color: var(--text); }
+.popup-notification-description { color: var(--text-dim); line-height: 1.45; }
+.popup-notification-description-name, .popup-notification-origin { color: var(--text); font-weight: 600; }
+.popup-notification-icon { color: var(--accent); fill: var(--accent); }
+popupnotification .popup-notification-footer-container,
+.popup-notification-panel .popup-notification-footer { padding: 6px 16px 14px; }
+.popup-notification-panel .popup-notification-primary-button,
+.popup-notification-panel .popup-notification-secondary-button,
+.popup-notification-panel .popup-notification-dropmarker {
+  border-radius: var(--rgl-row-radius);
+}
+.popup-notification-panel .popup-notification-primary-button:not([disabled]) {
+  background-color: var(--accent);
+  color: var(--accent-ink);
+  border-color: transparent;
+}
+.popup-notification-panel .popup-notification-primary-button:not([disabled]):hover { filter: brightness(1.08); }
+.popup-notification-panel .popup-notification-secondary-button {
+  background-color: var(--hover);
+  color: var(--text-dim);
+  border-color: transparent;
+}
+.popup-notification-panel .popup-notification-secondary-button:hover { background-color: var(--active); color: var(--text); }
+.popup-notification-panel .popup-notification-closebutton { color: var(--text-faint); }
+
+/* moz-button (doorhanger ve diyalog düğmeleri) kendi gölge köküyle gelir; belirteçler ana öğeden okunur. */
+moz-button, moz-toggle, moz-checkbox, moz-select, moz-input-text, moz-input-search {
+  --button-border-color: transparent;
+  --button-border-color-hover: transparent;
+  --button-border-color-active: transparent;
+  --button-border-radius: var(--rgl-row-radius);
+  --button-background-color: var(--hover);
+  --button-background-color-hover: var(--active);
+  --button-background-color-active: var(--rgl-pressed);
+  --button-text-color: var(--text);
+  --button-text-color-primary: var(--accent-ink);
+  --focus-outline-color: var(--accent);
+  --input-text-border-color: var(--border-2);
+  --input-text-background-color: var(--bg);
+  --input-text-border-radius: var(--rgl-row-radius);
+}
+
+/* --- 4. Düğmeler, giriş alanları, seçim kutuları (panel içi) -------------------------------------- */
+:is(panel, dialog, .dialogBox) :is(button, .footer-button, .panel-footer-button):not(.subviewbutton, .toolbarbutton-1, .titlebar-button) {
+  border-radius: var(--rgl-row-radius);
+}
+panel :is(html|input[type="text"], html|input[type="search"], html|input:not([type]), html|textarea, textbox, menulist) {
+  background-color: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border-2);
+  border-radius: var(--rgl-row-radius);
+}
+panel :is(html|input, html|textarea):focus {
+  outline: none;
+  border-color: var(--accent-line);
+  box-shadow: 0 0 0 3px var(--accent-wash);
+}
+panel menulist { appearance: none; }
+panel menulist:hover { background-color: var(--hover); }
+panel menulist > .menulist-dropmarker { fill: var(--text-dim); }
+checkbox, radio { accent-color: var(--accent); }
+/* Odak halkası: vurgu rengi (sistem varsayılanı metin rengi çiziyordu) */
+:is(button, toolbarbutton, .footer-button, menulist, checkbox, radio):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+panel :is(html|input[type="checkbox"], html|input[type="radio"]) { accent-color: var(--accent); }
+panel toolbarbutton.panel-footer-button, panel button.footer-button { background-color: var(--hover); color: var(--text); }
+
+/* Kaydırma çubukları */
+panel, menupopup, richlistbox, .panel-subviews { scrollbar-color: var(--border-2) transparent; scrollbar-width: thin; }
+
+/* --- 5. Kimlik, izin ve izleme koruması panelleri --------------------------------------------------- */
+#identity-popup, #permission-popup, #trustpanel-popup, #protections-popup {
+  --trustpanel-graphic-bg: var(--surface-2);
+  --trustpanel-highlight-bg: var(--active);
+  --trustpanel-warning-bg: color-mix(in srgb, var(--danger) 14%, transparent);
+  --trustpanel-card-border-color: var(--border);
+  --trustpanel-card-divider-color: var(--border);
+  --trustpanel-inner-border: 1px solid var(--border);
+  --trustpanel-inner-warning-border: 1px solid color-mix(in srgb, var(--danger) 30%, transparent);
+  font-family: var(--font);
+}
+#identity-popup-mainView, #permission-popup-mainView, #trustpanel-popup .panel-subview-body { background: transparent; }
+.permission-popup-permission-item, #identity-popup-security-button, .identity-popup-section {
+  border-radius: var(--rgl-row-radius);
+}
+#identity-popup-mainView .identity-popup-header, .identity-popup-section { color: var(--text); }
+:is(#identity-popup, #permission-popup, #trustpanel-popup) .panel-header { border-bottom-color: var(--border); }
+:is(#identity-popup, #permission-popup, #trustpanel-popup) :is(.text-link, a) { color: var(--accent); }
+:is(#identity-popup, #permission-popup, #trustpanel-popup) description:not(.text-link),
+#identity-popup-securityView-extended-info { color: var(--text-dim); }
+
+/* --- 6. Uzantılar paneli ---------------------------------------------------------------------------- */
+#unified-extensions-panel {
+  --panel-border-radius: var(--rgl-card-radius);
+}
+#unified-extensions-view { --uei-icon-size: 28px; }
+unified-extensions-item, .unified-extensions-item {
+  border-radius: var(--rgl-row-radius);
+}
+.unified-extensions-item-action-button:hover,
+.unified-extensions-item-menu-button:hover { background-color: var(--active); }
+.unified-extensions-item-message-deck, .unified-extensions-item-message { color: var(--text-dim); }
+#unified-extensions-panel .panel-header, #unified-extensions-panel .panel-header > h1 { color: var(--text); }
+
+/* --- 7. İndirmeler paneli --------------------------------------------------------------------------- */
+#downloadsPanel { --downloads-item-hover-bgcolor: var(--hover); }
+#downloadsListBox, #downloadsPanel richlistbox { background: transparent; color: var(--text); }
+richlistitem.download { border-radius: var(--rgl-row-radius); margin-inline: 6px; color: var(--text); }
+richlistitem.download:hover, richlistitem.download[selected], #downloadsListBox > richlistitem:hover {
+  background-color: var(--hover);
+}
+richlistitem.download[selected] { background-color: var(--active); }
+.downloadDetails, .downloadTarget .downloadDetails { color: var(--text-faint); }
+html|progress.downloadProgress, .downloadProgress { accent-color: var(--accent); }
+#downloadsPanel-mainView .panel-subview-footer-button, #downloadsHistory, #downloadsFooterButtons {
+  background-color: transparent; color: var(--text);
+}
+
+/* --- 8. Yer imi (yıldız) paneli ---------------------------------------------------------------------- */
+#editBookmarkPanel { font-family: var(--font); }
+#editBookmarkPanel .panel-header { border-bottom-color: var(--border); }
+#editBookmarkPanel label { color: var(--text-dim); }
+#editBookmarkPanel #editBookmarkPanelBottomButtons, #editBookmarkPanel .panel-footer { margin-top: 8px; }
+#editBookmarkPanelDoneButton, #editBookmarkPanel .footer-button.primary, #editBookmarkPanel button[default] {
+  background-color: var(--accent); color: var(--accent-ink); border-color: transparent;
+}
+#editBookmarkPanel .footer-button:not(.primary):not([default]) { background-color: var(--hover); color: var(--text); }
+
+/* --- 9. İpuçları ------------------------------------------------------------------------------------- */
+tooltip, html|div.tooltip {
+  appearance: none;
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border-2);
+  border-radius: 8px;
+  padding: 5px 9px;
+  margin: 0;
+  font: 12px/1.4 var(--font);
+  box-shadow: var(--shadow-sm);
+  -moz-window-shadow: none;
+}
+tooltip .tooltip-label, tooltip label, tooltip description { color: inherit; margin: 0; }
+tooltip .places-tooltip-title, tooltip .tab-preview-title { font-weight: 600; }
+tooltip .places-tooltip-uri { color: var(--text-dim); }
+
+/* --- 10. Bildirim şeritleri -------------------------------------------------------------------------- */
+.notificationbox-stack { --info-bar-margin: 0; }
+notification-message {
+  --info-bar-background-color: var(--surface);
+  --info-bar-text-color: var(--text);
+  --info-bar-border-color: var(--border-2);
+  --info-bar-background-color-configurable: var(--surface);
+  --message-bar-border-radius: 12px;
+  --message-bar-border-color: transparent;
+  --message-bar-icon-container-margin-block-start: 0;
+  --button-border-color: transparent;
+  --button-border-color-hover: transparent;
+  --button-border-color-active: transparent;
+  --link-color: var(--accent);
+}
+notification-message.infobar {
+  background-color: var(--surface) !important;
+  color: var(--text) !important;
+  margin: 6px 8px 2px !important;
+  border: 1px solid var(--rgl-card-border) !important;
+  border-radius: 12px !important;
+  box-shadow: var(--shadow-sm) !important;
+  overflow: clip;
+}
+notification-message.infobar::before { display: none !important; }
+
+/* --- 11. Sekme içi iletişim kutuları (alert/confirm/prompt, sayfa diyalogları) ---------------------- */
+.dialogOverlay[topmost="true"] { background-color: var(--scrim); }
+.dialogBox:not(.spotlightBox) {
+  background: var(--surface);
+  color: var(--text);
+  border-radius: var(--rgl-card-radius);
+  border: 1px solid var(--rgl-card-border);
+  outline: none;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.dialogBox .dialogFrame { background: transparent; }
+#window-modal-dialog::backdrop { background-color: var(--scrim); }
+
+/* --- 12. Bul çubuğu: içerik alanının sağ üstünde yüzen kart ------------------------------------------ */
+/* Doğal davranış (Ctrl+F, Enter, Esc, vurgula, büyük/küçük harf, sayaç) aynen kalır; yalnız yerleşim ve görünüm değişir. */
+:root:root findbar {
+  color-scheme: var(--rgl-scheme);
+  background-image: none;
+  position: absolute;
+  grid-area: auto !important; /* .browserContainer bir ızgara: yerleşimsiz (auto) olunca kapsayıcı blok kabın kendisidir */
+  inset: 12px 16px auto auto;
+  z-index: 10;
+  box-sizing: border-box;
+  width: min(440px, calc(100% - 32px));
+  min-height: 0;
+  margin: 0 !important;
+  padding: 8px 6px 8px 12px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--rgl-card-border);
+  border-radius: var(--rgl-card-radius);
+  box-shadow: var(--shadow);
+  font: 13px/1.35 var(--font);
+  transition: opacity 0.12s ease, transform 0.12s ease, visibility 0s linear 0s;
+  animation: none;
+}
+:root:root findbar[hidden] {
+  display: flex !important;
+  margin: 0 !important;
+  visibility: collapse;
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  transition: opacity 0.12s ease, transform 0.12s ease, visibility 0s linear 0.12s;
+}
+findbar[noanim], findbar[noanim] > .findbar-container { transition-duration: 0s; transition-delay: 0s; }
+findbar > .findbar-container {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 4px;
+  overflow: visible;
+  opacity: 1;
+}
+findbar[hidden] > .findbar-container, findbar[hidden] > .findbar-closebutton { opacity: 1; }
+/* Metin kutusu ve oklar aynı satıra gelsin: sarmalayıcı kaybolur, çocukları satıra katılır. */
+findbar [anonid="findbar-textbox-wrapper"] { display: contents; }
+.findbar-textbox {
+  order: 1;
+  flex: 1 1 140px;
+  width: auto;
+  min-width: 0;
+  height: 30px;
+  min-height: 0;
+  margin: 0;
+  padding: 0 4px 0 26px;
+  box-sizing: border-box;
+  appearance: none;
+  background: transparent url("chrome://global/skin/icons/search-glass.svg") no-repeat 4px center / 15px;
+  -moz-context-properties: fill;
+  fill: var(--text-faint);
+  color: var(--text);
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  box-shadow: none;
+  font: 14px var(--font);
+}
+.findbar-textbox:focus { background-color: transparent; color: var(--text); border: 0; outline: none; box-shadow: none; }
+.findbar-textbox::placeholder { color: var(--text-faint); }
+.findbar-textbox::selection { background: var(--active); color: var(--text); }
+.findbar-textbox[status="notfound"] { background-color: transparent; color: var(--danger); }
+.findbar-textbox[flash="true"] { background-color: var(--accent-wash); }
+.found-matches { order: 2; margin: 0 4px; font: 11.5px var(--mono); color: var(--text-faint); white-space: nowrap; }
+.findbar-find-previous, .findbar-find-next {
+  order: 3;
+  margin: 0;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  fill: var(--text-dim);
+  color: var(--text-dim);
+  background: transparent;
+}
+.findbar-find-next { order: 4; }
+.findbar-find-previous:not([disabled]):hover, .findbar-find-next:not([disabled]):hover { background-color: var(--hover); color: var(--text); }
+.findbar-find-previous:not([disabled]):hover:active, .findbar-find-next:not([disabled]):hover:active { background-color: var(--active); }
+.findbar-find-previous[disabled], .findbar-find-next[disabled] { opacity: 0.35; }
+.findbar-container::before { content: ""; order: 5; flex: 1 0 100%; height: 0; }
+/* İkinci satır: seçenekler (küçük, soluk) */
+.findbar-container > checkbox {
+  order: 6;
+  margin: 0 8px 0 0;
+  font-size: 12px;
+  color: var(--text-dim);
+  accent-color: var(--accent);
+}
+.findbar-container > checkbox:hover { color: var(--text); }
+.findbar-container > .findbar-label { order: 6; margin: 0 8px 0 0; font-size: 12px; color: var(--text-dim); }
+.findbar-container > .found-matches { order: 2; }
+.findbar-find-status { order: 7; flex: 1 0 100%; margin: 2px 0 0; font-size: 11.5px; color: var(--text-faint); }
+.findbar-find-status:empty, .findbar-find-status[status="found"] { display: none; }
+.findbar-find-status[status="notfound"] { color: var(--danger); font-weight: 400; }
+.findbar-find-status, .found-matches { margin-inline-start: 0; }
+.close-icon.findbar-closebutton {
+  flex: none;
+  order: 9;
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 8px;
+  fill: var(--text-faint);
+  align-self: flex-start;
+}
+.close-icon.findbar-closebutton:hover { background-color: var(--hover); fill: var(--text); }

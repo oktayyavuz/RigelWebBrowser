@@ -1,0 +1,4 @@
+:root:root:root .tab-close-button { display: none !important; }
+:root:root:root[rigel-mod-hide-tab-close-on-hover] .tabbrowser-tab:hover .tab-close-button { display: flex !important; }
+:root:root:root .rgl-tabs .rgl-x { display: none !important; }
+:root:root:root[rigel-mod-hide-tab-close-on-hover] .rgl-tabs .rgl-row:hover .rgl-x { display: flex !important; }

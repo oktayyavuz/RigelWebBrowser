@@ -1,0 +1,36 @@
+<svg width="512" height="512" opacity="0.85" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Rigel Techs</title>
+  <!--
+    The orbit mark on a transparent background, for placing over your own
+    surface (letterheads, slides, light backgrounds). Same geometry as
+    public/logo.svg without the dark plate.
+  -->
+  <defs>
+    <linearGradient id="rigel-ring" x1="3" y1="29" x2="29" y2="3" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5b86e0" />
+      <stop offset="0.6" stop-color="#5fa9dd" />
+      <stop offset="1" stop-color="#7cc3dc" />
+    </linearGradient>
+    <linearGradient id="rigel-star" x1="8" y1="6" x2="25" y2="26" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7cc3dc" />
+      <stop offset="0.55" stop-color="#5fa9dd" />
+      <stop offset="1" stop-color="#5b86e0" />
+    </linearGradient>
+  </defs>
+  <circle
+    cx="16"
+    cy="16"
+    r="12.6"
+    stroke="url(#rigel-ring)"
+    stroke-width="2.4"
+    stroke-linecap="round"
+    stroke-dasharray="60.168 19"
+    stroke-dashoffset="-0.792"
+    opacity="0.9"
+  />
+  <circle cx="25.9" cy="7.6" r="2.5" fill="url(#rigel-ring)" />
+  <path
+    d="M16 6.4C16 11.1 18.9 15.3 23.6 16C18.9 16.7 16 20.9 16 25.6C16 20.9 13.1 16.7 8.4 16C13.1 15.3 16 11.1 16 6.4Z"
+    fill="url(#rigel-star)"
+  />
+</svg>

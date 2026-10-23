@@ -1,0 +1,27 @@
+/* Rigel: tarayıcı penceresinde Firefox'a özgü kalan öğeleri gizler (tercih/ilke ile kapanmayanlar). */
+#firefox-view-button,
+#wrapper-firefox-view-button,
+#menu_openFirefoxView,
+#appMenu-firefoxview-button,
+#fxa-toolbar-menu-button,
+#appMenu-fxa-status,
+#appMenu-fxa-separator,
+#appMenu-fxa-label2,
+#save-to-pocket-button,
+#appMenu-report-broken-site-button,
+#help_reportBrokenSite,
+#menu_HelpPopup_reportPhishingtoolmenu,
+#helpSwitchDevice,
+#appMenu-help-switch-device,
+#feedbackPage,
+#appMenu_feedbackPage,
+#helpFeedbackPage,
+#menu_referralsPage,
+#appMenu_menu_referralsPage,
+#appMenu_feedbackPage,
+#appMenu_helpSwitchDevice,
+#appMenu-nova-switch-device-promo,
+#menu_HelpPopup_reportPhishingtoolmenu,
+#appMenu_menu_HelpPopup_reportPhishingtoolmenu {
+  display: none !important;
+}

@@ -1,0 +1,79 @@
+/* Odak kipi: kökte data-rigel-focus varken (kurulum sihirbazı) bütün tarayıcı arayüzü gizlenir; sayfa
+   pencerenin tamamını kaplar, bir kurulum programı gibi. Her düzende geçerlidir.
+   Özniteliği settings.uc.mjs açar/kapatır; yalnız pencere düğmeleri (#rigel-focus-bar) kalır. */
+
+:root[data-rigel-focus][data-rigel-focus] {
+  /* Sekmeler, araç çubukları, Ada/Komuta/Dock şeritleri (hepsi #navigator-toolbox içinde ya da yanında) */
+  #navigator-toolbox,
+  #rigel-dock,
+  #rigel-docktop,
+  #rigel-ada,
+  #rigel-komuta,
+  #rigel-spaces,
+  /* Yan Panel: sekme kenar çubuğu, ayırıcı, üst/alt Rigel parçaları */
+  #sidebar-main,
+  #sidebar-container,
+  #sidebar-launcher-splitter,
+  #sidebar-splitter,
+  #sidebar-box,
+  #rigel-side-top,
+  #rigel-side-bottom,
+  /* Kompakt mod kenar tetikleyicileri ve açılan çekmece */
+  .rigel-compact-edge,
+  #rigel-drawer,
+  /* Firefox bildirim şeritleri ve durum çubuğu */
+  #global-notificationbox,
+  #statuspanel,
+  #tab-preview-panel {
+    display: none !important;
+  }
+  #browser,
+  #tabbrowser-tabbox,
+  #tabbrowser-tabpanels,
+  .browserContainer,
+  .browserStack,
+  #tabbrowser-tabpanels browser {
+    margin: 0 !important;
+    border: 0 !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+}
+
+/* Pencere düğmeleri + sürükleme alanı: sihirbazın sağ üst köşesi, tam genişlikte ince bir şerit. */
+#rigel-focus-bar {
+  display: none;
+}
+:root[data-rigel-focus] #rigel-focus-bar {
+  display: flex;
+  position: fixed;
+  z-index: 10000;
+  inset: 0 0 auto 0;
+  height: 36px;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 8px;
+  background: transparent;
+  color: var(--text);
+  -moz-window-dragging: drag;
+  user-select: none;
+}
+:root[data-rigel-focus] #rigel-focus-bar .rigel-wctl {
+  -moz-window-dragging: no-drag;
+  padding: 2px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+}
+:root[data-rigel-focus] #rigel-focus-bar button {
+  font: inherit;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  appearance: none;
+  cursor: default;
+}
+:root[data-rigel-focus] #rigel-focus-bar .rigel-wbtn { width: 30px; height: 26px; }

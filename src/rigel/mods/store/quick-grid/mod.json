@@ -1,0 +1,30 @@
+{
+  "name": "Hızlı erişim ızgarası",
+  "description": "Adres çubuğuna tıklayınca açılan en çok ziyaret edilenler listesi, büyük simgeli bir karo ızgarasına dönüşür. Açıkken sayfa arkada bulanıklaşır. İstersen araç çubuğu da incelir. (Zen \"Super Sleek UI\" modundan.)",
+  "author": "lingais",
+  "version": "1.0.0",
+  "target": "chrome",
+  "homepage": "https://github.com/lingais/Zen-Browser-Super-Sleek-UI-Theme",
+  "license": "MIT",
+  "source": "https://github.com/zen-browser/theme-store/tree/main/themes/570afd9d-96fa-48b5-bad3-0c106757cce9",
+  "prefs": [
+    {
+      "key": "grid",
+      "label": "Izgara görünümü",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "key": "dim",
+      "label": "Açılınca sayfayı bulanıklaştır",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "key": "compact",
+      "label": "İnce araç çubuğu (Klasik)",
+      "type": "checkbox",
+      "default": false
+    }
+  ]
+}

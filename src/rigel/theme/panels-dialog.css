@@ -1,0 +1,62 @@
+/* Rigel: commonDialog.xhtml (alert / confirm / prompt) için KULLANICI sayfası (panels.mjs kaydeder).
+   Kullanıcı sayfası, belgenin kendi yazar kurallarına ancak !important ile üstün gelir. Rigel belirteçleri
+   panels.mjs tarafından kök öğeye satır içi yazılır (yoksa yedek değerler devreye girer). */
+@-moz-document url-prefix("chrome://global/content/commonDialog.xhtml") {
+  :root {
+    --rg-accent: var(--accent, #5fa9dd);
+    --color-accent-primary: var(--rg-accent) !important;
+    --color-accent-primary-hover: color-mix(in srgb, var(--rg-accent) 86%, var(--text, #e7ebf3)) !important;
+    --color-accent-primary-active: color-mix(in srgb, var(--rg-accent) 74%, var(--text, #e7ebf3)) !important;
+    --button-background-color: var(--hover, rgba(255, 255, 255, 0.05)) !important;
+    --button-background-color-hover: var(--active, rgba(95, 169, 221, 0.15)) !important;
+    --button-background-color-active: var(--accent-line, rgba(95, 169, 221, 0.5)) !important;
+    --button-text-color: var(--text, #e7ebf3) !important;
+    --button-text-color-hover: var(--text, #e7ebf3) !important;
+    --button-text-color-active: var(--text, #e7ebf3) !important;
+    --button-text-color-primary: var(--accent-ink, #08101c) !important;
+    --button-text-color-primary-hover: var(--accent-ink, #08101c) !important;
+    --button-text-color-primary-active: var(--accent-ink, #08101c) !important;
+    --button-border-color: transparent !important;
+    --button-border-color-hover: transparent !important;
+    --button-border-color-active: transparent !important;
+    --button-border-radius: 9px !important;
+    --text-color: var(--text, #e7ebf3) !important;
+    --text-color-deemphasized: var(--text-dim, #8d96a8) !important;
+    --link-color: var(--rg-accent) !important;
+    --focus-outline-color: var(--rg-accent) !important;
+    --border-color: var(--border-2, rgba(255, 255, 255, 0.12)) !important;
+    --border-color-interactive: var(--border-2, rgba(255, 255, 255, 0.12)) !important;
+    --background-color-box: var(--surface, #151b27) !important;
+    --background-color-canvas: var(--surface, #151b27) !important;
+    background-color: var(--surface, #151b27) !important;
+    color: var(--text, #e7ebf3) !important;
+    font-family: var(--font, system-ui, sans-serif) !important;
+    accent-color: var(--rg-accent) !important;
+  }
+  :root { color-scheme: dark !important; }
+  :root[data-rigel-theme="light"] { color-scheme: light !important; }
+  dialog, #commonDialog { background-color: transparent !important; color: var(--text, #e7ebf3) !important; }
+  button {
+    border-radius: 9px !important;
+    border: 1px solid transparent !important;
+    background-color: var(--hover, rgba(255, 255, 255, 0.05)) !important;
+    color: var(--text, #e7ebf3) !important;
+  }
+  button:hover { background-color: var(--active, rgba(95, 169, 221, 0.15)) !important; }
+  button[default], button.primary, .dialog-button-box button[dlgtype="accept"] {
+    background-color: var(--rg-accent) !important;
+    color: var(--accent-ink, #08101c) !important;
+  }
+  button[default]:hover, button.primary:hover { filter: brightness(1.1); background-color: var(--rg-accent) !important; }
+  button:focus-visible { outline: 2px solid var(--rg-accent) !important; outline-offset: 1px; }
+  input[type="text"], input[type="password"], input:not([type]), textarea {
+    background-color: var(--bg, #0c0f16) !important;
+    color: var(--text, #e7ebf3) !important;
+    border: 1px solid var(--border-2, rgba(255, 255, 255, 0.12)) !important;
+    border-radius: 9px !important;
+    padding: 6px 9px !important;
+  }
+  input:focus { outline: none !important; border-color: var(--accent-line, #5fa9dd) !important; box-shadow: 0 0 0 3px var(--accent-wash, rgba(95, 169, 221, 0.08)) !important; }
+  #infoTitle { font-weight: 600 !important; color: var(--text, #e7ebf3) !important; }
+  #infoBody, .checkbox-label { color: var(--text-dim, #8d96a8) !important; }
+}

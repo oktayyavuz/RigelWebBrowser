@@ -1,0 +1,454 @@
+/* Zen özellikleri: göz at (glance), kompakt mod, alan seçici. Renkler yalnız tema belirteçlerinden. */
+
+/* --- Göz at ----------------------------------------------------------------------
+   Kart sekmesinin paneli, seçili sayfanın üstünde görünür (tabpanels normalde yalnız seçiliyi
+   çizer). Panelin kendisi karartılmış arka plan, .browserContainer ise %85'lik kart. */
+#tabbrowser-tabpanels > .browserSidebarContainer[rigel-glance] {
+  -moz-subtree-hidden-only-visually: 0 !important;
+  visibility: visible !important;
+  z-index: 5 !important;
+  background: color-mix(in srgb, var(--bg) 58%, transparent) !important;
+  animation: rigel-glance-fade var(--rigel-dur-2, 180ms) ease-out;
+
+  & > .browserContainer {
+    position: absolute !important;
+    inset: 6% 7.5% !important;
+    border-radius: 14px !important;
+    border: 1px solid var(--border-2) !important;
+    box-shadow: var(--shadow) !important;
+    overflow: clip !important;
+    background: var(--bg) !important;
+    animation: rigel-glance-in var(--rigel-dur-3, 240ms) var(--rigel-ease-out, cubic-bezier(0.2, 0.8, 0.2, 1));
+  }
+}
+
+@keyframes rigel-glance-fade {
+  from { background-color: transparent; }
+}
+@keyframes rigel-glance-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.95);
+  }
+}
+
+.rigel-glance-bar {
+  position: absolute;
+  top: 6%;
+  right: calc(7.5% - 48px);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  animation: rigel-glance-in var(--rigel-dur-3, 240ms) var(--rigel-ease-out, cubic-bezier(0.2, 0.8, 0.2, 1)) 40ms both;
+
+  .rigel-glance-btn {
+    appearance: none;
+    width: 36px;
+    height: 36px;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 1px solid var(--border-2);
+    background: var(--surface);
+    color: var(--text-dim);
+    box-shadow: var(--shadow);
+    cursor: default;
+  }
+  .rigel-glance-btn:hover {
+    background: var(--surface-2);
+    color: var(--text);
+  }
+  .rigel-glance-btn.close:hover {
+    color: var(--danger);
+  }
+  .rigel-glance-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+/* --- Kompakt mod -----------------------------------------------------------------
+   Çerçeve sayfanın üstüne yüzer ve kenarın dışına kayar; kenara gelince geri kayar. */
+.rigel-compact-edge {
+  display: none;
+  position: fixed;
+  z-index: 9;
+  background: transparent;
+}
+
+:root[data-rigel-compact]:not([sizemode="fullscreen"], [inDOMFullscreen]) {
+  --rigel-compact-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* Üst kenar: ada, komuta, klasik, dock (başlık şeridi) */
+  &:not([data-rigel-layout="yanpanel"]) {
+    #navigator-toolbox {
+      position: fixed !important;
+      top: 0;
+      inset-inline: 0;
+      z-index: 10 !important;
+      transform: translateY(calc(-100% - 2px));
+      transition: transform var(--rigel-dur-3, 240ms) var(--rigel-compact-ease), box-shadow var(--rigel-dur-3, 240ms);
+      border-bottom: 1px solid var(--border) !important;
+    }
+    .rigel-compact-edge[data-edge="top"] {
+      display: block;
+      top: 0;
+      inset-inline: 0;
+      height: 5px;
+    }
+  }
+  &[data-rigel-compact-reveal~="top"] #navigator-toolbox {
+    transform: none;
+    box-shadow: var(--shadow);
+  }
+
+  /* Alt kenar: dock */
+  &[data-rigel-layout="dock"] {
+    #rigel-dock {
+      position: fixed !important;
+      bottom: 0;
+      inset-inline: 0;
+      z-index: 10;
+      transform: translateY(calc(100% + 2px));
+      transition: transform var(--rigel-dur-3, 240ms) var(--rigel-compact-ease), box-shadow var(--rigel-dur-3, 240ms);
+    }
+    .rigel-compact-edge[data-edge="bottom"] {
+      display: block;
+      bottom: 0;
+      inset-inline: 0;
+      height: 5px;
+    }
+  }
+  &[data-rigel-layout="dock"][data-rigel-compact-reveal~="bottom"] #rigel-dock {
+    transform: none;
+    box-shadow: var(--shadow);
+  }
+
+  /* Sol kenar: Yan Panel sütunu */
+  &[data-rigel-layout="yanpanel"] {
+    #navigator-toolbox {
+      position: fixed !important;
+      top: 0;
+      inset-inline: 0;
+      transform: translateY(-100%);
+    }
+    #sidebar-container {
+      position: fixed !important;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 10 !important;
+      padding-top: 6px !important;
+      transform: translateX(calc(-100% - 2px));
+      transition: transform var(--rigel-dur-3, 240ms) var(--rigel-compact-ease), box-shadow var(--rigel-dur-3, 240ms);
+      border-inline-end: 1px solid var(--border) !important;
+      border-start-end-radius: 14px;
+      border-end-end-radius: 14px;
+    }
+    #tabbrowser-tabbox {
+      margin: 8px !important;
+    }
+    .rigel-compact-edge[data-edge="left"] {
+      display: block;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 5px;
+    }
+  }
+  &[data-rigel-layout="yanpanel"][data-rigel-compact-reveal~="left"] #sidebar-container {
+    transform: none;
+    box-shadow: var(--shadow);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-rigel-compact] :is(#navigator-toolbox, #rigel-dock, #sidebar-container),
+  #tabbrowser-tabpanels > .browserSidebarContainer[rigel-glance],
+  #tabbrowser-tabpanels > .browserSidebarContainer[rigel-glance] > .browserContainer,
+  .rigel-glance-bar {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* --- Alan seçici (Yan Panel'in altı) ---------------------------------------------- */
+#rigel-spaces {
+  display: none;
+}
+:root[data-rigel-layout="yanpanel"] #rigel-spaces {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  padding: 6px 2px 0;
+  border-top: 1px solid var(--border);
+  -moz-window-dragging: no-drag;
+
+  .rigel-space-name {
+    flex: 1;
+    min-width: 0;
+    padding-inline-start: 7px;
+    color: var(--text-dim);
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .rigel-space-list {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex: none;
+    max-width: 70%;
+    overflow: hidden;
+  }
+  .rigel-space {
+    width: 28px;
+    height: 28px;
+    flex: none;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    color: var(--text-faint);
+    font-size: 14px;
+    line-height: 1;
+    opacity: 0.6;
+    filter: grayscale(0.6);
+    transition: background-color 0.12s, opacity 0.12s;
+  }
+  .rigel-space:hover {
+    background: var(--hover);
+    opacity: 1;
+    filter: none;
+  }
+  .rigel-space.on {
+    background: var(--active);
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+    opacity: 1;
+    filter: none;
+  }
+  .rigel-space.add {
+    font-size: 16px;
+    color: var(--text-faint);
+    opacity: 1;
+    filter: none;
+  }
+  .rigel-space.add:hover {
+    color: var(--text-dim);
+  }
+}
+
+/* --- Düzen şeritlerinde alan seçici (Ada, Komuta, Klasik: düğme; Dock: nokta grubu) ------ */
+.rigel-spacechip {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  height: 28px;
+  min-width: 28px;
+  margin: 0;
+  padding: 0 6px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-dim);
+  font: 500 12px/1 var(--font);
+  -moz-window-dragging: no-drag;
+
+  .ico {
+    font-size: 14px;
+    line-height: 1;
+  }
+  .name {
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  &:hover {
+    background: var(--hover);
+    color: var(--text);
+  }
+  &[open] {
+    background: var(--active);
+  }
+}
+.rigel-spacechip[data-kind="ada"] {
+  justify-content: center;
+  padding: 0;
+  width: 30px;
+  border-radius: 50%;
+}
+.rigel-spacechip[data-kind="klasik"] {
+  margin-inline: 6px 4px;
+  align-self: center;
+}
+.rigel-spacedots {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: none;
+  padding: 0 2px;
+
+  .rigel-spacedot {
+    appearance: none;
+    width: 30px;
+    height: 30px;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    background: transparent;
+    font-size: 14px;
+    line-height: 1;
+    opacity: 0.55;
+    filter: grayscale(0.6);
+  }
+  .rigel-spacedot:hover {
+    background: var(--hover);
+    opacity: 1;
+    filter: none;
+  }
+  .rigel-spacedot.on {
+    background: var(--active);
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+    opacity: 1;
+    filter: none;
+  }
+}
+
+/* --- Sekme panelinde etkin alan ---------------------------------------------------- */
+.rgl-tabs header .rgl-space {
+  margin-inline-start: auto;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--active);
+  color: var(--text-dim);
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+
+/* --- Kapsayıcı işaretleri (renk: Firefox'un identity-color-* sınıfları) --------------- */
+:root[data-rigel-layout] :is(.rigel-star, .rigel-dtab)[data-rigel-container]::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -1px;
+  width: 12px;
+  height: 3px;
+  margin-left: -6px;
+  border-radius: 2px;
+  background: var(--identity-tab-color);
+}
+.rigel-dtab[data-rigel-container] {
+  position: relative;
+}
+.rigel-ctr {
+  flex: none;
+  padding: 2px 7px;
+  margin-inline-end: 2px;
+  border-radius: 999px;
+  font-size: 11px;
+  color: var(--text);
+  background: color-mix(in srgb, var(--identity-tab-color) 22%, transparent);
+  border: 1px solid color-mix(in srgb, var(--identity-tab-color) 55%, transparent);
+}
+.rgl-row[data-rigel-container] {
+  box-shadow: inset 3px 0 0 var(--identity-tab-color);
+}
+/* Yan Panel: Firefox'un çizgisi sekmenin sağında dikey ince bir şerit olur. */
+:root[data-rigel-layout="yanpanel"] .tabbrowser-tab[usercontextid] .tab-context-line {
+  position: absolute !important;
+  inset: 9px 3px 9px auto !important;
+  width: 3px !important;
+  height: auto !important;
+  margin: 0 !important;
+  border-radius: 2px !important;
+  background-color: var(--identity-tab-color) !important;
+}
+:root[data-rigel-layout="yanpanel"] .tabbrowser-tab[usercontextid] .tab-stack {
+  position: relative;
+}
+
+/* --- Sekme grupları (klasörler): Yan Panel ve Klasik -------------------------------- */
+tab-group[hidden] {
+  display: none !important;
+}
+:root[data-rigel-layout="yanpanel"] tab-group {
+  .tab-group-label-container {
+    padding: 0 !important;
+    margin-block: 4px 1px !important;
+  }
+  .tab-group-label {
+    appearance: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 9px;
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 30px !important;
+    margin: 0 !important;
+    padding: 0 9px !important;
+    border: none !important;
+    border-radius: 9px !important;
+    outline: none !important;
+    background: transparent !important;
+    color: var(--text-dim) !important;
+    font: 600 12px/1.4 var(--font) !important;
+    text-align: start !important;
+    box-shadow: none !important;
+  }
+  .tab-group-label::before {
+    content: "";
+    flex: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    background: var(--tab-group-color);
+    transition: transform 0.15s;
+  }
+  &[collapsed] .tab-group-label::before {
+    transform: rotate(45deg) scale(0.85);
+  }
+  .tab-group-label:hover {
+    background: var(--hover) !important;
+    color: var(--text) !important;
+  }
+  .tab-group-label:focus-visible {
+    outline: 2px solid var(--accent) !important;
+    outline-offset: -2px !important;
+  }
+  .tabbrowser-tab {
+    padding-inline-start: 10px !important;
+  }
+  .tab-group-line {
+    background-color: color-mix(in srgb, var(--tab-group-color) 70%, transparent) !important;
+    border-radius: 2px !important;
+  }
+}
+:root[data-rigel-layout="klasik"] tab-group {
+  .tab-group-label {
+    background: color-mix(in srgb, var(--tab-group-color) 22%, transparent) !important;
+    color: var(--text) !important;
+    border: 1px solid color-mix(in srgb, var(--tab-group-color) 55%, transparent) !important;
+    border-radius: 8px !important;
+    font: 600 12px/1.4 var(--font) !important;
+    outline: none !important;
+  }
+  &[collapsed] .tab-group-label {
+    background: transparent !important;
+  }
+  .tab-group-line {
+    background-color: color-mix(in srgb, var(--tab-group-color) 70%, transparent) !important;
+  }
+}

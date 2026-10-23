@@ -1,0 +1,109 @@
+/* SuperPins — Rigel modu
+ * Kaynak: Zen mod mağazası, "SuperPins" v1.7.0 — CosmoCreeper
+ *   https://github.com/CosmoCreeper/Zen-Themes/tree/main/SuperPins
+ *   https://github.com/zen-browser/theme-store/tree/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc
+ * Rigel/Firefox DOM'una uyarlandı: seçiciler, ayarlar ve görünüm Rigel belirteçleriyle yeniden yazıldı (2026).
+ *
+ * MIT License
+ * Copyright (c) 2025 JLBlk
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions: The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+ * LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
+ * EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+/* Sabitlenmiş sekmeler "Essentials" gibi büyük karolar olur. Klasik: sekme şeridinin başında yuvarlak
+   karolar, isteğe bağlı çerçeveli bir grup. Yan Panel: kenar çubuğunun üstünde ayarlanabilir ızgara.
+   Ayarlar: size (small|normal|large), frame, tint, dim. */
+:root:root:root {
+  --sp-w: 46px;
+  --sp-cell: 52px;
+  --sp-row: 44px;
+  --sp-icon: 18px;
+}
+:root:root:root[rigel-mod-superpins-size="small"] { --sp-w: 38px; --sp-cell: 42px; --sp-row: 36px; --sp-icon: 16px; }
+:root:root:root[rigel-mod-superpins-size="large"] { --sp-w: 56px; --sp-cell: 64px; --sp-row: 54px; --sp-icon: 22px; }
+
+/* --- Klasik ---------------------------------------------------------------- */
+:root:root:root[data-rigel-layout="klasik"] #TabsToolbar #pinned-tabs-container:not(:empty) {
+  gap: 4px;
+  margin-inline-end: 8px !important;
+}
+:root:root:root[data-rigel-layout="klasik"] #TabsToolbar .tabbrowser-tab[pinned] {
+  width: var(--sp-w) !important;
+  min-width: var(--sp-w) !important;
+  max-width: var(--sp-w) !important;
+  padding: 0 !important;
+}
+:root:root:root[data-rigel-layout="klasik"] #TabsToolbar .tabbrowser-tab[pinned] .tab-background {
+  border-radius: 10px !important;
+  margin: 1px 0 3px !important;
+  min-height: 30px !important;
+  border: 1px solid var(--border) !important;
+  background: var(--surface) !important;
+}
+:root:root:root[data-rigel-layout="klasik"] #TabsToolbar .tabbrowser-tab[pinned]:hover .tab-background {
+  border-color: var(--border-2) !important;
+  background: color-mix(in srgb, var(--text) 6%, var(--surface)) !important;
+}
+:root:root:root[data-rigel-layout="klasik"] #TabsToolbar .tabbrowser-tab[pinned] .tab-background:is([selected], [multiselected]) {
+  background:
+    linear-gradient(var(--accent), var(--accent)) center calc(100% - 3px) / 14px 3px no-repeat,
+    color-mix(in srgb, var(--accent) 22%, var(--surface)) !important;
+  border-color: color-mix(in srgb, var(--accent) 60%, transparent) !important;
+}
+:root:root:root[data-rigel-layout="klasik"] #TabsToolbar .tabbrowser-tab[pinned] .tab-content {
+  padding: 0 !important;
+  justify-content: center !important;
+}
+:root:root:root[data-rigel-layout="klasik"] #TabsToolbar .tabbrowser-tab[pinned] :is(.tab-label-container, .tab-close-button) { display: none !important; }
+:root:root:root[data-rigel-layout="klasik"] #TabsToolbar .tabbrowser-tab[pinned] .tab-icon-image {
+  width: var(--sp-icon) !important;
+  height: var(--sp-icon) !important;
+}
+/* Çerçeveli grup */
+:root:root:root[data-rigel-layout="klasik"][rigel-mod-superpins-frame] #TabsToolbar #pinned-tabs-container:not(:empty) {
+  padding: 0 3px !important;
+  margin-block: 1px 2px !important;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 30%, var(--border));
+}
+
+/* --- Yan Panel --------------------------------------------------------------- */
+:root:root:root[data-rigel-layout="yanpanel"] #pinned-tabs-container[orient="vertical"]::part(items-wrapper) {
+  grid-template-columns: repeat(auto-fill, minmax(var(--sp-cell), 1fr)) !important;
+  grid-auto-rows: var(--sp-row) !important;
+  gap: 6px !important;
+}
+:root:root:root[data-rigel-layout="yanpanel"] #pinned-tabs-container[orient="vertical"] .tab-background {
+  border-radius: 12px !important;
+}
+:root:root:root[data-rigel-layout="yanpanel"] #pinned-tabs-container[orient="vertical"] .tab-icon-image {
+  width: var(--sp-icon) !important;
+  height: var(--sp-icon) !important;
+}
+:root:root:root[data-rigel-layout="yanpanel"][rigel-mod-superpins-frame] #pinned-tabs-container[orient="vertical"]:not(:empty) {
+  padding: 6px !important;
+  margin: 0 0 8px !important;
+  border-radius: 14px;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 30%, var(--border));
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+
+/* Karolara sitenin rengine yakın vurgu tonu (seçili olmayanlar) */
+:root:root:root[rigel-mod-superpins-tint] .tabbrowser-tab[pinned]:not([selected]) .tab-background {
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface)) !important;
+}
+/* Uyuyan sabitler soluk ve siyah-beyaz */
+:root:root:root[rigel-mod-superpins-dim] .tabbrowser-tab[pinned][pending] .tab-icon-image {
+  opacity: 0.4 !important;
+  filter: grayscale(1);
+}

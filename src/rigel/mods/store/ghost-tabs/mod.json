@@ -1,0 +1,44 @@
+{
+  "name": "Hayalet sekmeler",
+  "description": "Uyuyan (henüz yüklenmemiş) sekmeler siyah-beyaz, yarı saydam ve italik görünür; hangilerinin bellekte olduğunu bir bakışta görürsün. Klasik ve Yan Panel sekmeleri, Ada yıldızları, Dock sekmeleri ve gruplar.",
+  "author": "Seismix",
+  "version": "1.0.0",
+  "target": "chrome",
+  "homepage": "https://github.com/Seismix/zen-ghost-tabs",
+  "license": "MIT",
+  "source": "https://github.com/zen-browser/theme-store/tree/main/themes/c01d3e22-1cee-45c1-a25e-53c0f180eea8",
+  "prefs": [
+    {
+      "key": "opacity",
+      "label": "Saydamlık",
+      "type": "dropdown",
+      "default": "0.5",
+      "options": [
+        {
+          "value": "0.3",
+          "label": "Çok silik"
+        },
+        {
+          "value": "0.5",
+          "label": "Silik"
+        },
+        {
+          "value": "0.7",
+          "label": "Hafif"
+        }
+      ]
+    },
+    {
+      "key": "bw",
+      "label": "Siyah-beyaz",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "key": "hover",
+      "label": "Üstüne gelince canlansın",
+      "type": "checkbox",
+      "default": true
+    }
+  ]
+}

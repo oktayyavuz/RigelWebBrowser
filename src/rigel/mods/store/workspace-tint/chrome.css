@@ -1,0 +1,33 @@
+/* Alan renk tonu — Rigel modu */
+/* Aktif alana (Ctrl+Alt+1..9) göre bütün arayüz renklenir: şeritler, araç çubuğu, paneller ve alan çipi.
+   Kişisel alan (s-genel) bir renk, diğer alanlar başka bir renk alır. Bütün düzenlerde, koyu ve açık temada.
+   Ayarlar: personal, other, strength, line. */
+:root:root:root[data-rigel-space="s-genel"] { --wt: var(--rigel-mod-workspace-tint-personal, #5b9bf0); }
+:root:root:root[data-rigel-space]:not([data-rigel-space="s-genel"]) { --wt: var(--rigel-mod-workspace-tint-other, #f2a06b); }
+:root:root:root[data-rigel-space]:not([data-rigel-private]) {
+  --wt-s: var(--rigel-mod-workspace-tint-strength, 22%);
+  --bar: color-mix(in srgb, var(--wt) var(--wt-s), #0f131c);
+  --surface: color-mix(in srgb, var(--wt) calc(var(--wt-s) * 0.6), #151b27);
+  --surface-2: color-mix(in srgb, var(--wt) calc(var(--wt-s) * 0.6), #1c2433);
+  --toolbar-bgcolor: var(--surface);
+  --toolbox-background-color: var(--bar);
+  --sidebar-background-color: var(--bar);
+}
+:root:root:root[data-rigel-space][data-rigel-theme="light"]:not([data-rigel-private]) {
+  --bar: color-mix(in srgb, var(--wt) var(--wt-s), #eef1f6);
+  --surface: color-mix(in srgb, var(--wt) calc(var(--wt-s) * 0.45), #ffffff);
+  --surface-2: color-mix(in srgb, var(--wt) calc(var(--wt-s) * 0.5), #e6eaf1);
+}
+/* Alan rengiyle çizgi: şeridin altında */
+:root:root:root[data-rigel-space][rigel-mod-workspace-tint-line] :is(#rigel-ada, #rigel-docktop, #rigel-komuta, #TabsToolbar) {
+  box-shadow: inset 0 -2px 0 var(--wt) !important;
+}
+:root:root:root[data-rigel-space][rigel-mod-workspace-tint-line][data-rigel-layout="yanpanel"] #sidebar-container {
+  box-shadow: inset -2px 0 0 var(--wt) !important;
+}
+:root:root:root[data-rigel-space] #rigel-spaces .rigel-space.on,
+:root:root:root[data-rigel-space] .rigel-spacechip {
+  border-color: var(--wt) !important;
+  background: color-mix(in srgb, var(--wt) 22%, transparent) !important;
+  color: var(--text) !important;
+}

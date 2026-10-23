@@ -1,0 +1,18 @@
+/* Chrome'daki tüm köşe yuvarlamalarını kaldırır. :root:root, Rigel'in kendi !important kurallarını geçsin diye. */
+:root:root {
+  --tab-border-radius: 0px;
+  --toolbarbutton-border-radius: 0px;
+  --urlbar-border-radius: 0px;
+  --arrowpanel-border-radius: 0px;
+  --rigel-row-radius: 0px;
+  --button-border-radius: 0px;
+}
+:root:root *,
+:root:root *::before,
+:root:root *::after {
+  border-radius: 0 !important;
+}
+/* Onay "true" ise küçük yuvarlak simgeler (favicon noktası, rozet) yuvarlak kalır. */
+:root:root[rigel-mod-rounded-off-keep-avatars] :is(.rgl-dot, .rgl-avatar, .tab-throbber, .tab-icon-image, .rgl-spin, .rgl-fav) {
+  border-radius: 50% !important;
+}

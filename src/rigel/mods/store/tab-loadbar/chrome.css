@@ -1,0 +1,64 @@
+/* Yükleme çubuğu — Rigel modu */
+/* Sayfa yüklenirken: yüklenen sekmenin altında kayan bir vurgu çubuğu ve seçili sekme yükleniyorsa araç
+   çubuğunun altında ince bir ilerleme çizgisi. Ayrıca sekmenin dönen yükleme simgesi vurgu rengini alır.
+   Ayarlar: where (both|tab|top), thickness, color (accent|rainbow). */
+:root:root:root {
+  --lb-h: var(--rigel-mod-tab-loadbar-thickness, 3px);
+  --lb-color: linear-gradient(90deg, transparent, var(--accent) 30%, var(--accent-2) 70%, transparent);
+}
+:root:root:root[rigel-mod-tab-loadbar-color="rainbow"] {
+  --lb-color: linear-gradient(90deg, transparent, #5b9bf0 15%, #a78bfa 35%, #e879b0 55%, #f2a06b 75%, transparent);
+}
+@keyframes rigel-loadbar-slide {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(250%); }
+}
+/* Sekmenin altındaki çubuk */
+:root:root:root:not([rigel-mod-tab-loadbar-where="top"]) .tabbrowser-tab[busy] > .tab-stack > .tab-background { overflow: hidden; }
+:root:root:root:not([rigel-mod-tab-loadbar-where="top"]) .tabbrowser-tab[busy] > .tab-stack > .tab-background::after {
+  content: "";
+  position: absolute;
+  inset: auto auto 0 0;
+  width: 40%;
+  height: var(--lb-h);
+  border-radius: var(--lb-h);
+  background: var(--lb-color);
+  animation: rigel-loadbar-slide 1.1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+:root:root:root .tabbrowser-tab[busy] > .tab-stack > .tab-background { position: relative; }
+/* İz: çubuğun kaydığı soluk hat */
+:root:root:root:not([rigel-mod-tab-loadbar-where="top"]) .tabbrowser-tab[busy] > .tab-stack > .tab-background::before {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: var(--lb-h);
+  background: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+/* Üstte (araç çubuğunun alt kenarında) ilerleme çizgisi; araç kutusu taşanı kırptığı için içeride */
+:root:root:root:not([rigel-mod-tab-loadbar-where="tab"]) #navigator-toolbox { position: relative; }
+:root:root:root:not([rigel-mod-tab-loadbar-where="tab"]):has(#tabbrowser-tabs .tabbrowser-tab[selected][busy]) #navigator-toolbox::after {
+  content: "";
+  position: absolute;
+  inset: auto auto 0 0;
+  width: 40%;
+  height: var(--lb-h);
+  z-index: 10;
+  pointer-events: none;
+  background: var(--lb-color);
+  animation: rigel-loadbar-slide 1.1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+:root:root:root:not([rigel-mod-tab-loadbar-where="tab"]):has(#tabbrowser-tabs .tabbrowser-tab[selected][busy]) #navigator-toolbox::before {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: var(--lb-h);
+  z-index: 9;
+  pointer-events: none;
+  background: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+/* Yükleme simgesi vurgu renginde */
+:root:root:root .tabbrowser-tab[busy] .tab-throbber { color: var(--accent) !important; fill: var(--accent) !important; }
+@media (prefers-reduced-motion: reduce) {
+  :root:root:root .tabbrowser-tab[busy] > .tab-stack > .tab-background::after,
+  :root:root:root #navigator-toolbox::after { animation: none !important; width: 100%; }
+}

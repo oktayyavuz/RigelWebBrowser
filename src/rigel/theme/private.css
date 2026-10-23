@@ -1,0 +1,58 @@
+/* Gizli pencere görünümü. Kök öğede data-rigel-private varken (private.uc.mjs yazar; pages/private/private.html
+   statik olarak taşır) vurgu mor olur, yüzeyler hafifçe mora çalar. Dört öznitelikli seçici,
+   tokens.css'teki tema + vurgu kurallarını (üç öznitelik) geçer. */
+
+:root[data-rigel-private][data-rigel-theme][data-rigel-accent] {
+  --accent: var(--private);
+  --accent-2: color-mix(in srgb, var(--private) 68%, #ffffff);
+  --accent-ink: #120d24;
+  /* koyu: mor tonlu yüzeyler */
+  --bg: #0d0c16;
+  --bar: #131221;
+  --surface: #1a1829;
+  --surface-2: #222035;
+}
+:root[data-rigel-private][data-rigel-theme="light"][data-rigel-accent] {
+  --accent-2: color-mix(in srgb, var(--private) 70%, #000000);
+  --accent-ink: #ffffff;
+  --bg: #f5f3fb;
+  --bar: #eeebf7;
+  --surface: #ffffff;
+  --surface-2: #e6e1f3;
+}
+
+/* Firefox'un kendi gizli pencere göstergesi (maske ikonu): Rigel'in "Gizli" etiketi var. */
+:root[data-rigel-private] {
+  .private-browsing-indicator-with-label,
+  .private-browsing-indicator-button,
+  #private-browsing-indicator-with-label,
+  #private-browsing-indicator-icon,
+  #private-browsing-indicator,
+  toolbarbutton[class*="private-browsing-indicator"],
+  .private-browsing-indicator {
+    display: none !important;
+  }
+}
+
+/* "Gizli" etiketi: her düzende kendi şeridinde (private.uc.mjs yerleştirir). */
+.rigel-private-pill {
+  display: inline-flex; align-items: center; gap: 5px; flex: none; height: 22px; padding: 0 9px 0 7px; margin-inline: 8px 2px;
+  border-radius: 11px; font: 600 11px/1 var(--font); letter-spacing: 0.2px; white-space: nowrap;
+  color: var(--private); background: color-mix(in srgb, var(--private) 15%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--private) 34%, transparent) inset;
+  -moz-window-dragging: drag; user-select: none; -moz-user-focus: ignore;
+  animation: rigel-private-pill-in var(--rigel-dur-3, 220ms) var(--rigel-ease-out, cubic-bezier(0.2, 0.7, 0.2, 1)) both;
+}
+.rigel-private-pill svg { width: 14px; height: 14px; flex: none; }
+@keyframes rigel-private-pill-in { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .rigel-private-pill { animation: none; } }
+
+/* Yan Panel: marka satırında, logodan sonra */
+#rigel-side-top .rigel-private-pill { margin-inline: 8px auto; }
+/* Ada: logonun yanı */
+#rigel-ada .rigel-private-pill { margin-inline: 2px 6px; }
+/* Dock / Komuta: başlık şeridi ve logo yanı */
+#rigel-docktop .rigel-private-pill { margin-inline: 4px auto; }
+#rigel-komuta .rigel-private-pill { margin-inline: 2px 4px; }
+/* Klasik: pencere düğmelerinin solunda */
+#TabsToolbar .rigel-private-pill { margin-inline: 8px; align-self: center; }

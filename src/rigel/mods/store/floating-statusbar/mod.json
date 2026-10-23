@@ -1,0 +1,92 @@
+{
+  "name": "Yüzen durum çubuğu",
+  "description": "Bir bağlantının üstüne gelince sol altta beliren adres, kenarlardan ayrılmış yuvarlak, çerçeveli ve gölgeli bir hap olur. Köşe, boşluk, çerçeve kalınlığı ve renk seçilebilir.",
+  "author": "Archer7x",
+  "version": "1.0.0",
+  "target": "chrome",
+  "homepage": "https://github.com/Archer7x/Zen-Themes/tree/main/CustomStatusbar",
+  "license": "MIT",
+  "source": "https://github.com/zen-browser/theme-store/tree/main/themes/32aca67a-ffdd-49e7-95c7-1821793610ca",
+  "prefs": [
+    {
+      "key": "radius",
+      "label": "Köşeler",
+      "type": "dropdown",
+      "default": "999px",
+      "options": [
+        {
+          "value": "999px",
+          "label": "Hap"
+        },
+        {
+          "value": "10px",
+          "label": "Yuvarlak"
+        },
+        {
+          "value": "4px",
+          "label": "Keskin"
+        }
+      ]
+    },
+    {
+      "key": "margin",
+      "label": "Kenar boşluğu",
+      "type": "dropdown",
+      "default": "10px",
+      "options": [
+        {
+          "value": "6px",
+          "label": "Az"
+        },
+        {
+          "value": "10px",
+          "label": "Orta"
+        },
+        {
+          "value": "16px",
+          "label": "Çok"
+        }
+      ]
+    },
+    {
+      "key": "border",
+      "label": "Çerçeve",
+      "type": "dropdown",
+      "default": "2px",
+      "options": [
+        {
+          "value": "0px",
+          "label": "Yok"
+        },
+        {
+          "value": "1px",
+          "label": "İnce"
+        },
+        {
+          "value": "2px",
+          "label": "Kalın"
+        }
+      ]
+    },
+    {
+      "key": "colors",
+      "label": "Renk",
+      "type": "dropdown",
+      "default": "accent",
+      "options": [
+        {
+          "value": "accent",
+          "label": "Vurgu çerçeveli"
+        },
+        {
+          "value": "filled",
+          "label": "Vurgu dolu"
+        },
+        {
+          "value": "plain",
+          "label": "Sade"
+        }
+      ]
+    }
+  ]
+}

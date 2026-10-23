@@ -1,0 +1,146 @@
+/* Komuta düzeni: kalıcı sekme listesi yok, 44 px şerit.
+   Tasarım kaynağı: Rigel Browser/ui/src/shell/bars/KomutaBar.svelte. Yapıyı shell/komuta.mjs kurar. */
+
+:root[data-rigel-layout="komuta"] {
+  #TabsToolbar {
+    display: none !important;
+  }
+}
+
+#rigel-komuta {
+  height: 44px;
+  gap: 6px;
+  padding: 0 8px 0 12px;
+  border-bottom: 1px solid var(--border);
+
+  .rigel-komuta-logo {
+    display: grid;
+    margin-inline-end: 4px;
+    flex: none;
+  }
+  .rigel-tool {
+    width: 28px;
+    height: 28px;
+  }
+  .rigel-tools {
+    display: flex;
+    align-items: center;
+    flex: none;
+  }
+
+  .rigel-crumb {
+    flex: 0 1 640px;
+    margin: 0 auto;
+    height: 32px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 10px;
+    color: var(--text-dim);
+    cursor: text;
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--surface) 50%, transparent);
+    min-width: 0;
+    overflow: hidden;
+    text-align: start;
+  }
+  .rigel-crumb:hover {
+    background: var(--surface);
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+  .rigel-crumb > * {
+    pointer-events: none;
+  }
+  .lock {
+    color: var(--accent);
+    display: grid;
+  }
+  .rigel-crumb b {
+    color: var(--text);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .path {
+    color: var(--text-faint);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+  .t {
+    margin-inline-start: auto;
+    color: var(--text-faint);
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 40%;
+    padding-inline-start: 12px;
+  }
+  .rigel-crumb kbd {
+    margin-inline-start: auto;
+  }
+
+  .rigel-gstrip {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: none;
+    max-width: 38vw;
+    overflow: hidden;
+    -moz-window-dragging: no-drag;
+  }
+  .rigel-gstrip[hidden] {
+    display: none;
+  }
+  .rigel-gchip {
+    height: 28px;
+    padding: 0 8px 0 10px;
+    border-radius: 14px;
+  }
+  .rigel-gchip .gname {
+    max-width: 96px;
+  }
+
+  .rigel-counter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 30px;
+    padding: 0 10px 0 6px;
+    border-radius: 9px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    flex: none;
+  }
+  .rigel-counter:hover {
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+  .rigel-counter > * {
+    pointer-events: none;
+  }
+  .stack {
+    display: flex;
+  }
+  .s {
+    margin-inline-start: -5px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px var(--surface);
+    display: grid;
+  }
+  .s:first-child {
+    margin-inline-start: 0;
+  }
+  .n {
+    font: 600 12px var(--mono);
+  }
+  .snd {
+    display: grid;
+    color: var(--accent);
+    margin-inline-start: -2px;
+  }
+  .rigel-progress {
+    bottom: -1px;
+  }
+}

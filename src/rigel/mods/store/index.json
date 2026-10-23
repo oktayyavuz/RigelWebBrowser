@@ -1,0 +1,381 @@
+{
+  "version": 1,
+  "name": "Rigel yerleşik mağaza",
+  "mods": [
+    {
+      "id": "better-findbar",
+      "name": "Daha iyi bul çubuğu",
+      "description": "Bul çubuğu (Ctrl+F) sayfanın altında ortalanmış, geniş, yüzen bir çubuk olur; aşağıdan kayarak açılır. Seçenekler hap düğmelere döner, istersen kapalı olanlar gizlenir. Cam görünüm ve konum seçilebilir.",
+      "author": "RobotoSkunk",
+      "version": "1.0.0",
+      "tags": [
+        "bul çubuğu",
+        "zen"
+      ],
+      "target": "chrome",
+      "homepage": "https://github.com/RobotoSkunk/zen-better-findbar",
+      "preview": "better-findbar/preview.png",
+      "files": {
+        "mod.json": "better-findbar/mod.json",
+        "chrome.css": "better-findbar/chrome.css"
+      },
+      "license": "MIT",
+      "source": "https://github.com/zen-browser/theme-store/tree/main/themes/a6335949-4465-4b71-926c-4a52d34bc9c0"
+    },
+    {
+      "id": "cleaned-urlbar",
+      "name": "Temiz adres çubuğu",
+      "description": "Adres çubuğu açıldığında yarı saydam, bulanık ve kalın yumuşak kenarlı bir karta dönüşür. Öneriler yuvarlak satırlarda, seçili satır vurgu renginde dolu; arama motoru düğmeleri ayrı bir kutuda.",
+      "author": "Dinno-DEV",
+      "version": "1.0.0",
+      "tags": [
+        "adres çubuğu",
+        "zen"
+      ],
+      "target": "chrome",
+      "homepage": "https://github.com/Dinno-DEV/zen-cleaned-url-bar",
+      "preview": "cleaned-urlbar/preview.png",
+      "files": {
+        "mod.json": "cleaned-urlbar/mod.json",
+        "chrome.css": "cleaned-urlbar/chrome.css"
+      },
+      "license": "MIT",
+      "source": "https://github.com/zen-browser/theme-store/tree/main/themes/a5f6a231-e3c8-4ce8-8a8e-3e93efd6adec"
+    },
+    {
+      "id": "ghost-tabs",
+      "name": "Hayalet sekmeler",
+      "description": "Uyuyan (henüz yüklenmemiş) sekmeler siyah-beyaz, yarı saydam ve italik görünür; hangilerinin bellekte olduğunu bir bakışta görürsün. Klasik ve Yan Panel sekmeleri, Ada yıldızları, Dock sekmeleri ve gruplar.",
+      "author": "Seismix",
+      "version": "1.0.0",
+      "tags": [
+        "sekme",
+        "zen"
+      ],
+      "target": "chrome",
+      "homepage": "https://github.com/Seismix/zen-ghost-tabs",
+      "preview": "ghost-tabs/preview.png",
+      "files": {
+        "mod.json": "ghost-tabs/mod.json",
+        "chrome.css": "ghost-tabs/chrome.css"
+      },
+      "license": "MIT",
+      "source": "https://github.com/zen-browser/theme-store/tree/main/themes/c01d3e22-1cee-45c1-a25e-53c0f180eea8"
+    },
+    {
+      "id": "private-highlight",
+      "name": "Gizli pencere vurgusu",
+      "description": "Gizli pencerede şeritler renkli bir degrade (ya da düz renk) alır, sayfanın çevresine renkli bir çerçeve çizilir ve adres çubuğunun soluna maske simgesi gelir. Hangi pencerenin gizli olduğu hiç karışmaz. Normal pencereler etkilenmez.",
+      "author": "danm36",
+      "version": "1.0.0",
+      "tags": [
+        "gizli",
+        "renk",
+        "zen"
+      ],
+      "target": "chrome",
+      "homepage": "https://github.com/danm36/zen-browser-private-browsing-toolbar-highlighting",
+      "preview": "private-highlight/preview.png",
+      "files": {
+        "mod.json": "private-highlight/mod.json",
+        "chrome.css": "private-highlight/chrome.css"
+      },
+      "license": "MIT",
+      "source": "https://github.com/zen-browser/theme-store/tree/main/themes/58649066-2b6f-4a5b-af6d-c3d21d16fc00"
+    },
+    {
+      "id": "superpins",
+      "name": "SuperPins",
+      "description": "Sabitlenmiş sekmeler Zen'in Essentials'ı gibi büyük karolar olur. Klasik'te sekme şeridinin başında çerçeveli bir grup, Yan Panel'de ayarlanabilir bir ızgara. Seçili karo vurgu rengini alır; uyuyanlar soluklaşır.",
+      "author": "CosmoCreeper",
+      "version": "1.0.0",
+      "tags": [
+        "sekme",
+        "sabitlenmiş",
+        "zen"
+      ],
+      "target": "chrome",
+      "homepage": "https://github.com/CosmoCreeper/Zen-Themes/tree/main/SuperPins",
+      "preview": "superpins/preview.png",
+      "files": {
+        "mod.json": "superpins/mod.json",
+        "chrome.css": "superpins/chrome.css"
+      },
+      "license": "MIT",
+      "source": "https://github.com/zen-browser/theme-store/tree/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc"
+    },
+    {
+      "id": "floating-statusbar",
+      "name": "Yüzen durum çubuğu",
+      "description": "Bir bağlantının üstüne gelince sol altta beliren adres, kenarlardan ayrılmış yuvarlak, çerçeveli ve gölgeli bir hap olur. Köşe, boşluk, çerçeve kalınlığı ve renk seçilebilir.",
+      "author": "Archer7x",
+      "version": "1.0.0",
+      "tags": [
+        "durum çubuğu",
+        "zen"
+      ],
+      "target": "chrome",
+      "homepage": "https://github.com/Archer7x/Zen-Themes/tree/main/CustomStatusbar",
+      "preview": "floating-statusbar/preview.png",
+      "files": {
+        "mod.json": "floating-statusbar/mod.json",
+        "chrome.css": "floating-statusbar/chrome.css"
+      },
+      "license": "MIT",
+      "source": "https://github.com/zen-browser/theme-store/tree/main/themes/32aca67a-ffdd-49e7-95c7-1821793610ca"
+    },
+    {
+      "id": "quick-grid",
+      "name": "Hızlı erişim ızgarası",
+      "description": "Adres çubuğuna tıklayınca açılan en çok ziyaret edilenler listesi, büyük simgeli bir karo ızgarasına dönüşür. Açıkken sayfa arkada bulanıklaşır. İstersen araç çubuğu da incelir. (Zen \"Super Sleek UI\" modundan.)",
+      "author": "lingais",
+      "version": "1.0.0",
+      "tags": [
+        "adres çubuğu",
+        "zen"
+      ],
+      "target": "chrome",
+      "homepage": "https://github.com/lingais/Zen-Browser-Super-Sleek-UI-Theme",
+      "preview": "quick-grid/preview.png",
+      "files": {
+        "mod.json": "quick-grid/mod.json",
+        "chrome.css": "quick-grid/chrome.css"
+      },
+      "license": "MIT",
+      "source": "https://github.com/zen-browser/theme-store/tree/main/themes/570afd9d-96fa-48b5-bad3-0c106757cce9"
+    },
+    {
+      "id": "bookmark-bar",
+      "name": "Yer imi çubuğu",
+      "description": "Rigel'in gizlediği yer imi çubuğunu Klasik ve Yan Panel'de geri getirir (çubuğu Ctrl+Shift+B ile aç/kapat): hap biçimli düğmeler, ortalama, yalnız simge ya da yalnız ad, ve yer kaplamadan üstüne gelince açılma.",
+      "author": "n7itro",
+      "version": "1.0.0",
+      "tags": [
+        "yer imleri",
+        "zen"
+      ],
+      "target": "chrome",
+      "homepage": "https://github.com/zen-browser/theme-store/tree/main/themes/ea1a5ace-f698-4b45-ab88-6e8bd3a563f0",
+      "preview": "bookmark-bar/preview.png",
+      "files": {
+        "mod.json": "bookmark-bar/mod.json",
+        "chrome.css": "bookmark-bar/chrome.css"
+      },
+      "license": "MIT",
+      "source": "https://github.com/zen-browser/theme-store/tree/main/themes/ea1a5ace-f698-4b45-ab88-6e8bd3a563f0"
+    },
+    {
+      "id": "quietify",
+      "name": "Quietify ses göstergesi",
+      "description": "Ses çalan sekmede site simgesinin yerine dans eden bir ekolayzer, sessize alınmışta düz noktalar. Üstüne gelince simge geri gelir. Vurgu, yazı ya da gökkuşağı renkli; sekmenin altında hafif parıltı.",
+      "author": "wysh3",
+      "version": "1.0.0",
+      "tags": [
+        "sekme",
+        "ses",
+        "zen"
+      ],
+      "target": "chrome",
+      "homepage": "https://github.com/wysh3/Zen-Mods/tree/main/Quietify",
+      "preview": "quietify/preview.png",
+      "files": {
+        "mod.json": "quietify/mod.json",
+        "chrome.css": "quietify/chrome.css"
+      },
+      "license": "MIT",
+      "source": "https://github.com/zen-browser/theme-store/tree/main/themes/fd24f832-a2e6-4ce9-8b19-7aa888eb7f8e"
+    },
+    {
+      "id": "zen-content",
+      "name": "Yüzen sayfa kartı",
+      "description": "Web sayfası kenarlardan boşluklu, yuvarlak köşeli ve gölgeli bir kart olarak yüzer; arkası arayüz rengiyle dolar. Klasik'te araç çubuğuyla bütünleşir. İsteğe bağlı: arkada vurgu renginde ışıltı.",
+      "author": "Rigel",
+      "version": "2.0.0",
+      "tags": [
+        "görünüm",
+        "içerik"
+      ],
+      "target": "chrome",
+      "homepage": "",
+      "preview": "zen-content/preview.png",
+      "files": {
+        "mod.json": "zen-content/mod.json",
+        "chrome.css": "zen-content/chrome.css"
+      },
+      "license": "MPL-2.0"
+    },
+    {
+      "id": "minimal-klasik-tabs",
+      "name": "Hap sekmeler",
+      "description": "Klasik düzende sekmeler şeride yapışık kulakçıklar yerine dikey ortalanmış, tam yuvarlak haplar olur. Seçili hap vurgu tonunda, dolu vurgu renginde ya da çerçeveli. Kapatma düğmesi istersen yalnız üstüne gelince.",
+      "author": "Rigel",
+      "version": "2.0.0",
+      "tags": [
+        "sekme",
+        "klasik"
+      ],
+      "target": "chrome",
+      "homepage": "",
+      "preview": "minimal-klasik-tabs/preview.png",
+      "files": {
+        "mod.json": "minimal-klasik-tabs/mod.json",
+        "chrome.css": "minimal-klasik-tabs/chrome.css"
+      },
+      "license": "MPL-2.0"
+    },
+    {
+      "id": "workspace-tint",
+      "name": "Alan renk tonu",
+      "description": "Aktif alana göre bütün arayüz renklenir: şeritler, araç çubuğu, menüler ve alan çipi. Kişisel alan bir renk, diğer alanlar başka bir renk alır; şeridin altında alan renginde çizgi. Bütün düzenlerde.",
+      "author": "Rigel",
+      "version": "2.0.0",
+      "tags": [
+        "alan",
+        "renk"
+      ],
+      "target": "chrome",
+      "homepage": "",
+      "preview": "workspace-tint/preview.png",
+      "files": {
+        "mod.json": "workspace-tint/mod.json",
+        "chrome.css": "workspace-tint/chrome.css"
+      },
+      "license": "MPL-2.0"
+    },
+    {
+      "id": "essential-toolbar",
+      "name": "Sade araç çubuğu",
+      "description": "Eklenti düğmeleri, kullanılmayan geri/ileri, adres çubuğundaki simgeler (okuma modu, yıldız, izinler) ve Klasik'te pencere düğmeleri gizlenir. Gizlenenler, bulundukları çubuğun üstüne gelince yumuşakça geri gelir.",
+      "author": "Rigel",
+      "version": "2.0.0",
+      "tags": [
+        "araç çubuğu",
+        "sade"
+      ],
+      "target": "chrome",
+      "homepage": "",
+      "preview": "essential-toolbar/preview.png",
+      "files": {
+        "mod.json": "essential-toolbar/mod.json",
+        "chrome.css": "essential-toolbar/chrome.css"
+      },
+      "license": "MPL-2.0"
+    },
+    {
+      "id": "reader-content",
+      "name": "Okuma dostu sayfalar",
+      "description": "Web yazılarını okunaklı yapar: metne okuma yazı tipi ve ferah satır aralığı, ince alt çizgili bağlantılar, dengeli başlıklar, renkli alıntı çizgisi, belirgin seçim rengi ve yumuşak kaydırma. Kod ve simgeler değişmez.",
+      "author": "Rigel",
+      "version": "2.0.0",
+      "tags": [
+        "web",
+        "okuma",
+        "yazı tipi"
+      ],
+      "target": "content",
+      "homepage": "",
+      "preview": "reader-content/preview.png",
+      "files": {
+        "mod.json": "reader-content/mod.json",
+        "content.css": "reader-content/content.css"
+      },
+      "license": "MPL-2.0"
+    },
+    {
+      "id": "accent-chrome",
+      "name": "Vurgu tonlu arayüz",
+      "description": "Bütün arayüzü vurgu renginin tonuna boyar: şeritler, araç çubuğu, paneller ve menüler. Vurgu rengini değiştirince ton da değişir. İsteğe bağlı: sekme şeridinde degrade ve vurgu renkli ayırıcı çizgiler. Bütün düzenlerde.",
+      "author": "Rigel",
+      "version": "1.0.0",
+      "tags": [
+        "renk",
+        "görünüm"
+      ],
+      "target": "chrome",
+      "homepage": "",
+      "preview": "accent-chrome/preview.png",
+      "files": {
+        "mod.json": "accent-chrome/mod.json",
+        "chrome.css": "accent-chrome/chrome.css"
+      },
+      "license": "MPL-2.0"
+    },
+    {
+      "id": "tab-numbers",
+      "name": "Sekme numaraları",
+      "description": "Her sekmenin önünde sıra numarası: Ctrl+1 … Ctrl+8 kısayolunun hangi sekmeye gittiğini gösterir. Rozet, sade sayı ya da simgenin köşesinde küçük etiket. Klasik ve Yan Panel.",
+      "author": "Rigel",
+      "version": "1.0.0",
+      "tags": [
+        "sekme",
+        "kısayol"
+      ],
+      "target": "chrome",
+      "homepage": "",
+      "preview": "tab-numbers/preview.png",
+      "files": {
+        "mod.json": "tab-numbers/mod.json",
+        "chrome.css": "tab-numbers/chrome.css"
+      },
+      "license": "MPL-2.0"
+    },
+    {
+      "id": "lively-toolbar",
+      "name": "Canlı araç çubuğu",
+      "description": "Düğmeler üstüne gelince yükselip vurgu rengiyle parlar, basınca içe çöker; yeni sekme \"+\" döner, yenile bir tur atar, geri/ileri yönüne kayar, adres çubuğu odakta halka alır, sekmeler üstüne gelince kalkar. \"Hareketi azalt\" açıksa durur.",
+      "author": "Rigel",
+      "version": "1.0.0",
+      "tags": [
+        "animasyon",
+        "araç çubuğu"
+      ],
+      "target": "chrome",
+      "homepage": "",
+      "preview": "lively-toolbar/preview.png",
+      "files": {
+        "mod.json": "lively-toolbar/mod.json",
+        "chrome.css": "lively-toolbar/chrome.css"
+      },
+      "license": "MPL-2.0"
+    },
+    {
+      "id": "tab-loadbar",
+      "name": "Yükleme çubuğu",
+      "description": "Sayfa yüklenirken sekmenin altında kayan bir vurgu çubuğu, seçili sekme yükleniyorsa araç çubuğunun altında ince bir ilerleme çizgisi. Vurgu ya da gökkuşağı renkli. Bütün düzenlerin üst çizgisi, Klasik ve Yan Panel sekmeleri.",
+      "author": "Rigel",
+      "version": "1.0.0",
+      "tags": [
+        "sekme",
+        "animasyon"
+      ],
+      "target": "chrome",
+      "homepage": "",
+      "preview": "tab-loadbar/preview.png",
+      "files": {
+        "mod.json": "tab-loadbar/mod.json",
+        "chrome.css": "tab-loadbar/chrome.css"
+      },
+      "license": "MPL-2.0"
+    },
+    {
+      "id": "one-liner",
+      "name": "Tek satır Klasik",
+      "description": "Klasik düzende sekme şeridi ve araç çubuğu tek satırda birleşir: solda gezinme düğmeleri ve adres çubuğu, sağda sekmeler. Sayfaya 42 px daha fazla yer kalır. İstersen geri/ileri/yenile de gizlenir.",
+      "author": "Rigel",
+      "version": "1.0.0",
+      "tags": [
+        "klasik",
+        "sade",
+        "araç çubuğu"
+      ],
+      "target": "chrome",
+      "homepage": "",
+      "preview": "one-liner/preview.png",
+      "files": {
+        "mod.json": "one-liner/mod.json",
+        "chrome.css": "one-liner/chrome.css"
+      },
+      "license": "MPL-2.0"
+    }
+  ]
+}

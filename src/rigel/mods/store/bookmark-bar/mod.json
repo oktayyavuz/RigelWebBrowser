@@ -1,0 +1,44 @@
+{
+  "name": "Yer imi çubuğu",
+  "description": "Rigel'in gizlediği yer imi çubuğunu Klasik ve Yan Panel'de geri getirir (çubuğu Ctrl+Shift+B ile aç/kapat): hap biçimli düğmeler, ortalama, yalnız simge ya da yalnız ad, ve yer kaplamadan üstüne gelince açılma.",
+  "author": "n7itro",
+  "version": "1.0.0",
+  "target": "chrome",
+  "homepage": "https://github.com/zen-browser/theme-store/tree/main/themes/ea1a5ace-f698-4b45-ab88-6e8bd3a563f0",
+  "license": "MIT",
+  "source": "https://github.com/zen-browser/theme-store/tree/main/themes/ea1a5ace-f698-4b45-ab88-6e8bd3a563f0",
+  "prefs": [
+    {
+      "key": "center",
+      "label": "Ortala",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "key": "show",
+      "label": "Göster",
+      "type": "dropdown",
+      "default": "both",
+      "options": [
+        {
+          "value": "both",
+          "label": "Simge ve ad"
+        },
+        {
+          "value": "icons",
+          "label": "Yalnız simge"
+        },
+        {
+          "value": "names",
+          "label": "Yalnız ad"
+        }
+      ]
+    },
+    {
+      "key": "autohide",
+      "label": "Gizle, üstüne gelince aç",
+      "type": "checkbox",
+      "default": false
+    }
+  ]
+}

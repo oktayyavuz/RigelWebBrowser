@@ -1,0 +1,90 @@
+{
+  "name": "Gizli pencere vurgusu",
+  "description": "Gizli pencerede şeritler renkli bir degrade (ya da düz renk) alır, sayfanın çevresine renkli bir çerçeve çizilir ve adres çubuğunun soluna maske simgesi gelir. Hangi pencerenin gizli olduğu hiç karışmaz. Normal pencereler etkilenmez.",
+  "author": "danm36",
+  "version": "1.0.0",
+  "target": "chrome",
+  "homepage": "https://github.com/danm36/zen-browser-private-browsing-toolbar-highlighting",
+  "license": "MIT",
+  "source": "https://github.com/zen-browser/theme-store/tree/main/themes/58649066-2b6f-4a5b-af6d-c3d21d16fc00",
+  "prefs": [
+    {
+      "key": "style",
+      "label": "Biçim",
+      "type": "dropdown",
+      "default": "gradient",
+      "options": [
+        {
+          "value": "gradient",
+          "label": "Degrade"
+        },
+        {
+          "value": "solid",
+          "label": "Düz renk"
+        }
+      ]
+    },
+    {
+      "key": "color",
+      "label": "Renk",
+      "type": "dropdown",
+      "default": "private",
+      "options": [
+        {
+          "value": "private",
+          "label": "Gizli moru"
+        },
+        {
+          "value": "blue",
+          "label": "Mavi"
+        },
+        {
+          "value": "teal",
+          "label": "Camgöbeği"
+        },
+        {
+          "value": "green",
+          "label": "Yeşil"
+        },
+        {
+          "value": "orange",
+          "label": "Turuncu"
+        },
+        {
+          "value": "pink",
+          "label": "Pembe"
+        },
+        {
+          "value": "red",
+          "label": "Kırmızı"
+        }
+      ]
+    },
+    {
+      "key": "border",
+      "label": "Sayfa çerçevesi",
+      "type": "dropdown",
+      "default": "normal",
+      "options": [
+        {
+          "value": "normal",
+          "label": "Kalın"
+        },
+        {
+          "value": "thin",
+          "label": "İnce"
+        },
+        {
+          "value": "none",
+          "label": "Yok"
+        }
+      ]
+    },
+    {
+      "key": "icon",
+      "label": "Maske simgesi",
+      "type": "checkbox",
+      "default": true
+    }
+  ]
+}

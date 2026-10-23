@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<!-- Rigel gizli sekme sayfası: Firefox'un about:privatebrowsing sayfasının yerine geçer.
+     chrome://rigel/content/private/private.html olarak sunulur; private.uc.mjs gizli pencerelerde
+     about:privatebrowsing ve yeni sekme yüklemelerini buraya yönlendirir. -->
+<html lang="tr" data-rigel-private>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gizli sekme</title>
+  <link rel="icon" href="icon.svg">
+  <link rel="stylesheet" href="chrome://userscripts/content/theme/tokens.css">
+  <link rel="stylesheet" href="chrome://userscripts/content/theme/private.css">
+  <link rel="stylesheet" href="private.css">
+  <script type="module" src="chrome://userscripts/content/theme/page.mjs"></script>
+  <script type="module" src="private.mjs"></script>
+</head>
+<body>
+  <main>
+    <div class="hero">
+      <svg class="logo" width="88" height="88" viewBox="0 0 32 32" fill="none" aria-label="Rigel">
+        <defs>
+          <linearGradient id="pv-ring" x1="3" y1="29" x2="29" y2="3" gradientUnits="userSpaceOnUse">
+            <stop style="stop-color: var(--pv-a)"/><stop offset="0.6" style="stop-color: var(--pv-b)"/><stop offset="1" style="stop-color: var(--pv-c)"/>
+          </linearGradient>
+          <linearGradient id="pv-star" x1="8" y1="6" x2="25" y2="26" gradientUnits="userSpaceOnUse">
+            <stop style="stop-color: var(--pv-c)"/><stop offset="0.55" style="stop-color: var(--pv-b)"/><stop offset="1" style="stop-color: var(--pv-a)"/>
+          </linearGradient>
+        </defs>
+        <circle cx="16" cy="16" r="12.6" stroke="url(#pv-ring)" stroke-width="2.4" stroke-linecap="round"
+          stroke-dasharray="60.168 19" stroke-dashoffset="-0.792" opacity="0.9"/>
+        <circle cx="25.9" cy="7.6" r="2.5" fill="url(#pv-ring)"/>
+        <path d="M16 6.4C16 11.1 18.9 15.3 23.6 16C18.9 16.7 16 20.9 16 25.6C16 20.9 13.1 16.7 8.4 16C13.1 15.3 16 11.1 16 6.4Z" fill="url(#pv-star)"/>
+      </svg>
+      <span class="badge" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 10c3-1 6-1.5 9-1.5s6 .5 9 1.5c0 4-2 7-5 7-1.6 0-2.4-1.5-4-1.5S9.6 17 8 17c-3 0-5-3-5-7z"/>
+          <circle cx="8.5" cy="12" r="1.2" fill="currentColor"/><circle cx="15.5" cy="12" r="1.2" fill="currentColor"/>
+        </svg>
+      </span>
+    </div>
+
+    <h1>Gizli pencere</h1>
+    <p class="lead">Bu pencerede gezdiklerin, pencereyi kapatınca bu cihazdan silinir.</p>
+    <p class="warn" id="warn" hidden>Bu sekme gizli bir pencerede değil; kapatınca hiçbir şey silinmez.</p>
+
+    <form id="search" class="search" autocomplete="off" role="search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>
+      <input id="q" type="text" spellcheck="false" placeholder="Ara ya da adres yaz" aria-label="Ara ya da adres yaz">
+      <span class="engine" id="engine" hidden></span>
+    </form>
+    <p class="hint">Palet için <kbd>Ctrl K</kbd> · <kbd>!yt</kbd> gibi kısayollar da çalışır</p>
+
+    <section class="cards">
+      <article class="card yes">
+        <h2><span class="dot"></span>Kapatınca silinir</h2>
+        <ul>
+          <li>Gezinti geçmişi</li>
+          <li>Çerezler ve site verileri</li>
+          <li>Forma ve aramaya yazdıkların</li>
+        </ul>
+      </article>
+      <article class="card no">
+        <h2><span class="dot"></span>Silinmez ya da görünür kalır</h2>
+        <ul>
+          <li>İndirdiğin dosyalar ve eklediğin yer imleri</li>
+          <li>Ağ yöneticin, internet sağlayıcın ve girdiğin siteler seni görebilir</li>
+          <li>Hesaba giriş yaparsan site kim olduğunu bilir</li>
+        </ul>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

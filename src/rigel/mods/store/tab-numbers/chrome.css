@@ -1,0 +1,55 @@
+/* Sekme numaraları — Rigel modu */
+/* Her sekmenin önüne sıra numarası: Ctrl+1 … Ctrl+8 kısayolunun hangi sekmeye gittiğini gösterir.
+   Klasik ve Yan Panel'in yerel sekmeleri (sabitlenmişler dahil). Ayarlar: style (badge|plain|corner), color. */
+:root:root:root #tabbrowser-tabs { counter-reset: rigeltab; }
+:root:root:root #tabbrowser-tabs .tabbrowser-tab:not([hidden]) { counter-increment: rigeltab; }
+:root:root:root {
+  --tn-bg: color-mix(in srgb, var(--accent) 22%, transparent);
+  --tn-ink: var(--accent);
+}
+:root:root:root[rigel-mod-tab-numbers-color="dim"] { --tn-bg: var(--hover); --tn-ink: var(--text-dim); }
+:root:root:root[rigel-mod-tab-numbers-color="solid"] { --tn-bg: var(--accent); --tn-ink: var(--accent-ink); }
+
+/* Rozet ve sade: simgenin solunda */
+:root:root:root #tabbrowser-tabs .tabbrowser-tab:not([pinned]) .tab-content::before {
+  content: counter(rigeltab);
+  flex: none;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  box-sizing: border-box;
+  margin-inline-end: 6px;
+  border-radius: 6px;
+  background: var(--tn-bg);
+  color: var(--tn-ink);
+  font: 700 10.5px/17px var(--mono);
+  text-align: center;
+}
+:root:root:root #tabbrowser-tabs .tabbrowser-tab:not([pinned])[selected] .tab-content::before { background: var(--accent); color: var(--accent-ink); }
+:root:root:root[rigel-mod-tab-numbers-style="plain"] #tabbrowser-tabs .tabbrowser-tab:not([pinned]) .tab-content::before {
+  background: none !important;
+  min-width: 0;
+  padding: 0;
+  margin-inline-end: 4px;
+  color: var(--tn-ink) !important;
+  font-size: 12px;
+}
+/* Köşe: simgenin sağ altında küçük sayı (sabitlenmişler dahil) */
+:root:root:root[rigel-mod-tab-numbers-style="corner"] #tabbrowser-tabs .tabbrowser-tab .tab-content::before { display: none !important; }
+:root:root:root[rigel-mod-tab-numbers-style="corner"] #tabbrowser-tabs .tabbrowser-tab .tab-icon-stack::before {
+  content: counter(rigeltab);
+  grid-area: 1 / 1;
+  align-self: end;
+  justify-self: end;
+  z-index: 2;
+  min-width: 11px;
+  height: 11px;
+  padding: 0 2px;
+  margin: 0 -7px -5px 0;
+  border-radius: 4px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font: 700 8.5px/11px var(--mono);
+  text-align: center;
+  box-shadow: 0 0 0 1.5px var(--bar);
+}

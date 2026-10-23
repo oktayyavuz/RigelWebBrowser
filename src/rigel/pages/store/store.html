@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<!-- Rigel mod mağazası: chrome://rigel/content/store/store.html
+     Katalog: yerleşik (mods/store/index.json) + isteğe bağlı uzak dizin (rigel.mods.storeUrl). Biçim: mods/STORE.md.
+     Girişi mods.uc.mjs açar (Rigel.mods.openStore) ve adres çubuğunu temiz tutar. -->
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mod Mağazası</title>
+  <link rel="icon" href="chrome://branding/content/icon32.png">
+  <link rel="stylesheet" href="chrome://userscripts/content/theme/tokens.css">
+  <link rel="stylesheet" href="store.css">
+  <script type="module" src="chrome://userscripts/content/theme/page.mjs"></script>
+  <script type="module" src="store.mjs"></script>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <div class="brand"></div>
+      <div class="topact"></div>
+    </header>
+    <section class="controls">
+      <label class="search"><span class="sicon"></span><input id="q" type="search" placeholder="Modlarda ara" spellcheck="false" aria-label="Modlarda ara"></label>
+      <div id="chips" class="chips" role="group" aria-label="Süzgeçler"></div>
+    </section>
+    <div id="notice"></div>
+    <main id="main"></main>
+    <section class="urlinstall card" aria-label="Bağlantıdan kur">
+      <div class="uhead">
+        <b>Bağlantıdan kur</b>
+        <small>Bir <code>index.json</code> dizini, <code>mod.json</code> ya da GitHub klasör adresi yapıştır. Yalnız CSS ve JSON alınır; betik hiçbir zaman çalıştırılmaz.</small>
+      </div>
+      <form id="urlform" class="urlrow"><input id="url" type="text" spellcheck="false" placeholder="https://github.com/kullanici/depo/tree/main/modlarim/guzel-mod" aria-label="Mod adresi"><button class="btn" type="submit"></button></form>
+      <div id="urlres"></div>
+    </section>
+  </div>
+  <aside id="detail" hidden></aside>
+  <div id="toasts" aria-live="polite"></div>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<!-- Rigel kurulum sihirbazı (ilk açılış): chrome://rigel/content/welcome/welcome.html. rigel.welcome.done false iken settings.uc.mjs açar. -->
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rigel'e hoş geldin</title>
+  <link rel="icon" href="chrome://branding/content/icon32.png">
+  <link rel="stylesheet" href="chrome://userscripts/content/theme/tokens.css">
+  <link rel="stylesheet" href="chrome://userscripts/content/theme/motion.css">
+  <link rel="stylesheet" href="welcome.css">
+  <script type="module" src="chrome://userscripts/content/theme/page.mjs"></script>
+  <script type="module" src="welcome.mjs"></script>
+</head>
+<body>
+  <div class="sky" aria-hidden="true"></div>
+  <main class="ob" id="ob">
+    <aside class="rail" id="rail" aria-label="Kurulum adımları"></aside>
+    <div class="stage" id="stage"></div>
+  </main>
+</body>
+</html>

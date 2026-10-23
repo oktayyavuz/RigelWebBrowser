@@ -1,0 +1,10 @@
+{
+  "name": "Sekme kapatma düğmesini gizle",
+  "description": "Sekmelerdeki x düğmesini kaldırır. Sekmeyi orta tıkla ya da Ctrl+W ile kapatırsın.",
+  "author": "Rigel",
+  "version": "1.0.1",
+  "target": "chrome",
+  "prefs": [
+    { "key": "on-hover", "label": "Üzerine gelince göster", "type": "checkbox", "default": false }
+  ]
+}

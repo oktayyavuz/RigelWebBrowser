@@ -1,0 +1,94 @@
+/* Daha iyi bul çubuğu — Rigel modu
+ * Kaynak: Zen mod mağazası, "Better Find Bar" v1.5.1 — RobotoSkunk
+ *   https://github.com/RobotoSkunk/zen-better-findbar
+ *   https://github.com/zen-browser/theme-store/tree/main/themes/a6335949-4465-4b71-926c-4a52d34bc9c0
+ * Rigel/Firefox DOM'una uyarlandı: seçiciler, ayarlar ve görünüm Rigel belirteçleriyle yeniden yazıldı (2026).
+ *
+ * MIT License
+ * Copyright (c) 2024 Edgar Lima (RobotoSkunk)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions: The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+ * LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
+ * EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+/* Bul çubuğu (Ctrl+F) içerik alanının altında ortalanmış, geniş, yüzen bir çubuk olur;
+   açılırken aşağıdan kayarak gelir. Rigel'in panels.css kuralları (sağ üstte küçük kart) burada ezilir.
+   Ayarlar: position (bottom-center|bottom-left|bottom-right|top-center|top-right), width, glass, tidy. */
+:root:root:root findbar {
+  --bf-x: -50%;
+  --bf-y: 32px;
+  inset: auto auto 18px 50% !important;
+  transform: translateX(var(--bf-x)) !important;
+  width: min(var(--rigel-mod-better-findbar-width, 760px), calc(100% - 36px)) !important;
+  align-items: center !important;
+  padding: 7px 8px 7px 14px !important;
+  border-radius: 16px !important;
+  border: 1px solid color-mix(in srgb, var(--accent) 38%, var(--border-2)) !important;
+  background: var(--surface) !important;
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.45), 0 0 0 4px color-mix(in srgb, var(--accent) 10%, transparent) !important;
+  transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.16s ease, visibility 0s linear 0s !important;
+}
+:root:root:root findbar[hidden] {
+  transform: translate(var(--bf-x), var(--bf-y)) !important;
+  opacity: 0 !important;
+  transition: transform 0.18s ease, opacity 0.14s ease, visibility 0s linear 0.18s !important;
+}
+:root:root:root findbar:focus-within {
+  border-color: var(--accent) !important;
+}
+
+/* Konum */
+:root:root:root[rigel-mod-better-findbar-position="bottom-left"] findbar { inset: auto auto 18px 18px !important; --bf-x: 0px; }
+:root:root:root[rigel-mod-better-findbar-position="bottom-right"] findbar { inset: auto 18px 18px auto !important; --bf-x: 0px; }
+:root:root:root[rigel-mod-better-findbar-position="top-center"] findbar { inset: 14px auto auto 50% !important; --bf-y: -32px; }
+:root:root:root[rigel-mod-better-findbar-position="top-right"] findbar { inset: 14px 18px auto auto !important; --bf-x: 0px; --bf-y: -32px; }
+
+/* İlk satır: büyük metin kutusu, sayaç, oklar, kapat. İkinci satır: seçenek hapları ve durum. */
+:root:root:root findbar > .findbar-container { gap: 6px 6px !important; }
+:root:root:root findbar .findbar-textbox {
+  min-width: 200px !important;
+  height: 34px !important;
+  font-size: 15px !important;
+}
+:root:root:root findbar .found-matches {
+  padding: 3px 9px !important;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--text) !important;
+}
+/* Seçenekler hap düğmeleri: işaret kutusu gizli, açık olan vurgu rengiyle dolar */
+:root:root:root findbar .findbar-container > checkbox {
+  margin: 0 !important;
+  padding: 4px 10px !important;
+  border-radius: 999px;
+  background: var(--hover);
+  white-space: nowrap;
+  transition: opacity 0.14s ease;
+}
+:root:root:root findbar .findbar-container > checkbox > .checkbox-check { display: none !important; }
+:root:root:root findbar .findbar-container > checkbox[checked] {
+  background: color-mix(in srgb, var(--accent) 26%, transparent);
+  color: var(--text) !important;
+}
+:root:root:root findbar .close-icon.findbar-closebutton { align-self: center !important; }
+
+/* Cam görünüm */
+:root:root:root[rigel-mod-better-findbar-glass] findbar {
+  background: color-mix(in srgb, var(--surface) 86%, transparent) !important;
+  backdrop-filter: blur(16px) saturate(1.5);
+}
+/* Kapalı seçenekleri gizle; çubuğun üstüne gelince geri gelir */
+:root:root:root[rigel-mod-better-findbar-tidy] findbar:not(:hover) .findbar-container > checkbox:not([checked]) {
+  display: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root:root:root findbar, :root:root:root findbar[hidden] { transition: none !important; }
+}

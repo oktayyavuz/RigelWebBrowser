@@ -1,0 +1,50 @@
+{
+  "name": "Sekme numaraları",
+  "description": "Her sekmenin önünde sıra numarası: Ctrl+1 … Ctrl+8 kısayolunun hangi sekmeye gittiğini gösterir. Rozet, sade sayı ya da simgenin köşesinde küçük etiket. Klasik ve Yan Panel.",
+  "author": "Rigel",
+  "version": "1.0.0",
+  "target": "chrome",
+  "prefs": [
+    {
+      "key": "style",
+      "label": "Biçim",
+      "type": "dropdown",
+      "default": "badge",
+      "options": [
+        {
+          "value": "badge",
+          "label": "Rozet"
+        },
+        {
+          "value": "plain",
+          "label": "Sade sayı"
+        },
+        {
+          "value": "corner",
+          "label": "Simge köşesinde"
+        }
+      ]
+    },
+    {
+      "key": "color",
+      "label": "Renk",
+      "type": "dropdown",
+      "default": "accent",
+      "options": [
+        {
+          "value": "accent",
+          "label": "Vurgu tonu"
+        },
+        {
+          "value": "solid",
+          "label": "Dolu vurgu"
+        },
+        {
+          "value": "dim",
+          "label": "Soluk"
+        }
+      ]
+    }
+  ],
+  "license": "MPL-2.0"
+}

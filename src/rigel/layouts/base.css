@@ -1,0 +1,380 @@
+/* Tüm düzenlerin ortak katmanı. Her zaman yüklüdür; kurallar yalnız bir düzen etkinken
+   (kökte data-rigel-layout varken) geçerlidir. Düzene özgü stiller layouts/<ad>.css içinde. */
+
+:root[data-rigel-layout] {
+  /* Firefox belirteçlerini Rigel renklerine bağla */
+  --toolbar-bgcolor: var(--bar);
+  --toolbar-background-color: var(--bar);
+  --toolbar-color: var(--text);
+  --toolbar-text-color: var(--text);
+  --toolbox-background-color: var(--bar);
+  --toolbox-text-color: var(--text);
+  --toolbox-bgcolor: var(--bar);
+  --toolbox-textcolor: var(--text);
+  --toolbarbutton-icon-fill: var(--text-dim);
+  --toolbarbutton-hover-background: var(--hover);
+  --toolbarbutton-active-background: var(--active);
+  --toolbarbutton-border-radius: 7px;
+  --toolbar-field-background-color: var(--surface);
+  --toolbar-field-color: var(--text);
+  --toolbar-field-focus-background-color: var(--surface);
+  --toolbar-field-focus-color: var(--text);
+  --tab-selected-bgcolor: var(--active);
+  --tab-background-color-selected: var(--active);
+  --tab-background-color-hover: var(--hover);
+  --tab-text-color: var(--text-dim);
+  --tab-text-color-hover: var(--text);
+  --tab-text-color-selected: var(--text);
+  --tab-box-shadow-selected: none;
+  --urlbar-box-bgcolor: var(--surface);
+  --urlbar-box-focus-bgcolor: var(--surface);
+  --urlbar-box-hover-bgcolor: var(--surface);
+  --sidebar-background-color: var(--bar);
+  --sidebar-text-color: var(--text);
+  --lwt-accent-color: var(--bar);
+  --focus-outline-color: var(--accent);
+  --color-accent-primary: var(--accent);
+  --arrowpanel-background: var(--surface);
+  --arrowpanel-color: var(--text);
+  --arrowpanel-border-color: var(--border-2);
+  --panel-background: var(--surface);
+  --panel-color: var(--text);
+  --panel-border-color: var(--border-2);
+  --panel-shadow: var(--shadow-sm);
+  --panel-separator-color: var(--border);
+  --panel-description-color: var(--text-dim);
+  --panel-item-hover-bgcolor: var(--hover);
+  --panel-item-active-bgcolor: var(--active);
+  --arrowpanel-dimmed: var(--hover);
+  --arrowpanel-dimmed-further: var(--active);
+  --in-content-page-background: var(--bg);
+  --in-content-page-color: var(--text);
+  --in-content-primary-button-background: var(--accent);
+  --in-content-primary-button-text-color: var(--accent-ink);
+  --chrome-content-separator-color: var(--border);
+
+  font-family: var(--font);
+  background-color: var(--bar) !important;
+  color: var(--text);
+}
+
+/* --- Firefox izleri: hiçbir düzende görünmesin ---------------------------------- */
+:root[data-rigel-layout] {
+  #PersonalToolbar,
+  #firefox-view-button,
+  #alltabs-button,
+  #fxa-toolbar-menu-button,
+  #sidebar-button,
+  #taskbar-tabs-favicon,
+  .titlebar-buttonbox-container,
+  .private-browsing-indicator-with-label,
+  .private-browsing-indicator-button,
+  #tabs-newtab-button ~ .closing-tabs-spacer {
+    display: none !important;
+  }
+  #navigator-toolbox {
+    background: var(--bar) !important;
+    border: none !important;
+    color: var(--text);
+  }
+  #browser,
+  #tabbrowser-tabpanels,
+  .browserStack,
+  .browserContainer {
+    background: var(--bg) !important;
+  }
+  #tabbrowser-tabbox {
+    box-shadow: none !important;
+    outline: none !important;
+  }
+}
+
+/* Yatay sekmeli düzenlerde kenar çubuğu başlatıcısı hiç görünmesin (paneller yine açılabilir). */
+:root[data-rigel-layout]:not([data-rigel-layout="yanpanel"]) {
+  #sidebar-container,
+  #sidebar-launcher-splitter {
+    display: none !important;
+  }
+}
+
+/* --- Ortak Rigel parçaları -------------------------------------------------------- */
+:root[data-rigel-layout] .rigel-bar {
+  display: flex;
+  align-items: center;
+  flex: none;
+  position: relative;
+  background: var(--bar);
+  color: var(--text);
+  font: 13px/1.4 var(--font);
+  -moz-window-dragging: drag;
+  -moz-user-focus: ignore;
+  user-select: none;
+
+  button {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    appearance: none;
+    -moz-window-dragging: no-drag;
+  }
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+  }
+  kbd {
+    font: 10.5px/1 var(--mono);
+    color: var(--text-faint);
+    border: 1px solid var(--border-2);
+    border-radius: 4px;
+    padding: 3px 5px;
+    white-space: nowrap;
+    flex: none;
+  }
+}
+
+.rigel-brand {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 600;
+  pointer-events: none;
+  flex: none;
+}
+.rigel-logo {
+  display: block;
+  flex: none;
+}
+
+.rigel-wctl {
+  display: flex;
+  gap: 2px;
+  flex: none;
+}
+.rigel-wbtn {
+  width: 30px;
+  height: 28px;
+  border-radius: 7px;
+  display: grid;
+  place-items: center;
+  color: var(--text-dim) !important;
+  -moz-window-dragging: no-drag;
+}
+.rigel-wbtn:hover {
+  background: var(--hover) !important;
+  color: var(--text) !important;
+}
+.rigel-wclose:hover {
+  background: var(--danger) !important;
+  color: var(--on-danger) !important;
+}
+
+.rigel-nav {
+  display: flex;
+  gap: 2px;
+  flex: none;
+}
+.rigel-tool {
+  width: 30px;
+  height: 28px;
+  border-radius: 7px;
+  display: grid;
+  place-items: center;
+  color: var(--text-dim) !important;
+  flex: none;
+  position: relative;
+}
+.rigel-tool:hover {
+  background: var(--hover) !important;
+  color: var(--text) !important;
+}
+.rigel-tool.on {
+  color: var(--accent) !important;
+  background: var(--active) !important;
+}
+.rigel-tool:disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.rigel-fav {
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 4px;
+  object-fit: contain;
+  pointer-events: none;
+}
+.rigel-fav.letter {
+  color: var(--fav-ink);
+  font-weight: 600;
+  line-height: 1;
+  border-radius: 5px;
+}
+.rigel-fav.round {
+  border-radius: 50%;
+}
+
+.rigel-sep {
+  width: 1px;
+  height: 16px;
+  background: var(--border-2);
+  margin: 0 6px;
+  flex: none;
+}
+
+/* Yükleniyor çubuğu (şeridin altında kayan ışık) */
+.rigel-progress {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 30%;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, var(--accent), var(--accent-2));
+  animation: rigel-slide 1.1s ease-in-out infinite;
+}
+@keyframes rigel-slide {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(340%); }
+}
+@keyframes rigel-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* --- Araç kutusu olarak nav-bar (adres çubuğu gizli düzenler) --------------------
+   nav-bar şeridin sağına taşınır; yalnız uzantılar, indirmeler ve menü görünür. */
+:root[data-rigel-urlbar="hidden"] #nav-bar {
+  flex: none !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  min-height: 0 !important;
+  --toolbarbutton-outer-padding: 1px;
+  --toolbarbutton-inner-padding: 6px;
+  --toolbar-start-end-padding: 0px;
+  -moz-window-dragging: no-drag;
+
+  #back-button,
+  #forward-button,
+  #stop-reload-button,
+  #home-button,
+  #vertical-spacer,
+  #nav-bar-customization-target > toolbarspring,
+  .titlebar-spacer {
+    display: none !important;
+  }
+  toolbarbutton.toolbarbutton-1 > :is(.toolbarbutton-icon, .toolbarbutton-badge-stack) {
+    border-radius: 7px !important;
+  }
+}
+
+/* Adres çubuğu gizli; palet yoksa tıklayınca üstte yüzen olarak açılır.
+   display:none yerine görünmez tutulur: Firefox adres biçimlendiricisi editör çerçevesi ister. */
+:root[data-rigel-urlbar="hidden"] #urlbar-container {
+  position: fixed !important;
+  top: -200px;
+  left: calc(50vw - min(320px, 30vw));
+  width: min(640px, 60vw) !important;
+  max-width: none !important;
+  margin: 0 !important;
+  z-index: 10;
+}
+:root[data-rigel-urlbar="hidden"]:not([data-rigel-urlbar-reveal]) #urlbar-container {
+  visibility: hidden !important;
+}
+:root[data-rigel-urlbar="hidden"][data-rigel-urlbar-reveal] #urlbar-container {
+  top: 6px;
+}
+
+/* Adres alanının görünümü (görünür olduğu düzenlerde ve yüzen halde) */
+:root[data-rigel-layout] #urlbar {
+  --urlbar-background-color: var(--surface);
+  --urlbar-background-color-focus: var(--surface);
+  --urlbar-border-radius: 10px;
+  --urlbarview-background-color-hover: var(--hover);
+  --urlbarview-background-color-selected: color-mix(in srgb, var(--accent) 22%, transparent);
+  --urlbarview-text-color-selected: var(--text);
+  --urlbarview-text-color-secondary: var(--text-dim);
+  --urlbarview-text-color-action: var(--accent);
+  --urlbarview-separator-color: var(--border);
+  --urlbarview-border-radius: 9px;
+  font-size: 13px;
+
+  & > .urlbar-background {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: none;
+  }
+  &:not([focused]):hover > .urlbar-background {
+    border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+  }
+  &[focused] > .urlbar-background {
+    border-color: color-mix(in srgb, var(--accent) 70%, transparent) !important;
+    outline: none !important;
+  }
+  &[popover-open] > .urlbar-background {
+    border-radius: 14px 14px 0 0 !important;
+  }
+  .urlbarView-background {
+    border-radius: 0 0 14px 14px !important;
+  }
+}
+
+/* Sekme sürükle-bırak (shell/tabdnd.mjs): bırakma çizgisi, sürüklenen düğme, "gruba ekle" halkası */
+.rigel-stars,
+.rigel-seg,
+.rgl-dr-list {
+  position: relative;
+}
+.rigel-dropline {
+  position: absolute;
+  z-index: 5;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent), 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent);
+  pointer-events: none;
+  transition: left 0.07s ease-out, top 0.07s ease-out;
+  &[hidden] { display: none; }
+  &[data-axis="y"] { width: auto; height: 3px; }
+}
+.rigel-star.dragging,
+.rigel-dtab.dragging,
+.rgl-row.dragging {
+  opacity: 0.35;
+}
+/* Sekme grubu üyeleri: renkli alt çizgi (renk adı Firefox'un grup rengi) */
+[data-rigel-group] { --rigel-grp: var(--accent); }
+[data-rigel-group="blue"] { --rigel-grp: #5b9bf0; }
+[data-rigel-group="purple"] { --rigel-grp: #a78bfa; }
+[data-rigel-group="cyan"] { --rigel-grp: #4fd1d9; }
+[data-rigel-group="orange"] { --rigel-grp: #f2a06b; }
+[data-rigel-group="yellow"] { --rigel-grp: #e8c94f; }
+[data-rigel-group="pink"] { --rigel-grp: #e879b0; }
+[data-rigel-group="green"] { --rigel-grp: #4fbf8f; }
+[data-rigel-group="gray"] { --rigel-grp: #8d96a8; }
+[data-rigel-group="red"] { --rigel-grp: #e5484d; }
+.rigel-star[data-rigel-group],
+.rigel-dtab[data-rigel-group] {
+  box-shadow: 0 3px 0 -1px var(--rigel-grp);
+}
+.drop-link {
+  outline: 2px dashed var(--accent);
+  outline-offset: -2px;
+}
+
+/* Tam ekran video: Rigel şeritleri gizlenir */
+:root[data-rigel-layout][inDOMFullscreen] .rigel-bar {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rigel-progress {
+    animation: none;
+  }
+}

@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# Rigel başlatıcısı. install.sh ve PKGBUILD bu şablondan üretir; elle düzenlemeyin.
+#   rigel [URL…] [--new-window] [--private-window] …    (Firefox bağımsız değişkenleri geçerlidir)
+# Ortam: RIGEL_HOME (uygulama dosyaları), RIGEL_PROFILE (profil klasörü).
+set -euo pipefail
+
+RIGEL_HOME="${RIGEL_HOME:-@RIGEL_HOME@}"
+PROFILE="${RIGEL_PROFILE:-@PROFILE_DEFAULT@}"
+APP="$RIGEL_HOME/app"
+
+if [[ ! -x $APP/firefox ]]; then
+  echo "Rigel kurulu değil: $APP/firefox bulunamadı." >&2
+  exit 1
+fi
+
+# Profil zaten bir Rigel penceresi tarafından kullanılıyor mu? (Firefox'un "lock" bağlantısı: "ip:+pid")
+running=0
+if [[ -L $PROFILE/lock ]]; then
+  pid="$(readlink "$PROFILE/lock" || true)"; pid="${pid##*+}"
+  if [[ $pid =~ ^[0-9]+$ ]] && kill -0 "$pid" 2>/dev/null; then running=1; fi
+fi
+
+mkdir -p "$PROFILE/chrome/CSS" "$PROFILE/chrome/resources"
+
+# chrome/utils (fx-autoconfig) ve chrome/JS (Rigel) kurulum klasörüne bağlanır; böylece güncelleme profile dokunmaz.
+link() { # $1 = hedef, $2 = bağlantı yolu
+  if [[ -L $2 && "$(readlink "$2")" == "$1" ]]; then return 0; fi
+  if [[ -L $2 ]]; then rm -f "$2"; elif [[ -e $2 ]]; then mv "$2" "$2.yedek-$(date +%s)"; fi
+  ln -s "$1" "$2"
+}
+link "$RIGEL_HOME/utils" "$PROFILE/chrome/utils"
+link "$RIGEL_HOME/rigel" "$PROFILE/chrome/JS"
+
+args=()
+if [[ $running -eq 0 ]]; then
+  # Eski sürüm tercihleri user.js ile zorluyordu; kullanıcı ayarları kalıcı olsun diye kaldırılır.
+  if [[ -f $PROFILE/user.js ]] && grep -q 'Rigel varsayılan tercihleri' "$PROFILE/user.js"; then
+    rm -f "$PROFILE/user.js"
+  fi
+  # Rigel dosyaları değiştiyse (güncelleme ya da geliştirme) Firefox'un başlangıç önbelleği silinir.
+  stamp="$(cat "$RIGEL_HOME/VERSION" 2>/dev/null || true)"
+  if [[ "$(cat "$PROFILE/.rigel-surum" 2>/dev/null || true)" != "$stamp" ]]; then
+    rm -rf "$PROFILE/startupCache"
+    printf '%s\n' "$stamp" > "$PROFILE/.rigel-surum"
+    args=(-purgecaches)
+  fi
+fi
+
+# --name/--class rigel: Wayland app_id ve X11 WM_CLASS "rigel" olur (görev çubuğu rigel.desktop ile eşler).
+# Rigel zaten açıksa adres/pencere isteği çalışan örneğe gider.
+exec "$APP/firefox" --name rigel --class rigel --profile "$PROFILE" ${args[@]+"${args[@]}"} "$@"

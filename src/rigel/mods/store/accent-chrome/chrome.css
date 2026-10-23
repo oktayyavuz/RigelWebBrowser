@@ -1,0 +1,32 @@
+/* Vurgu tonlu arayüz — Rigel modu */
+/* Bütün arayüzü seçtiğin vurgu renginin tonuna boyar: şeritler, araç çubuğu, paneller, menüler. Vurgu rengini
+   Ayarlar › Görünüm'den değiştirince ton da değişir. İsteğe bağlı: sekme şeridinde degrade ve vurgu renkli çizgiler.
+   Gizli pencerelere dokunmaz. Ayarlar: strength, gradient, lines. */
+:root:root:root:not([data-rigel-private]) {
+  --ac-s: var(--rigel-mod-accent-chrome-strength, 16%);
+  --bg: color-mix(in srgb, var(--accent) calc(var(--ac-s) * 0.5), #0c0f16);
+  --bar: color-mix(in srgb, var(--accent) var(--ac-s), #0f131c);
+  --surface: color-mix(in srgb, var(--accent) calc(var(--ac-s) * 0.8), #151b27);
+  --surface-2: color-mix(in srgb, var(--accent) calc(var(--ac-s) * 0.8), #1c2433);
+  --toolbar-bgcolor: var(--surface);
+  --toolbox-background-color: var(--bar);
+  --sidebar-background-color: var(--bar);
+}
+:root:root:root[data-rigel-theme="light"]:not([data-rigel-private]) {
+  --bg: color-mix(in srgb, var(--accent) calc(var(--ac-s) * 0.4), #f4f6fa);
+  --bar: color-mix(in srgb, var(--accent) var(--ac-s), #eef1f6);
+  --surface: color-mix(in srgb, var(--accent) calc(var(--ac-s) * 0.5), #ffffff);
+  --surface-2: color-mix(in srgb, var(--accent) calc(var(--ac-s) * 0.7), #e6eaf1);
+}
+/* Degrade: sekme şeridi ve üst şeritler vurgu renginden aşağı doğru açılır */
+:root:root:root[rigel-mod-accent-chrome-gradient]:not([data-rigel-private]) :is(#TabsToolbar, #rigel-ada, #rigel-docktop, #rigel-komuta) {
+  background: linear-gradient(100deg, color-mix(in srgb, var(--accent) calc(var(--ac-s) * 3), var(--bar)), var(--bar) 60%, color-mix(in srgb, var(--accent-2) calc(var(--ac-s) * 1.6), var(--bar))) !important;
+}
+:root:root:root[rigel-mod-accent-chrome-gradient][data-rigel-layout="yanpanel"]:not([data-rigel-private]) #sidebar-container {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) calc(var(--ac-s) * 2.4), var(--bar)), var(--bar) 70%) !important;
+}
+/* Vurgu renkli ayırıcı çizgiler */
+:root:root:root[rigel-mod-accent-chrome-lines]:not([data-rigel-private]) {
+  --border: color-mix(in srgb, var(--accent) 30%, transparent);
+  --border-2: color-mix(in srgb, var(--accent) 45%, transparent);
+}

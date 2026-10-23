@@ -1,0 +1,28 @@
+[Desktop Entry]
+Type=Application
+Version=1.5
+Name=Rigel
+GenericName=Web Tarayıcısı
+GenericName[en]=Web Browser
+Comment=Sade, hızlı ve gizlilik odaklı web tarayıcısı
+Comment[en]=Simple, fast and private web browser
+Exec="@RIGEL_RUN@" %u
+Icon=rigel
+Terminal=false
+StartupNotify=true
+StartupWMClass=rigel
+Categories=Network;WebBrowser;
+MimeType=text/html;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/https;
+Keywords=tarayıcı;internet;web;browser;
+Keywords[en]=browser;internet;web;
+Actions=new-window;new-private-window;
+
+[Desktop Action new-window]
+Name=Yeni pencere
+Name[en]=New Window
+Exec="@RIGEL_RUN@" --new-window
+
+[Desktop Action new-private-window]
+Name=Yeni gizli pencere
+Name[en]=New Private Window
+Exec="@RIGEL_RUN@" --private-window

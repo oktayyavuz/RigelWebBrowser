@@ -1,0 +1,50 @@
+{
+  "name": "SuperPins",
+  "description": "Sabitlenmiş sekmeler Zen'in Essentials'ı gibi büyük karolar olur. Klasik'te sekme şeridinin başında çerçeveli bir grup, Yan Panel'de ayarlanabilir bir ızgara. Seçili karo vurgu rengini alır; uyuyanlar soluklaşır.",
+  "author": "CosmoCreeper",
+  "version": "1.0.0",
+  "target": "chrome",
+  "homepage": "https://github.com/CosmoCreeper/Zen-Themes/tree/main/SuperPins",
+  "license": "MIT",
+  "source": "https://github.com/zen-browser/theme-store/tree/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc",
+  "prefs": [
+    {
+      "key": "size",
+      "label": "Karo boyutu",
+      "type": "dropdown",
+      "default": "normal",
+      "options": [
+        {
+          "value": "small",
+          "label": "Küçük"
+        },
+        {
+          "value": "normal",
+          "label": "Orta"
+        },
+        {
+          "value": "large",
+          "label": "Büyük"
+        }
+      ]
+    },
+    {
+      "key": "frame",
+      "label": "Grubu çerçevele",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "key": "tint",
+      "label": "Karolara vurgu tonu",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "key": "dim",
+      "label": "Uyuyan sabitleri soluklaştır",
+      "type": "checkbox",
+      "default": true
+    }
+  ]
+}

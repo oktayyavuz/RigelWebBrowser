@@ -1,0 +1,18 @@
+/* sidebar-main gölge DOM'u (Yan Panel). Rigel kendi alt düğmelerini çizdiği için
+   Firefox'un araç/eklenti düğmelerini gizler. */
+.wrapper {
+  padding: 0 !important;
+  gap: 0 !important;
+}
+.buttons-wrapper,
+#sidebar-tools-and-extensions-splitter {
+  display: none !important;
+}
+:host {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+}
+.wrapper {
+  width: 100% !important;
+}

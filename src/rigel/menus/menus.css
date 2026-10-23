@@ -1,0 +1,39 @@
+/* Rigel sağ tık menüleri: gizleme işaretleri, ikonlar, ikon sırası (geri/ileri/yenile/yer imi).
+   Genel menü kartı/satır kuralları theme/panels.css içinde; burası menülere özgü parçalar. */
+
+/* Kalıcı gizleme (Firefox her açılışta `hidden`ı kendisi hesaplar; bunlar ona bağlı değil) */
+menupopup > [rigel-hide],
+menupopup > [rigel-collapse] { display: none !important; }
+
+/* İkonlar: common.mjs her [rigel-icon] için --rigel-mi (maske resmi) üretir. Firefox'un `.menu-icon` <img>i boş
+   bir resimle doldurulur, rengi arka plandan gelir, şekli maskeden: tema rengini izler, bağlam özelliği gerekmez. */
+menupopup [rigel-icon] > .menu-icon {
+  content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'/%3E");
+  --icon-size: 16px;
+  margin-inline-end: 10px;
+  background-color: var(--text-dim);
+  mask: var(--rigel-mi) center / 16px 16px no-repeat;
+}
+menupopup [rigel-icon="blank"] > .menu-icon { mask: none; background: none; }
+menupopup [rigel-icon]:is([_moz-menuactive], :hover):not([disabled]) > .menu-icon { background-color: var(--text); }
+menupopup [rigel-icon][disabled] > .menu-icon { opacity: 0.4; }
+
+/* Onay ve radyo öğeleri: ikon yuvasıyla aynı genişlik, metinler hizalı kalsın */
+menupopup :is(menuitem[type="checkbox"], menuitem[type="radio"]) > .menu-icon {
+  --icon-size: 16px;
+  margin-inline-end: 10px;
+}
+
+/* Uygulama menüsü (hamburger) ve araç çubuğu düğmeleri: aynı maske tekniği, `.toolbarbutton-icon` üstünde. */
+:is(panelview, toolbar, #customization-palette, #widget-overflow-fixed-list) toolbarbutton[rigel-icon] > .toolbarbutton-icon {
+  list-style-image: none;
+  width: 16px;
+  height: 16px;
+  background-color: var(--text-dim);
+  mask: var(--rigel-mi) center / 16px 16px no-repeat;
+  fill: none;
+}
+panelview toolbarbutton[rigel-icon] > .toolbarbutton-icon { margin-inline-end: 8px; }
+toolbarbutton[rigel-icon]:is(:hover, [open], :focus-visible) > .toolbarbutton-icon { background-color: var(--text); }
+/* Özelleştirme paletinde ve ek menüde düğme 24 px'lik bir ikon bekler */
+#customization-palette toolbarbutton[rigel-icon] > .toolbarbutton-icon { width: 20px; height: 20px; mask-size: 20px 20px; }

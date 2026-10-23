@@ -1,0 +1,42 @@
+{
+  "name": "Vurgu tonlu arayüz",
+  "description": "Bütün arayüzü vurgu renginin tonuna boyar: şeritler, araç çubuğu, paneller ve menüler. Vurgu rengini değiştirince ton da değişir. İsteğe bağlı: sekme şeridinde degrade ve vurgu renkli ayırıcı çizgiler. Bütün düzenlerde.",
+  "author": "Rigel",
+  "version": "1.0.0",
+  "target": "chrome",
+  "prefs": [
+    {
+      "key": "strength",
+      "label": "Ton gücü",
+      "type": "dropdown",
+      "default": "16%",
+      "options": [
+        {
+          "value": "8%",
+          "label": "Hafif"
+        },
+        {
+          "value": "16%",
+          "label": "Orta"
+        },
+        {
+          "value": "26%",
+          "label": "Güçlü"
+        }
+      ]
+    },
+    {
+      "key": "gradient",
+      "label": "Şeritte degrade",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "key": "lines",
+      "label": "Vurgu renkli çizgiler",
+      "type": "checkbox",
+      "default": false
+    }
+  ],
+  "license": "MPL-2.0"
+}

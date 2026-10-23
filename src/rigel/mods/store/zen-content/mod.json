@@ -1,0 +1,62 @@
+{
+  "name": "Yüzen sayfa kartı",
+  "description": "Web sayfası kenarlardan boşluklu, yuvarlak köşeli ve gölgeli bir kart olarak yüzer; arkası arayüz rengiyle dolar. Klasik'te araç çubuğuyla bütünleşir. İsteğe bağlı: arkada vurgu renginde ışıltı.",
+  "author": "Rigel",
+  "version": "2.0.0",
+  "target": "chrome",
+  "prefs": [
+    {
+      "key": "radius",
+      "label": "Köşe",
+      "type": "dropdown",
+      "default": "14px",
+      "options": [
+        {
+          "value": "8px",
+          "label": "Hafif"
+        },
+        {
+          "value": "14px",
+          "label": "Orta"
+        },
+        {
+          "value": "20px",
+          "label": "Yuvarlak"
+        }
+      ]
+    },
+    {
+      "key": "gap",
+      "label": "Kenar boşluğu",
+      "type": "dropdown",
+      "default": "10px",
+      "options": [
+        {
+          "value": "6px",
+          "label": "Dar"
+        },
+        {
+          "value": "10px",
+          "label": "Orta"
+        },
+        {
+          "value": "16px",
+          "label": "Geniş"
+        }
+      ]
+    },
+    {
+      "key": "shadow",
+      "label": "Gölge",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "key": "glow",
+      "label": "Arkada vurgu ışıltısı",
+      "type": "checkbox",
+      "default": true
+    }
+  ],
+  "license": "MPL-2.0"
+}

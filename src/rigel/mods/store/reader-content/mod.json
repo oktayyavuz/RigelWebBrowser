@@ -1,0 +1,72 @@
+{
+  "name": "Okuma dostu sayfalar",
+  "description": "Web yazılarını okunaklı yapar: metne okuma yazı tipi ve ferah satır aralığı, ince alt çizgili bağlantılar, dengeli başlıklar, renkli alıntı çizgisi, belirgin seçim rengi ve yumuşak kaydırma. Kod ve simgeler değişmez.",
+  "author": "Rigel",
+  "version": "2.0.0",
+  "target": "content",
+  "prefs": [
+    {
+      "key": "font",
+      "label": "Yazı tipi",
+      "type": "dropdown",
+      "default": "Georgia, \"Noto Serif\", serif",
+      "options": [
+        {
+          "value": "Georgia, \"Noto Serif\", serif",
+          "label": "Tırnaklı (Georgia)"
+        },
+        {
+          "value": "system-ui, \"Noto Sans\", sans-serif",
+          "label": "Tırnaksız (sistem)"
+        },
+        {
+          "value": "\"Atkinson Hyperlegible\", \"Noto Sans\", sans-serif",
+          "label": "Hyperlegible"
+        }
+      ]
+    },
+    {
+      "key": "leading",
+      "label": "Satır aralığı",
+      "type": "dropdown",
+      "default": "1.7",
+      "options": [
+        {
+          "value": "1.55",
+          "label": "Sıkı"
+        },
+        {
+          "value": "1.7",
+          "label": "Orta"
+        },
+        {
+          "value": "1.85",
+          "label": "Ferah"
+        }
+      ]
+    },
+    {
+      "key": "selection",
+      "label": "Seçim ve vurgu rengi",
+      "type": "string",
+      "default": "#5fa9dd"
+    },
+    {
+      "key": "scroll",
+      "label": "Kaydırma",
+      "type": "dropdown",
+      "default": "smooth",
+      "options": [
+        {
+          "value": "smooth",
+          "label": "Yumuşak"
+        },
+        {
+          "value": "auto",
+          "label": "Sitenin ayarı"
+        }
+      ]
+    }
+  ],
+  "license": "MPL-2.0"
+}

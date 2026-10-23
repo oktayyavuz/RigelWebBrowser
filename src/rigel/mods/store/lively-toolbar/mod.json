@@ -1,0 +1,42 @@
+{
+  "name": "Canlı araç çubuğu",
+  "description": "Düğmeler üstüne gelince yükselip vurgu rengiyle parlar, basınca içe çöker; yeni sekme \"+\" döner, yenile bir tur atar, geri/ileri yönüne kayar, adres çubuğu odakta halka alır, sekmeler üstüne gelince kalkar. \"Hareketi azalt\" açıksa durur.",
+  "author": "Rigel",
+  "version": "1.0.0",
+  "target": "chrome",
+  "prefs": [
+    {
+      "key": "intensity",
+      "label": "Güç",
+      "type": "dropdown",
+      "default": "normal",
+      "options": [
+        {
+          "value": "soft",
+          "label": "Hafif"
+        },
+        {
+          "value": "normal",
+          "label": "Orta"
+        },
+        {
+          "value": "strong",
+          "label": "Güçlü"
+        }
+      ]
+    },
+    {
+      "key": "glow",
+      "label": "Vurgu parıltısı",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "key": "tabs",
+      "label": "Sekmelere de uygula",
+      "type": "checkbox",
+      "default": true
+    }
+  ],
+  "license": "MPL-2.0"
+}

@@ -1,0 +1,83 @@
+/* Rigel hareket sistemi. Süre ve eğri belirteçleri + kabuğun ortak giriş/çıkış hareketleri.
+   Kural: yalnız transform ve opacity; 120–240 ms; prefers-reduced-motion açıksa süreler 0.
+   Diğer dosyalar belirteçleri yedek değerle kullanır: var(--rigel-dur-2, 180ms).
+   rigel.uc.mjs bunu tarayıcı penceresine, sayfalar (sihirbaz) <link> ile yükler. */
+:root {
+  --rigel-dur-1: 120ms;
+  --rigel-dur-2: 180ms;
+  --rigel-dur-3: 240ms;
+  --rigel-ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --rigel-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --rigel-ease-spring: cubic-bezier(0.34, 1.36, 0.64, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --rigel-dur-1: 0s;
+    --rigel-dur-2: 0s;
+    --rigel-dur-3: 0s;
+  }
+}
+
+@keyframes rigel-m-fade { from { opacity: 0; } }
+
+/* --- Palet ve çekmece: [hidden] olunca hemen display:none olmaz; görünmez kalır ve solarak/kayarak
+   kapanır (Firefox display geçişini desteklemiyor). Gizliyken çizilmez ve tıklanmaz. ---------------- */
+#rigel-palette:not([hidden]) {
+  transition: opacity var(--rigel-dur-1) var(--rigel-ease-out), visibility 0s;
+}
+#rigel-palette[hidden] {
+  display: flex !important;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--rigel-dur-1) var(--rigel-ease-in), visibility 0s linear var(--rigel-dur-1);
+}
+#rigel-palette > .rgl-pal-card { transition: transform var(--rigel-dur-2) var(--rigel-ease-out); }
+#rigel-palette[hidden] > .rgl-pal-card { transform: translateY(-6px) scale(0.97); transition-duration: var(--rigel-dur-1); transition-timing-function: var(--rigel-ease-in); }
+
+#rigel-drawer[hidden] {
+  display: flex !important;
+  visibility: hidden;
+  pointer-events: none;
+  transition: background-color var(--rigel-dur-2) ease, visibility 0s linear var(--rigel-dur-2);
+}
+
+/* --- Rigel iletişim kutusu: perde solarak gelir ------------------------------------------------ */
+#rigel-dialog { animation: rigel-m-fade var(--rigel-dur-2) var(--rigel-ease-out); }
+
+/* --- Düzen değişimi: şeritler kısa bir çapraz geçişle belirir (data-rigel-ready her düzende yeniden yazılır) */
+:root[data-rigel-ready] :is(#navigator-toolbox, #sidebar-main, .rigel-bar) {
+  animation: rigel-m-chrome-in var(--rigel-dur-3) var(--rigel-ease-out);
+}
+@keyframes rigel-m-chrome-in { from { opacity: 0.35; } }
+
+/* --- Yerel sekmeler (Yan Panel, Klasik): açılan ya da alan değişince görünen sekme kayarak gelir ---- */
+#tabbrowser-tabs .tabbrowser-tab > .tab-stack {
+  animation: rigel-m-tab-in-y var(--rigel-dur-2) var(--rigel-ease-out);
+}
+#tabbrowser-tabs[orient="vertical"] .tabbrowser-tab > .tab-stack {
+  animation-name: rigel-m-tab-in-x;
+}
+#tabbrowser-tabs .tabbrowser-tab[closing] > .tab-stack {
+  opacity: 0;
+  transform: scale(0.96);
+  transition: opacity var(--rigel-dur-1) var(--rigel-ease-in), transform var(--rigel-dur-1) var(--rigel-ease-in);
+}
+@keyframes rigel-m-tab-in-y { from { opacity: 0; transform: translateY(4px); } }
+@keyframes rigel-m-tab-in-x { from { opacity: 0; transform: translateX(-10px); } }
+
+/* --- Basma geri bildirimi: düğmeler ve satırlar basılınca hafifçe içeri çöker ------------------- */
+:where(.rigel-tool, .rigel-nb, .rgl-tool, .rigel-add, .rigel-more, .rigel-glance-btn, #rigel-dialog button, .rgl-panel footer button) {
+  transition: transform var(--rigel-dur-1) var(--rigel-ease-out);
+}
+:where(.rigel-tool, .rigel-nb, .rgl-tool, .rigel-add, .rigel-more, .rigel-glance-btn, #rigel-dialog button, .rgl-panel footer button):active:not(:disabled) {
+  transform: scale(0.92);
+}
+:where(.rgl-row, .rgl-pal-row, .rigel-identity, .rigel-crumb, .rigel-counter, .rigel-omni, .rgl-menu button) {
+  transition: transform var(--rigel-dur-1) var(--rigel-ease-out);
+}
+:where(.rgl-row, .rgl-pal-row, .rigel-identity, .rigel-crumb, .rigel-counter, .rigel-omni, .rgl-menu button):active {
+  transform: scale(0.985);
+}
+:root[data-rigel-layout="ada"] .rigel-star:active { transform: scale(0.9); }
+:root[data-rigel-layout="dock"] .rigel-dtab:active { transform: translateY(-1px) scale(0.98); }

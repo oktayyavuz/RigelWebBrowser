@@ -1,0 +1,167 @@
+/* Rigel iletişim kutuları (shell/dialog.mjs). Palet kartının görünümü; yalnız tema belirteçleri. */
+
+:where(#rigel-dialog) {
+  font: 13px/1.4 var(--font);
+  color: var(--text);
+  -moz-window-dragging: no-drag;
+}
+:where(#rigel-dialog) :where(button, input) {
+  appearance: none;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+}
+:where(#rigel-dialog) :where(button) {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: default;
+}
+
+#rigel-dialog {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483200;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: max(56px, 18vh);
+  background: var(--scrim);
+}
+
+.rgl-dlg {
+  width: min(420px, calc(100vw - 32px));
+  max-height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 16px 14px;
+  background: var(--surface);
+  border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  overflow: auto;
+  animation: rgl-dlg-pop var(--rigel-dur-2, 180ms) var(--rigel-ease-out, ease-out);
+
+  & .rgl-dlg-title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  & .rgl-dlg-msg {
+    margin: -4px 0 0;
+    color: var(--text-dim);
+    white-space: pre-wrap;
+  }
+  & .rgl-dlg-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    &[hidden] { display: none; }
+  }
+  & .rgl-dlg-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  & .rgl-dlg-lbl {
+    font-size: 11.5px;
+    letter-spacing: 0.3px;
+    color: var(--text-faint);
+  }
+
+  & .rgl-dlg-input {
+    height: 36px;
+    box-sizing: border-box;
+    padding: 0 12px;
+    background: var(--bg);
+    border: 1px solid var(--border-2);
+    border-radius: 9px;
+    outline: 0;
+    font-size: 14px;
+    color: var(--text);
+    min-width: 0;
+    &::placeholder { color: var(--text-faint); }
+    &:focus { border-color: color-mix(in srgb, var(--accent) 70%, transparent); }
+  }
+
+  & .rgl-dlg-pickrow {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  & .rgl-dlg-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--cols, 6), 1fr);
+    gap: 4px;
+  }
+  & .rgl-dlg-opt {
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    font-size: 20px;
+    line-height: 1;
+    color: var(--text);
+    &:hover { background: var(--hover); }
+    &[aria-checked="true"] {
+      background: var(--active);
+      box-shadow: 0 0 0 1.5px var(--accent) inset;
+    }
+    &:focus-visible { outline: 2px solid var(--accent-line); outline-offset: 1px; }
+  }
+  & .rgl-dlg-custom {
+    width: 96px;
+    height: 32px;
+    font-size: 13px;
+  }
+
+  & .rgl-dlg-foot {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 2px;
+  }
+  & .rgl-dlg-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 32px;
+    padding: 0 12px 0 14px;
+    border-radius: 9px;
+    color: var(--text-dim);
+    border: 1px solid var(--border-2);
+    &:hover { background: var(--hover); color: var(--text); }
+    &:focus-visible { outline: 2px solid var(--accent-line); outline-offset: 1px; }
+    & kbd {
+      font: 600 10.5px var(--mono);
+      padding: 1px 5px;
+      border-radius: 5px;
+      color: var(--text-faint);
+      background: var(--hover);
+      border: 1px solid var(--border);
+    }
+    &.ok {
+      background: var(--accent);
+      border-color: transparent;
+      color: var(--accent-ink);
+      font-weight: 600;
+      &:hover { background: var(--accent-2); }
+      & kbd {
+        color: inherit;
+        background: color-mix(in srgb, var(--accent-ink) 18%, transparent);
+        border-color: transparent;
+      }
+      &:disabled { opacity: 0.4; pointer-events: none; }
+      &.danger { background: var(--danger); color: var(--on-danger); &:hover { background: var(--danger); filter: brightness(1.1); } }
+    }
+  }
+}
+
+@keyframes rgl-dlg-pop {
+  from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rgl-dlg { animation: none; }
+}

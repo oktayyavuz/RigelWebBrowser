@@ -1,0 +1,26 @@
+/* Satır yüksekliği --rigel-mod-compact-tabs-density, yazı boyutu --rigel-mod-compact-tabs-font-size değişkeninden gelir.
+   Rigel'in düzen kuralları #id ve !important kullandığından seçiciler #tabbrowser-tabs ile ve :root tekrarıyla güçlendirildi. */
+:root:root:root:root #tabbrowser-tabs .tabbrowser-tab:not([pinned]) .tab-background {
+  min-height: var(--rigel-mod-compact-tabs-density, 26px) !important;
+  max-height: var(--rigel-mod-compact-tabs-density, 26px) !important;
+}
+:root:root:root:root #tabbrowser-tabs .tabbrowser-tab:not([pinned]) .tab-content {
+  padding-block: 0 !important;
+  gap: 7px !important;
+}
+:root:root:root:root #tabbrowser-tabs .tab-label {
+  font-size: var(--rigel-mod-compact-tabs-font-size, 12px) !important;
+}
+:root:root:root:root #tabbrowser-tabs .tab-close-button {
+  width: 18px !important;
+  height: 18px !important;
+  padding: 3px !important;
+}
+:root:root:root:root #tabbrowser-tabs .tabbrowser-tab:not([pinned]) { margin-block: 0 !important; }
+/* Sekme paneli (Ctrl+Shift+A) */
+:root:root:root:root .rgl-tabs .rgl-row {
+  min-height: var(--rigel-mod-compact-tabs-density, 26px) !important;
+  height: var(--rigel-mod-compact-tabs-density, 26px) !important;
+  padding-block: 0 !important;
+  font-size: var(--rigel-mod-compact-tabs-font-size, 12px) !important;
+}

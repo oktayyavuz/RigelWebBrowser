@@ -1,0 +1,58 @@
+/* Hap sekmeler — Rigel modu */
+/* Klasik düzende sekmeler şeride yapışık kulakçıklar yerine dikey ortalanmış, tam yuvarlak haplar olur.
+   Seçili hap vurgu rengini alır (ton, dolu ya da çerçeve). Kapatma düğmesi istersen yalnız üstüne gelince.
+   Ayarlar: style (tint|solid|outline), height, maxw, closehover. */
+:root:root:root[data-rigel-layout="klasik"] {
+  --mk-h: var(--rigel-mod-minimal-klasik-tabs-height, 30px);
+}
+:root:root:root[data-rigel-layout="klasik"] #TabsToolbar { padding: 0 6px 0 8px !important; }
+:root:root:root[data-rigel-layout="klasik"] #TabsToolbar .toolbar-items { align-items: center !important; }
+:root:root:root[data-rigel-layout="klasik"] #TabsToolbar #tabbrowser-tabs { min-height: var(--mk-h) !important; }
+:root:root:root[data-rigel-layout="klasik"] #TabsToolbar .tabbrowser-tab {
+  min-height: var(--mk-h) !important;
+  padding: 0 2px !important;
+}
+:root:root:root[data-rigel-layout="klasik"] #TabsToolbar .tabbrowser-tab[fadein]:not([pinned]) {
+  max-width: var(--rigel-mod-minimal-klasik-tabs-maxw, 200px) !important;
+}
+:root:root:root[data-rigel-layout="klasik"] #TabsToolbar .tabbrowser-tab .tab-background {
+  min-height: var(--mk-h) !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  box-shadow: inset 0 0 0 1px transparent !important;
+}
+:root:root:root[data-rigel-layout="klasik"] #TabsToolbar .tabbrowser-tab:hover > .tab-stack > .tab-background:not([selected], [multiselected]) {
+  background: var(--hover) !important;
+  box-shadow: inset 0 0 0 1px var(--border) !important;
+}
+/* Seçili: vurgu tonu (varsayılan) */
+:root:root:root[data-rigel-layout="klasik"] #TabsToolbar .tabbrowser-tab .tab-background:is([selected], [multiselected]) {
+  background: color-mix(in srgb, var(--accent) 22%, var(--surface)) !important;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent) !important;
+}
+:root:root:root[data-rigel-layout="klasik"] #TabsToolbar .tabbrowser-tab[selected] .tab-label { color: var(--text) !important; font-weight: 600; }
+/* Dolu */
+:root:root:root[data-rigel-layout="klasik"][rigel-mod-minimal-klasik-tabs-style="solid"] #TabsToolbar .tabbrowser-tab .tab-background:is([selected], [multiselected]) {
+  background: var(--accent) !important;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 40%, transparent) !important;
+}
+:root:root:root[data-rigel-layout="klasik"][rigel-mod-minimal-klasik-tabs-style="solid"] #TabsToolbar .tabbrowser-tab[selected] :is(.tab-label, .tab-close-button) {
+  color: var(--accent-ink) !important;
+  fill: var(--accent-ink) !important;
+}
+/* Çerçeve */
+:root:root:root[data-rigel-layout="klasik"][rigel-mod-minimal-klasik-tabs-style="outline"] #TabsToolbar .tabbrowser-tab .tab-background:is([selected], [multiselected]) {
+  background: transparent !important;
+  box-shadow: inset 0 0 0 1.5px var(--accent) !important;
+}
+:root:root:root[data-rigel-layout="klasik"] #TabsToolbar .tabbrowser-tab .tab-content {
+  padding-inline: 11px 5px !important;
+  gap: 7px;
+}
+:root:root:root[data-rigel-layout="klasik"] #TabsToolbar .tabbrowser-tab[pinned] .tab-content { padding-inline: 10px !important; }
+:root:root:root[data-rigel-layout="klasik"] #TabsToolbar .tab-close-button { border-radius: 999px !important; }
+:root:root:root[data-rigel-layout="klasik"][rigel-mod-minimal-klasik-tabs-closehover] #TabsToolbar .tabbrowser-tab:not(:hover) .tab-close-button {
+  opacity: 0 !important;
+}
+:root:root:root[data-rigel-layout="klasik"] #TabsToolbar :is(#tabs-newtab-button, #new-tab-button) { align-self: center !important; margin: 0 0 0 4px !important; }
+:root:root:root[data-rigel-layout="klasik"] #TabsToolbar :is(#tabs-newtab-button, #new-tab-button) > .toolbarbutton-icon { border-radius: 999px !important; }

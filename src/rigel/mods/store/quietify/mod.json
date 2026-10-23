@@ -1,0 +1,44 @@
+{
+  "name": "Quietify ses göstergesi",
+  "description": "Ses çalan sekmede site simgesinin yerine dans eden bir ekolayzer, sessize alınmışta düz noktalar. Üstüne gelince simge geri gelir. Vurgu, yazı ya da gökkuşağı renkli; sekmenin altında hafif parıltı.",
+  "author": "wysh3",
+  "version": "1.0.0",
+  "target": "chrome",
+  "homepage": "https://github.com/wysh3/Zen-Mods/tree/main/Quietify",
+  "license": "MIT",
+  "source": "https://github.com/zen-browser/theme-store/tree/main/themes/fd24f832-a2e6-4ce9-8b19-7aa888eb7f8e",
+  "prefs": [
+    {
+      "key": "color",
+      "label": "Renk",
+      "type": "dropdown",
+      "default": "accent",
+      "options": [
+        {
+          "value": "accent",
+          "label": "Vurgu rengi"
+        },
+        {
+          "value": "text",
+          "label": "Yazı rengi"
+        },
+        {
+          "value": "rainbow",
+          "label": "Gökkuşağı"
+        }
+      ]
+    },
+    {
+      "key": "hidebutton",
+      "label": "Ayrı ses düğmesini gizle (üstüne gelince görünür)",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "key": "glow",
+      "label": "Sekmenin altında parıltı",
+      "type": "checkbox",
+      "default": true
+    }
+  ]
+}

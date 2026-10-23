@@ -1,0 +1,47 @@
+/* Canlı araç çubuğu — Rigel modu */
+/* Araç çubuğuna canlılık: düğmeler üstüne gelince hafifçe yükselir ve vurgu rengiyle parlar, basınca içe çöker;
+   yeni sekme "+" döner, yenile simgesi bir tur atar, adres çubuğu odakta vurgu halkasıyla büyür, sekmeler
+   üstüne gelince kalkar. Yalnız transform/opacity; "hareketi azalt" açıksa kapalı. Ayarlar: intensity, glow, tabs. */
+:root:root:root {
+  --lt-lift: -2px;
+  --lt-scale: 1.08;
+  --lt-dur: 0.18s;
+}
+:root:root:root[rigel-mod-lively-toolbar-intensity="soft"] { --lt-lift: -1px; --lt-scale: 1.04; }
+:root:root:root[rigel-mod-lively-toolbar-intensity="strong"] { --lt-lift: -3px; --lt-scale: 1.14; }
+
+:root:root:root :is(#nav-bar, #TabsToolbar, .rigel-tools) toolbarbutton > :is(.toolbarbutton-icon, .toolbarbutton-badge-stack) {
+  transition: transform var(--lt-dur) cubic-bezier(0.3, 1.5, 0.5, 1), background-color var(--lt-dur) ease, box-shadow var(--lt-dur) ease !important;
+}
+:root:root:root :is(#nav-bar, #TabsToolbar, .rigel-tools) toolbarbutton:not([disabled]):hover > :is(.toolbarbutton-icon, .toolbarbutton-badge-stack) {
+  transform: translateY(var(--lt-lift)) scale(var(--lt-scale));
+  background-color: color-mix(in srgb, var(--accent) 18%, transparent) !important;
+}
+:root:root:root[rigel-mod-lively-toolbar-glow] :is(#nav-bar, #TabsToolbar, .rigel-tools) toolbarbutton:not([disabled]):hover > :is(.toolbarbutton-icon, .toolbarbutton-badge-stack) {
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--accent) 35%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent);
+  fill: var(--accent) !important;
+}
+:root:root:root :is(#nav-bar, #TabsToolbar, .rigel-tools) toolbarbutton:not([disabled]):hover:active > :is(.toolbarbutton-icon, .toolbarbutton-badge-stack) {
+  transform: scale(0.9);
+  transition-duration: 0.08s !important;
+}
+/* Yeni sekme + döner, yenile bir tur atar */
+:root:root:root :is(#tabs-newtab-button, #new-tab-button):hover > .toolbarbutton-icon { transform: rotate(90deg) scale(var(--lt-scale)) !important; }
+:root:root:root #reload-button:not([disabled]):hover > .toolbarbutton-icon { transform: rotate(180deg) scale(var(--lt-scale)) !important; transition-duration: 0.24s !important; }
+:root:root:root #back-button:not([disabled]):hover > .toolbarbutton-icon { transform: translateX(-2px) scale(var(--lt-scale)) !important; }
+:root:root:root #forward-button:not([disabled]):hover > .toolbarbutton-icon { transform: translateX(2px) scale(var(--lt-scale)) !important; }
+/* Adres çubuğu: odakta hafif büyür ve vurgu halkası */
+:root:root:root #urlbar > .urlbar-background { transition: transform var(--lt-dur) ease, box-shadow var(--lt-dur) ease; }
+:root:root:root #urlbar[focused]:not([open]) > .urlbar-background {
+  transform: scaleY(1.06);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent), 0 8px 24px color-mix(in srgb, var(--accent) 18%, transparent) !important;
+  border-color: var(--accent) !important;
+}
+/* Sekmeler üstüne gelince kalkar */
+:root:root:root[rigel-mod-lively-toolbar-tabs] .tabbrowser-tab > .tab-stack { transition: transform var(--lt-dur) cubic-bezier(0.3, 1.5, 0.5, 1); }
+:root:root:root[rigel-mod-lively-toolbar-tabs] .tabbrowser-tab:not([selected]):hover > .tab-stack { transform: translateY(var(--lt-lift)); }
+:root:root:root[rigel-mod-lively-toolbar-tabs] .tabbrowser-tab .tab-icon-image { transition: transform var(--lt-dur) ease; }
+:root:root:root[rigel-mod-lively-toolbar-tabs] .tabbrowser-tab:hover .tab-icon-image { transform: scale(1.15) rotate(-6deg); }
+@media (prefers-reduced-motion: reduce) {
+  :root:root:root toolbarbutton > *, :root:root:root .tabbrowser-tab > .tab-stack, :root:root:root .tab-icon-image, :root:root:root #urlbar > .urlbar-background { transition: none !important; transform: none !important; }
+}

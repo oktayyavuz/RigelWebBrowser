@@ -1,0 +1,80 @@
+/* Rigel tasarım belirteçleri. Logo gradyanı: #5b86e0 → #5fa9dd → #7cc3dc (yalnız marka; arayüz vurguyu --accent ile alır).
+   Tema ve vurgu rengi kök öğede: <window data-rigel-theme="dark|light" data-rigel-accent>. theme/theme.mjs yazar.
+   Sayfalar (chrome://rigel) theme/page.mjs ile aynı öznitelikleri alır. */
+:root {
+  --logo-a: #5b86e0;
+  --logo-b: #5fa9dd;
+  --logo-c: #7cc3dc;
+
+  --bg: #0c0f16;
+  --bar: #0f131c;
+  --surface: #151b27;
+  --surface-2: #1c2433;
+  --hover: rgba(255, 255, 255, 0.05);
+  --border: rgba(255, 255, 255, 0.07);
+  --border-2: rgba(255, 255, 255, 0.12);
+  --text: #e7ebf3;
+  --text-dim: #8d96a8;
+  --text-faint: #5a6273;
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  --private: #a78bfa;
+  --danger: #e5484d;
+  --on-danger: #ffffff;
+  --scrim: rgba(4, 7, 12, 0.32);
+  --scrim-soft: rgba(4, 7, 12, 0.18);
+  --shadow-sm: 0 6px 20px rgba(0, 0, 0, 0.25);
+  --fav-ink: #ffffff;
+
+  --accent: #5fa9dd;
+  --accent-2: #7cc3dc;
+  --accent-ink: #08101c;
+
+  --font: system-ui, "Noto Sans", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+  color-scheme: dark;
+}
+:root[data-rigel-theme="light"] {
+  --bg: #f4f6fa;
+  --bar: #eef1f6;
+  --surface: #ffffff;
+  --surface-2: #e6eaf1;
+  --hover: rgba(20, 30, 50, 0.06);
+  --border: rgba(20, 30, 50, 0.09);
+  --border-2: rgba(20, 30, 50, 0.16);
+  --text: #141a26;
+  --text-dim: #4f5a6c;
+  --text-faint: #8a93a3;
+  --shadow: 0 18px 50px rgba(20, 30, 50, 0.16);
+  --scrim: rgba(20, 30, 50, 0.14);
+  --scrim-soft: rgba(20, 30, 50, 0.08);
+  --shadow-sm: 0 6px 20px rgba(20, 30, 50, 0.14);
+  --private: #7c5ce0;
+  --accent-ink: #ffffff;
+  color-scheme: light;
+}
+:root[data-rigel-accent="violet"] { --accent: #9b8cf0; --accent-2: #b9adf6; }
+:root[data-rigel-accent="green"] { --accent: #4fbf8f; --accent-2: #7fd6b0; }
+:root[data-rigel-accent="orange"] { --accent: #f2a06b; --accent-2: #f7bf96; }
+:root[data-rigel-accent="pink"] { --accent: #e879b0; --accent-2: #f1a3c9; }
+:root[data-rigel-accent="teal"] { --accent: #3cc4c0; --accent-2: #7ad9d6; }
+:root[data-rigel-accent="indigo"] { --accent: #8191f7; --accent-2: #aab5fa; }
+:root[data-rigel-accent="red"] { --accent: #ef6461; --accent-2: #f59593; }
+:root[data-rigel-accent="amber"] { --accent: #e9b44c; --accent-2: #f1cd85; }
+:root[data-rigel-accent="lime"] { --accent: #9ccf55; --accent-2: #bde08c; }
+:root[data-rigel-accent="slate"] { --accent: #a3adbf; --accent-2: #c3cad6; }
+:root[data-rigel-theme="light"][data-rigel-accent="rigel"] { --accent: #3f86d6; --accent-2: #3d9fd0; }
+:root[data-rigel-theme="light"][data-rigel-accent="violet"] { --accent: #7c6ae6; }
+:root[data-rigel-theme="light"][data-rigel-accent="green"] { --accent: #239a68; }
+:root[data-rigel-theme="light"][data-rigel-accent="orange"] { --accent: #d9732e; }
+:root[data-rigel-theme="light"][data-rigel-accent="pink"] { --accent: #d14e92; }
+:root[data-rigel-theme="light"][data-rigel-accent="teal"] { --accent: #138a87; }
+:root[data-rigel-theme="light"][data-rigel-accent="indigo"] { --accent: #4b5bd4; }
+:root[data-rigel-theme="light"][data-rigel-accent="red"] { --accent: #cf3a37; }
+:root[data-rigel-theme="light"][data-rigel-accent="amber"] { --accent: #a8730a; }
+:root[data-rigel-theme="light"][data-rigel-accent="lime"] { --accent: #5a9417; }
+:root[data-rigel-theme="light"][data-rigel-accent="slate"] { --accent: #556074; }
+:root {
+  --active: color-mix(in srgb, var(--accent) 15%, transparent);
+  --accent-wash: color-mix(in srgb, var(--accent) 8%, transparent);
+  --accent-line: color-mix(in srgb, var(--accent) 50%, transparent);
+}

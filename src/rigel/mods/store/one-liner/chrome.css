@@ -1,0 +1,49 @@
+/* Tek satır Klasik — Rigel modu */
+/* Klasik düzende sekme şeridi ve araç çubuğu tek satırda birleşir: solda gezinme düğmeleri ve adres çubuğu,
+   sağda sekmeler ve pencere düğmeleri. Sayfaya 44 px daha fazla yer kalır. Yalnız Klasik. Ayarlar: width, navbuttons. */
+:root:root:root[data-rigel-layout="klasik"] #navigator-toolbox {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: stretch !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+:root:root:root[data-rigel-layout="klasik"] #navigator-toolbox > * { flex: 1 0 100% !important; order: 3; }
+:root:root:root[data-rigel-layout="klasik"] #navigator-toolbox > #nav-bar {
+  order: 1;
+  flex: 0 0 var(--rigel-mod-one-liner-width, 38%) !important;
+  width: var(--rigel-mod-one-liner-width, 38%) !important;
+  min-width: 260px;
+  height: 42px !important;
+  min-height: 42px !important;
+  padding: 0 4px 0 8px !important;
+  background: var(--bar) !important;
+  border: none !important;
+}
+:root:root:root[data-rigel-layout="klasik"] #navigator-toolbox > #TabsToolbar {
+  order: 2;
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+  height: 42px !important;
+  min-height: 42px !important;
+  max-height: 42px !important;
+  padding: 0 6px 0 2px !important;
+}
+:root:root:root[data-rigel-layout="klasik"] #TabsToolbar .toolbar-items { align-items: center !important; }
+:root:root:root[data-rigel-layout="klasik"] #TabsToolbar .tabbrowser-tab .tab-background {
+  border-radius: 9px !important;
+  min-height: 32px !important;
+}
+:root:root:root[data-rigel-layout="klasik"] #TabsToolbar .tabbrowser-tab .tab-background:is([selected], [multiselected]) {
+  background:
+    linear-gradient(var(--accent), var(--accent)) 12px calc(100% - 2px) / calc(100% - 24px) 2px no-repeat,
+    var(--surface) !important;
+}
+:root:root:root[data-rigel-layout="klasik"] #TabsToolbar :is(#tabs-newtab-button, #new-tab-button) { align-self: center !important; margin-bottom: 0 !important; }
+:root:root:root[data-rigel-layout="klasik"] #TabsToolbar #rigel-klasik-wctl { margin-top: 0 !important; }
+:root:root:root[data-rigel-layout="klasik"] #nav-bar #urlbar-container { margin-inline: 4px 2px !important; }
+:root:root:root[data-rigel-layout="klasik"] #nav-bar #urlbar { --urlbar-background-color: var(--surface); --urlbar-background-color-focus: var(--surface); }
+/* Gezinme düğmelerini gizle (geri/ileri/yenile): adres çubuğuna daha çok yer */
+:root:root:root[data-rigel-layout="klasik"][rigel-mod-one-liner-navbuttons] #nav-bar :is(#back-button, #forward-button, #stop-reload-button) { display: none !important; }
+/* Klasik'te araç çubuğundaki eklenti/menü düğmeleri sığmazsa taşmasın */
+:root:root:root[data-rigel-layout="klasik"] #nav-bar #nav-bar-customization-target { min-width: 0; overflow: hidden; }

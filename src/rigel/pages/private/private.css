@@ -1,0 +1,65 @@
+/* Tema belirteçleri ve mor vurgu: chrome://userscripts/content/theme/{tokens,private}.css (private.html).
+   Tema: theme/page.mjs. Hareket: yalnız transform ve opacity; süreler motion.css belirteçlerinden (yedekli). */
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--bg); color: var(--text); font: 14px/1.4 var(--font); }
+
+html {
+  --pv-a: color-mix(in srgb, var(--private) 78%, #3b2a9e);
+  --pv-b: var(--private);
+  --pv-c: color-mix(in srgb, var(--private) 62%, #ffffff);
+}
+
+main {
+  min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 20px;
+  background:
+    radial-gradient(52% 44% at 50% 30%, color-mix(in srgb, var(--private) 16%, transparent), transparent 72%),
+    radial-gradient(40% 30% at 85% 100%, color-mix(in srgb, var(--private) 8%, transparent), transparent 70%),
+    var(--bg);
+}
+
+.hero { position: relative; width: 104px; height: 104px; display: grid; place-items: center; border-radius: 50%;
+  background: color-mix(in srgb, var(--private) 10%, transparent); box-shadow: 0 0 0 1px color-mix(in srgb, var(--private) 28%, transparent) inset, 0 0 46px color-mix(in srgb, var(--private) 22%, transparent); }
+.logo { display: block; filter: drop-shadow(0 4px 14px color-mix(in srgb, var(--private) 40%, transparent)); }
+.badge {
+  position: absolute; right: -2px; bottom: -2px; width: 38px; height: 38px; display: grid; place-items: center; border-radius: 50%;
+  background: var(--private); color: var(--accent-ink); box-shadow: 0 0 0 4px var(--bg), 0 6px 16px color-mix(in srgb, var(--private) 45%, transparent);
+}
+
+h1 { margin: 22px 0 0; font-size: 30px; font-weight: 600; letter-spacing: -0.4px; }
+.lead { margin: 8px 0 0; max-width: 460px; text-align: center; color: var(--text-dim); font-size: 15px; }
+.warn { margin: 10px 0 0; padding: 6px 12px; border-radius: 8px; background: color-mix(in srgb, var(--danger) 14%, transparent); color: var(--text); font-size: 12.5px; }
+.warn[hidden] { display: none; }
+
+.search {
+  margin-top: 28px; width: min(520px, 100%); height: 48px; display: flex; align-items: center; gap: 12px; padding: 0 16px;
+  border-radius: 14px; background: var(--surface); border: 1px solid var(--border-2); color: var(--text-dim);
+  transition: border-color var(--rigel-dur-2, 180ms), box-shadow var(--rigel-dur-2, 180ms);
+}
+.search:focus-within { border-color: var(--private); box-shadow: 0 0 0 3px color-mix(in srgb, var(--private) 24%, transparent); color: var(--private); }
+.search svg { flex: none; }
+.search input { flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; background: none; color: var(--text); font: inherit; font-size: 15px; }
+.search input::placeholder { color: var(--text-faint); }
+.engine { flex: none; font-size: 11.5px; color: var(--text-faint); padding: 3px 8px; border-radius: 6px; background: var(--hover); white-space: nowrap; }
+.engine[hidden] { display: none; }
+
+.hint { margin: 14px 0 0; color: var(--text-faint); font-size: 12.5px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: center; }
+kbd {
+  font: 11px var(--mono); padding: 2px 6px; border-radius: 5px;
+  background: var(--surface); border: 1px solid var(--border); color: var(--text-dim);
+}
+
+.cards { margin-top: 38px; width: min(700px, 100%); display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.card { padding: 16px 18px 14px; border-radius: 14px; background: var(--surface); border: 1px solid var(--border); }
+.card h2 { margin: 0 0 10px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.card .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.card.yes .dot { background: var(--private); box-shadow: 0 0 8px var(--private); }
+.card.no .dot { background: transparent; box-shadow: 0 0 0 1.5px var(--text-faint) inset; }
+.card ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 7px; }
+.card li { position: relative; padding-left: 14px; color: var(--text-dim); font-size: 12.8px; line-height: 1.45; }
+.card li::before { content: ""; position: absolute; left: 0; top: 0.58em; width: 5px; height: 5px; border-radius: 50%; background: var(--text-faint); }
+.card.yes li::before { background: color-mix(in srgb, var(--private) 70%, transparent); }
+
+@media (max-width: 640px) { .cards { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .search { transition: none; } }

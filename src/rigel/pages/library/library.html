@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<!-- Rigel kitaplığı: chrome://rigel/content/library/library.html#gecmis | #yer-imleri[/klasör] | #indirmeler
+     Firefox'un Kitaplık penceresi, geçmiş kenar çubuğu ve about:downloads yerine geçer.
+     Girişleri library.uc.mjs yönlendirir; adres çubuğunu da o temiz tutar. -->
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kitaplık</title>
+  <link rel="icon" href="chrome://branding/content/icon32.png">
+  <link rel="stylesheet" href="chrome://userscripts/content/theme/tokens.css">
+  <link rel="stylesheet" href="library.css">
+  <script type="module" src="chrome://userscripts/content/theme/page.mjs"></script>
+  <script type="module" src="library.mjs"></script>
+</head>
+<body>
+  <div class="page">
+    <nav id="nav" aria-label="Kitaplık bölümleri"></nav>
+    <main id="main"></main>
+  </div>
+  <div id="toasts" aria-live="polite"></div>
+</body>
+</html>

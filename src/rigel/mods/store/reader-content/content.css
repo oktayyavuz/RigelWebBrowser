@@ -1,0 +1,35 @@
+/* Okuma dostu sayfalar — Rigel modu */
+/* Web yazılarını okunaklı yapar: metne seçtiğin okuma yazı tipi ve satır aralığı, daha iyi alt çizgili
+   bağlantılar, dengeli başlıklar, belirgin seçim rengi ve yumuşak kaydırma. Kod blokları ve simgeler değişmez.
+   Web sayfalarında Rigel belirteçleri yoktur; renkler ayardan gelir. Ayarlar: font, leading, selection, scroll. */
+html {
+  text-rendering: optimizeLegibility !important;
+  font-kerning: normal !important;
+  scroll-behavior: var(--rigel-mod-reader-content-scroll, smooth) !important;
+}
+:is(p, li, dd, blockquote, figcaption) {
+  font-family: var(--rigel-mod-reader-content-font, Georgia, "Noto Serif", serif) !important;
+  line-height: var(--rigel-mod-reader-content-leading, 1.7) !important;
+}
+:is(h1, h2, h3, h4) {
+  font-family: var(--rigel-mod-reader-content-font, Georgia, "Noto Serif", serif) !important;
+  text-wrap: balance !important;
+  letter-spacing: -0.01em !important;
+}
+:is(p, li, dd, blockquote) a {
+  text-decoration-line: underline !important;
+  text-decoration-thickness: 1.5px !important;
+  text-underline-offset: 0.22em !important;
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent) !important;
+}
+:is(p, li, dd, blockquote) a:hover { text-decoration-color: currentColor !important; }
+blockquote {
+  border-inline-start: 3px solid var(--rigel-mod-reader-content-selection, #5fa9dd) !important;
+  padding-inline-start: 1em !important;
+}
+::selection {
+  background: var(--rigel-mod-reader-content-selection, #5fa9dd) !important;
+  color: #ffffff !important;
+}
+:focus-visible { outline: 2px solid var(--rigel-mod-reader-content-selection, #5fa9dd) !important; outline-offset: 2px !important; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto !important; } }
