@@ -24,6 +24,8 @@ function openPage(base, hash) {
     return tab;
   }
   const tab = gBrowser.addTab(url, { triggeringPrincipal: sysPrincipal(), inBackground: false });
+  // Sayfa yüklenmeden adres henüz about:blank; odak kipi hedef adrese göre karar verebilsin.
+  tab._rigelTarget = url;
   gBrowser.selectedTab = tab;
   return tab;
 }
@@ -71,6 +73,11 @@ function cleanUrlbar() {
 // Yalnız pencere düğmeleri ve sürükleme şeridi (#rigel-focus-bar) kalır. Başka sekmeye geçince ya da
 // sihirbaz kapanınca/bitince arayüz geri gelir.
 let focusBar = null;
+// İlk açılışta sihirbaz birkaç yüz ms sonra açılır; o ana kadar da arayüz gizli kalsın (titreme olmasın).
+let pendingWelcome = !Services.prefs.getBoolPref("rigel.welcome.done", false)
+  && !window.PrivateBrowsingUtils?.isWindowPrivate(window)
+  && [...Services.wm.getEnumerator("navigator:browser")].length <= 1;
+if (pendingWelcome) document.documentElement.setAttribute("data-rigel-focus", "");
 async function ensureFocusBar() {
   if (focusBar?.isConnected) return;
   const { windowButtons, el, Disposer } = await import("chrome://userscripts/content/shell/common.mjs");
@@ -81,8 +88,10 @@ async function ensureFocusBar() {
   window.addEventListener("unload", () => d.run(), { once: true });
 }
 function updateFocus() {
-  const spec = gBrowser.selectedBrowser?.currentURI?.spec ?? "";
-  const on = spec.startsWith(WELCOME_URL);
+  const sel = gBrowser.selectedTab;
+  let spec = gBrowser.selectedBrowser?.currentURI?.spec ?? "";
+  if ((spec === "about:blank" || !spec) && sel?._rigelTarget) spec = sel._rigelTarget;
+  const on = pendingWelcome || spec.startsWith(WELCOME_URL);
   const root = document.documentElement;
   if (on) {
     ensureFocusBar().catch(e => dump(`[rigel] odak çubuğu: ${e}\n`));
@@ -112,28 +121,26 @@ window.addEventListener("rigel:components-ready", registerCommands);
 
 // Helium (net.imput.helium) Chromium tabanlıdır; Firefox'un "Chromium" içe aktarıcısı onu da bulsun.
 // Gerçek Chromium kuruluysa ona dokunulmaz. Veri klasörü yalnızca okunur.
+// Helium, Firefox'un içe aktarma sihirbazında kendi adı ve simgesiyle görünür (migration/helium.sys.mjs).
 async function teachMigratorAboutHelium() {
   try {
-    const { ChromeMigrationUtils } = ChromeUtils.importESModule("resource:///modules/ChromeMigrationUtils.sys.mjs");
-    if (ChromeMigrationUtils.__rigelHelium) return;
-    ChromeMigrationUtils.__rigelHelium = true;
-    const orig = ChromeMigrationUtils.getDataPath.bind(ChromeMigrationUtils);
-    ChromeMigrationUtils.getDataPath = async function (name = "Chrome") {
-      const p = await orig(name);
-      // Gerçek bir Chromium profili yoksa ("Local State" bulunmuyorsa) Helium'a bak.
-      if (name === "Chromium" && !(p && (await IOUtils.exists(PathUtils.join(p, "Local State"))))) {
-        const he = PathUtils.join(Services.dirsvc.get("Home", Ci.nsIFile).path, ".config", "net.imput.helium");
-        if (await IOUtils.exists(he)) return he;
-      }
-      return p;
-    };
+    const { installHeliumMigrator } = ChromeUtils.importESModule("chrome://userscripts/content/migration/helium.sys.mjs");
+    installHeliumMigrator();
   } catch (e) {
-    console.error("[rigel] Helium içe aktarma yaması", e);
+    console.error("[rigel] Helium içe aktarıcısı", e);
   }
 }
 
 // İlk açılış: rigel.welcome.done false ise sihirbazı aç (ilk tarayıcı penceresinde, bir kez).
 function maybeShowWelcome() {
+  try {
+    showWelcomeOnce();
+  } finally {
+    pendingWelcome = false;
+    updateFocus();
+  }
+}
+function showWelcomeOnce() {
   if (Services.prefs.getBoolPref("rigel.welcome.done", false)) return;
   if (window.PrivateBrowsingUtils?.isWindowPrivate(window) || !window.toolbar?.visible) return;
   // Yalnızca ilk pencerede ve yalnız bir kez.
@@ -158,11 +165,33 @@ function maybeShowWelcome() {
     if (tab.isConnected && (!introOnly || lostFocus)) gBrowser.selectedTab = tab;
   };
   sweep();
-  // Eklentiler kurulumdan birkaç saniye sonra sekme açar; ilk 20 sn boyunca onları da topla.
-  // Kullanıcının bu sürede açtığı yeni sekmelere dokunma: yalnız tanıtım sayfaları.
-  const onOpen = () => window.setTimeout(() => sweep(true), 1500);
+  // Eklentiler kurulumdan birkaç saniye sonra kendi tanıtım sekmelerini açıp öne getirir; bu da
+  // sihirbazın (odak kipi) bir an kaybolmasına yol açıyordu. İlk 30 sn boyunca:
+  //  - kendiliğinden açılan sekme seçilirse sihirbaz hemen geri seçilir (arayüz hiç görünmez),
+  //  - tanıtım sayfası adresi belli olur olmaz sekme kapatılır.
+  const autoTabs = new WeakSet();
+  const onOpen = e => autoTabs.add(e.target);
+  const onSelect = () => {
+    const sel = gBrowser.selectedTab;
+    if (sel !== tab && autoTabs.has(sel) && tab.isConnected) gBrowser.selectedTab = tab;
+  };
+  const progress = {
+    onLocationChange(browser, _wp, _req, location) {
+      const t = gBrowser.getTabForBrowser(browser);
+      if (t && t !== tab && autoTabs.has(t) && isAddonIntro(location?.spec ?? "")) {
+        window.setTimeout(() => t.isConnected && gBrowser.removeTab(t), 0);
+      }
+    },
+  };
   gBrowser.tabContainer.addEventListener("TabOpen", onOpen);
-  window.setTimeout(() => gBrowser.tabContainer.removeEventListener("TabOpen", onOpen), 20000);
+  gBrowser.tabContainer.addEventListener("TabSelect", onSelect);
+  gBrowser.addTabsProgressListener(progress);
+  window.setTimeout(() => {
+    gBrowser.tabContainer.removeEventListener("TabOpen", onOpen);
+    gBrowser.tabContainer.removeEventListener("TabSelect", onSelect);
+    gBrowser.removeTabsProgressListener(progress);
+    sweep(true);
+  }, 30000);
 }
 
 function whenStartedUp(fn) {

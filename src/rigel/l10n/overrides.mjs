@@ -1,4 +1,4 @@
-// Rigel'e özgü Fluent dize geçersiz kılmaları (saf veri). Anahtar: yerel -> kaynak yolu -> ileti kimliği -> yeni gövde.
+// Rigel'e özgü Fluent dize geçersiz kılmaları (saf veri). Dosyada olmayan kimlikler sona eklenir. Anahtar: yerel -> kaynak yolu -> ileti kimliği -> yeni gövde.
 // Gövde, "kimlik =" sonrasındaki ham FTL'dir; öznitelikler için satır başlayıp ".öznitelik = değer" yazılır.
 // Burada yalnızca Firefox/Mozilla'ya ait ve markaya göre otomatik düzelmeyen metinler yer alır.
 export const FTL_OVERRIDES = {
@@ -10,6 +10,10 @@ export const FTL_OVERRIDES = {
       "update-application-heading": "\n    .description = Rigel, Firefox tabanlı bir tarayıcıdır.\n    .label = Rigel sürümü",
       "account-sync-section": "\n    .heading = İçe aktarma ve yedekleme",
       "pane-account-sync-title2": "\n    .title = İçe aktarma ve yedekleme",
+    },
+    // Yeni kimlik (dosyada yoksa sona eklenir): Helium içe aktarıcısının görünen adı.
+    "browser/migrationWizard.ftl": {
+      "migration-wizard-migrator-display-name-helium": "Helium",
     },
     "toolkit/about/aboutAddons.ftl": {
       "addon-badge-recommended4": "\n    .title = Güvenlik ve performans standartlarını karşılayan, önerilen uzantı",

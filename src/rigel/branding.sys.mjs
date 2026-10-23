@@ -176,7 +176,13 @@ function generateLocale(locale, root, suffixLib, overridesLib) {
     if (!own && !/\}[’']/.test(text)) continue;
     const fixed = suffixLib.fixSuffixes(text, suffixLib.BRAND_TERM, BRAND);
     let out = fixed.text;
-    if (own) out = patchFtl(out, id => (id in own ? own[id] : null));
+    if (own) {
+      out = patchFtl(out, id => (id in own ? own[id] : null));
+      // Dosyada hiç olmayan kimlikleri sona ekle.
+      for (const [id, body] of Object.entries(own)) {
+        if (!new RegExp(`^${id.replace(/[-.]/g, "\\$&")}\\s*=`, "m").test(out)) out += `\n${id} =${body.startsWith("\n") ? "" : " "}${body}\n`;
+      }
+    }
     if (fixed.count || out !== text) put(rel, out);
   }
   log(`Fluent ${locale}: ${scanned} dosya tarandı, ${written.length} yamalı kopya`);

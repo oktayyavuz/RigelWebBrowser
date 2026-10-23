@@ -113,7 +113,7 @@ function heroScene() {
 
 // İçe aktarma: Linux'ta bilinen tarayıcı klasörlerine bak (yalnız varlık kontrolü, içerik okunmaz).
 const BROWSERS = [
-  { id: "helium", name: "Helium", tile: ["He", "#3a7bd5"], path: ".config/net.imput.helium/Local State", note: "Aktarıcıda “Chromium” adıyla" },
+  { id: "helium", name: "Helium", tile: ["He", "#3a7bd5"], path: ".config/net.imput.helium/Local State" },
   { id: "chrome", name: "Google Chrome", tile: ["Ch", "#2b9a4a"], path: ".config/google-chrome/Local State" },
   { id: "chromium", name: "Chromium", tile: ["Cr", "#4a86e8"], path: ".config/chromium/Local State" },
   { id: "brave", name: "Brave", tile: ["Br", "#fb542b"], path: ".config/BraveSoftware/Brave-Browser/Local State" },
@@ -129,9 +129,6 @@ async function detectBrowsers() {
     try { return (await IOUtils.exists(PathUtils.join(home, ...b.path.split("/")))) ? b : null; } catch { return null; }
   }));
   const list = found.filter(Boolean);
-  // Gerçek Chromium kuruluysa aktarıcı onu seçer; Helium o zaman listede görünmez.
-  const he = list.find(b => b.id === "helium");
-  if (he && list.some(b => b.id === "chromium")) he.note = "Chromium da kurulu; önce o görünür";
   return list;
 }
 function openMigration() {
