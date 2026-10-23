@@ -57,6 +57,10 @@ export class HeliumProfileMigrator extends ChromeProfileMigrator {
   static get brandImage() {
     return brandImage;
   }
+  // Firefox her aktarıcı için browser.migrate.<anahtar>.enabled ayarına bakar (varsayılan kapalı).
+  get enabled() {
+    return Services.prefs.getBoolPref(`browser.migrate.${KEY}.enabled`, true);
+  }
   _chromeUserDataPathSuffix = "Helium";
   _keychainServiceName = "Helium Safe Storage";
   _keychainAccountName = "Helium";
@@ -76,12 +80,22 @@ export function installHeliumMigrator() {
     return null;
   };
 
-  // Aktarım sırasında Firefox, kaynak adına göre bir Glean ölçümü arar; "helium" için boş bir yer tutucu.
-  try {
-    const usage = Glean.browserMigration.usage;
-    if (!usage[KEY]) Object.defineProperty(usage, KEY, { value: { accumulateSingleSample() {} }, configurable: true });
-  } catch (e) {
-    console.warn("[rigel] Helium: Glean yer tutucu eklenemedi", e);
+  // Aktarma penceresi ve aktarım, kaynak adına göre Glean ölçümleri arar; "helium" yoksa hata verip
+  // Helium'u sessizce listeden atar. Telemetri kapalı; yalnız boş yer tutucular ekliyoruz.
+  const stub = { add() {}, accumulateSingleSample() {}, record() {}, set() {} };
+  const metrics = [
+    () => Glean.migration.discoveredMigrators,
+    () => Glean.browserMigration.usage,
+    () => Glean.browserMigration.errors,
+    ...["bookmarks", "history", "logins", "cards", "extensions"].map(t => () => Glean.browserMigration[t + "Quantity"]),
+  ];
+  for (const get of metrics) {
+    try {
+      const m = get();
+      if (m && !m[KEY]) Object.defineProperty(m, KEY, { value: stub, configurable: true });
+    } catch (e) {
+      console.warn("[rigel] Helium: Glean yer tutucu eklenemedi", e);
+    }
   }
 
   const helium = new HeliumProfileMigrator();
