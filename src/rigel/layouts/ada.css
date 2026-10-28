@@ -8,11 +8,11 @@
 }
 
 #rigel-ada {
-  height: 48px;
+  height: calc(var(--rigel-navbar-h, 44px) + 4px);
   display: grid;
   grid-template-columns: 1fr auto 1fr;
-  gap: 12px;
-  padding: 0 8px 0 12px;
+  gap: calc(var(--rigel-space, 8px) + 4px);
+  padding: 0 var(--rigel-space, 8px) 0 calc(var(--rigel-space, 8px) + 4px);
   border-bottom: 1px solid var(--border);
 
   .rigel-left {
@@ -47,8 +47,8 @@
   overflow: hidden;
 
   .rigel-star {
-    width: 30px;
-    height: 30px;
+    width: calc(var(--rigel-navbar-h, 44px) - 14px);
+    height: calc(var(--rigel-navbar-h, 44px) - 14px);
     border-radius: 50%;
     display: grid;
     place-items: center;
@@ -145,7 +145,7 @@
     box-shadow: none;
   }
   .rigel-gchip {
-    height: 34px;
+    height: calc(var(--rigel-navbar-h, 44px) - 10px);
     padding: 0 9px 0 11px;
     margin-inline: 2px -2px;
     border-inline-end: none;
@@ -160,8 +160,8 @@
     border-inline-end-color: var(--rigel-grp);
   }
   .rigel-star.gm {
-    width: 34px;
-    height: 34px;
+    width: calc(var(--rigel-navbar-h, 44px) - 10px);
+    height: calc(var(--rigel-navbar-h, 44px) - 10px);
     margin-inline-end: -2px;
     border-radius: 0;
     background: color-mix(in srgb, var(--rigel-grp) 17%, transparent);
@@ -180,9 +180,10 @@
 /* Ada: gezinme + sayfa kimliği */
 #rigel-ada .rigel-island {
   width: min(600px, 46vw);
-  height: 34px;
+  height: calc(var(--rigel-navbar-h, 44px) - 10px);
   border-radius: calc(var(--rigel-radius, 9px) * 17 / 9);
-  background: var(--surface);
+  background: var(--rigel-surface-bg, var(--surface));
+  backdrop-filter: var(--rigel-glass-filter, none);
   border: 1px solid var(--border-2);
   display: flex;
   align-items: center;
@@ -252,4 +253,13 @@
   .rigel-progress {
     width: 35%;
   }
+}
+
+/* --- Görünüm stüdyosu (rigel.look): arka plan araç kutusuna boyanır (Klasik gibi); şerit
+   --rigel-strip-bg ile, yüzeyler --rigel-surface-bg ile saydamlaşır. {} iken bu kurallar devrede değil. */
+:root[data-rigel-layout="ada"][rigel-look-bg] #navigator-toolbox {
+  background: var(--rigel-bg-image), var(--bg) !important;
+}
+:root[data-rigel-layout="ada"][rigel-look-glass] #rigel-ada {
+  border-bottom-color: color-mix(in srgb, var(--border-2) 60%, transparent);
 }

@@ -4,6 +4,9 @@
 import { h, icon, getPref, setPref, watch, seg, select, row, card, notify, range, colorInput, debounce } from "./ui.mjs";
 import * as Look from "chrome://userscripts/content/theme/look.mjs";
 import * as Packs from "chrome://userscripts/content/theme/packs.mjs";
+import * as Bg from "chrome://userscripts/content/theme/bg.mjs";
+import * as Buttons from "chrome://userscripts/content/theme/buttons.mjs";
+import { onDispose, chromeWin } from "./ui.mjs";
 
 const D = Look.DEFAULTS;
 const NAMES = [Look.PREF, "rigel.accent", "rigel.theme", Look.PACKS_PREF, Look.UNDO_PREF];
@@ -52,13 +55,22 @@ function packPreview(pack) {
 }
 
 function packCard(pack, onDelete) {
-  const b = h("button", { type: "button", class: "pack", title: `${pack.name} paketini uygula`, onclick: () => { Packs.applyPack(pack); notify(`"${pack.name}" uygulandı. Geri al ile dönebilirsin.`); } },
+  const b = h("button", { type: "button", class: "pack", title: `${pack.name} paketini uygula`, onclick: () => applyWithMods(pack) },
     packPreview(pack),
-    h("span", { class: "pname" }, h("b", { text: pack.name }), pack.desc && h("small", { text: pack.desc })));
+    h("span", { class: "pname" }, h("b", { text: pack.name }), pack.desc && h("small", { text: pack.desc }),
+      pack.mods?.length && h("small", { class: "pmods", text: `+ ${pack.mods.length} mod` })));
   if (!onDelete) return b;
   return h("div", { class: "packwrap" }, b,
     h("button", { type: "button", class: "iconbtn pdel", title: "JSON olarak kopyala", onclick: () => copy(Packs.exportText(pack)) }, icon("link", 14)),
     h("button", { type: "button", class: "iconbtn pdel2", title: "Paketi sil", onclick: onDelete }, icon("trash", 14)));
+}
+
+function applyWithMods(pack) {
+  notify(`"${pack.name}" uygulandı. Geri al ile dönebilirsin.`);
+  Promise.resolve(Packs.applyPack(pack)).then(r => {
+    if (r?.failed?.length) notify(`Şu modlar açılamadı: ${r.failed.join(", ")}`, false);
+    else if (r?.enabled?.length) notify(`"${pack.name}" uygulandı; ${r.enabled.length} mod açık. Geri al modları da kapatır.`);
+  }).catch(e => notify("Paket modları: " + e.message, false));
 }
 
 function copy(text) {
@@ -141,7 +153,42 @@ function studio() {
   syncFont();
   watch(names, syncFont);
 
-  const bgType = seg([["none", "Yok"], ["solid", "Düz renk"], ["gradient", "Gradyan"]], { get: () => bgOf().type, set: v => putBg({ type: v }), names });
+  const bgType = seg([["none", "Yok"], ["solid", "Düz renk"], ["gradient", "Gradyan"], ["image", "Görsel"]], {
+    get: () => bgOf().type,
+    set: v => { if (v === "image" && !bgOf().file) pickImage(); else putBg({ type: v }); },
+    names,
+  });
+  const fileLabel = h("small", { class: "bgfile" });
+  const pickImage = async () => {
+    try {
+      const path = await Bg.pick(window);
+      if (!path) { bgType.refresh?.(); return; }
+      const file = await Bg.importImage(path);
+      const b = bgOf();
+      if (b.blur) await Bg.ensureBlur(document, file, b.blur);
+      putBg({ type: "image", file });
+      notify("Görsel arka plan uygulandı.");
+      // Eski görseller: şu an, geri al yedeği ve kullanıcı paketlerinde kullanılanlar dışındakiler silinir.
+      const keep = [file, ...Packs.userPacks().map(p => p.look.bg?.file)];
+      try { keep.push(JSON.parse(getPref(Look.UNDO_PREF, "{}"))?.look?.bg?.file); } catch {}
+      setTimeout(() => Bg.prune(keep).catch(() => {}), 500);
+    } catch (e) {
+      notify("Görsel eklenemedi: " + e.message, false);
+    }
+  };
+  const imgRow = row({ id: "bgImage", label: "Görsel", sub: true, desc: "Dosya profildeki rigel-bg klasörüne kopyalanır.", keywords: "arka plan görsel resim fotoğraf duvar kağıdı wallpaper image",
+    control: h("div", { class: "toolrow" }, fileLabel, btn("Görsel seç…", pickImage, "soft", "folder")) });
+  const fitRow = row({ id: "bgFit", label: "Konum", sub: true, keywords: "görsel konum kaplama ortala",
+    control: seg([["cover", "Kaplama"], ["center", "Ortala"]], { get: () => bgOf().fit, set: v => putBg({ fit: v }), names }) });
+  const blurApply = debounce(async v => {
+    const f = bgOf().file;
+    try { if (f && v) await Bg.ensureBlur(document, f, v); } catch (e) { notify("Bulanıklık üretilemedi: " + e.message, false); }
+    putBg({ blur: v });
+  }, 220);
+  const blurRow = row({ id: "bgBlur", label: "Bulanıklık", sub: true, keywords: "görsel bulanık blur",
+    control: range({ min: 0, max: 40, step: 2, unit: " px", get: () => bgOf().blur, set: blurApply, names }) });
+  const dimRow = row({ id: "bgDim", label: "Karartma", sub: true, desc: "Yazıların okunaklı kalması için görselin üstüne koyu katman.", keywords: "görsel karart koyu kontrast",
+    control: range({ min: 0, max: 80, step: 5, unit: "%", get: () => bgOf().dim, set: v => putBg({ dim: v }), names }) });
   const solidRow = row({ id: "bgColor", label: "Renk", sub: true, keywords: "arka plan renk düz", control: colorInput({ get: () => bgOf().color, set: v => putBg({ color: v }), names }) });
   const gradRow = row({ id: "bgGrad", label: "Gradyan renkleri", sub: true, keywords: "gradyan renk geçiş",
     control: h("div", { class: "toolrow" }, colorInput({ get: () => bgOf().from, set: v => putBg({ from: v }), names, title: "Başlangıç" }),
@@ -152,6 +199,8 @@ function studio() {
     const t = bgOf().type;
     solidRow.hidden = t !== "solid";
     gradRow.hidden = angleRow.hidden = t !== "gradient";
+    imgRow.hidden = fitRow.hidden = blurRow.hidden = dimRow.hidden = t !== "image";
+    fileLabel.textContent = bgOf().file || "Görsel seçilmedi";
   };
   syncBg();
   watch(names, syncBg);
@@ -186,12 +235,120 @@ function studio() {
         control: range({ min: 11, max: 15, unit: " px", get: () => val("fontSize"), set: v => put("fontSize", v), names }) })),
     card("Arka plan ve renk",
       row({ id: "bg", label: "Pencere arka planı", desc: "Şeridin ve kenar çubuğunun arkasında görünür; sayfa içeriği etkilenmez.", keywords: "arka plan zemin gradyan renk background wallpaper", control: bgType }),
-      solidRow, gradRow, angleRow,
+      solidRow, gradRow, angleRow, imgRow, fitRow, blurRow, dimRow,
       row({ id: "glass", label: "Cam etkisi", desc: "Şerit ve araç çubuğu saydamlaşır, arkası bulanıklaşır. Arka plan seçmeden de vurgu tonlu hafif bir parıltı verir.", keywords: "cam saydam şeffaf bulanık glass blur transparan",
         control: range({ min: 0, max: 100, step: 5, unit: "%", get: () => val("glass"), set: v => put("glass", v), names }) }),
       row({ id: "accentCustom", label: "Özel vurgu rengi", desc: "Hazır vurgu renklerinden birini seçince kapanır.", keywords: "vurgu renk özel accent seçici",
         control: h("div", { class: "toolrow" }, accColor, accOn) })),
+    buttonsCard(),
+    autoCard(),
   ];
+}
+
+/** Araç düğmeleri: nav-bar (Klasik ve Yan Panel'de görünür). Sürükle-bırak ya da ↑/↓; anahtar göster/gizle. */
+function buttonsCard() {
+  const listEl = h("div", { class: "btnlist", role: "list" });
+  const resetBtn = btn("Varsayılana dön", () => { Buttons.reset(); notify("Araç düğmeleri varsayılana döndü."); }, "soft", "undo");
+  let dragId = null;
+  const render = () => {
+    const win = chromeWin();
+    const items = Buttons.list(win);
+    const shown = items.filter(i => i.inArea);
+    const rowOf = it => {
+      const i = shown.indexOf(it);
+      const sw = h("input", { type: "checkbox", class: "switch", role: "switch", title: it.shown ? "Gizle" : "Göster" });
+      sw.checked = it.shown;
+      sw.disabled = !it.removable;
+      sw.addEventListener("change", () => Buttons.show(it.id, sw.checked));
+      const up = h("button", { type: "button", class: "iconbtn", title: "Yukarı (sola)", text: "↑", onclick: () => Buttons.step(it.id, -1) });
+      const down = h("button", { type: "button", class: "iconbtn", title: "Aşağı (sağa)", text: "↓", onclick: () => Buttons.step(it.id, 1) });
+      up.disabled = !it.inArea || i <= 0;
+      down.disabled = !it.inArea || i >= shown.length - 1;
+      const el = h("div", { class: "bitem" + (it.shown ? "" : " off"), role: "listitem", draggable: it.inArea ? "true" : "false", "data-id": it.id },
+        h("span", { class: "grip", text: it.inArea ? "⋮⋮" : "" }),
+        h("span", { class: "bname" }, h("b", { text: it.label }), it.extension && h("small", { text: "eklenti" }), it.fixed && h("small", { text: "sabit" })),
+        h("div", { class: "toolrow" }, up, down, sw));
+      if (it.inArea) {
+        el.addEventListener("dragstart", e => { dragId = it.id; e.dataTransfer.effectAllowed = "move"; e.dataTransfer.setData("text/plain", it.id); el.classList.add("drag"); });
+        el.addEventListener("dragend", () => { dragId = null; el.classList.remove("drag"); listEl.querySelectorAll(".over").forEach(x => x.classList.remove("over")); });
+        el.addEventListener("dragover", e => { if (dragId && dragId !== it.id) { e.preventDefault(); el.classList.add("over"); } });
+        el.addEventListener("dragleave", () => el.classList.remove("over"));
+        el.addEventListener("drop", e => {
+          e.preventDefault();
+          if (!dragId || dragId === it.id) return;
+          const r = el.getBoundingClientRect();
+          const after = e.clientY > r.top + r.height / 2;
+          const next = after ? shown[i + 1]?.id ?? null : it.id;
+          if (next !== dragId) Buttons.moveBefore(dragId, next);
+        });
+      }
+      return el;
+    };
+    const menu = h("div", { class: "bitem" + (Buttons.menuHidden() ? " off" : ""), role: "listitem" },
+      h("span", { class: "grip" }),
+      h("span", { class: "bname" }, h("b", { text: "Menü (☰)" }), h("small", { text: "hep en sağda" })),
+      h("div", { class: "toolrow" }, (() => {
+        const sw = h("input", { type: "checkbox", class: "switch", role: "switch" });
+        sw.checked = !Buttons.menuHidden();
+        sw.addEventListener("change", () => Buttons.hideMenu(!sw.checked));
+        return sw;
+      })()));
+    listEl.replaceChildren(...items.map(rowOf), menu);
+    resetBtn.disabled = !Buttons.changed();
+  };
+  const later = debounce(render, 30);
+  try {
+    render();
+    onDispose(Buttons.listen(later));
+  } catch (e) {
+    listEl.append(h("p", { class: "hint", text: "Araç düğmeleri okunamadı: " + e.message }));
+  }
+  watch([Look.BUTTONS_PREF], later);
+  return card("Araç düğmeleri",
+    h("p", { class: "hint", text: "Klasik ve Yan Panel'deki araç çubuğu. Sürükleyerek ya da ↑/↓ ile sırala; anahtarla göster/gizle. Değişiklik tüm pencerelere anında uygulanır." }),
+    listEl,
+    row({ id: "buttonsReset", label: "Varsayılana dön", desc: "İlk değişiklikten önceki sıraya ve görünürlüğe döner.", keywords: "araç düğme sıfırla varsayılan toolbar reset",
+      control: h("div", { class: "toolrow" }, resetBtn) }));
+}
+
+/** Otomatik gece/gündüz: saate göre paket (rigel.look.auto). */
+function autoCard() {
+  const names = [Look.AUTO_PREF, Look.PACKS_PREF];
+  const a = () => Packs.readAuto();
+  const packOpts = () => Packs.allPacks().map(p => [p.id, p.name]);
+  const sel = key => {
+    const s = h("select", {});
+    const fill = () => {
+      s.replaceChildren(...packOpts().map(([v, l]) => h("option", { value: v, text: l })));
+      s.value = a()[key];
+    };
+    s.addEventListener("change", () => Packs.writeAuto({ [key]: s.value }));
+    fill();
+    watch(names, fill);
+    return s;
+  };
+  const time = key => {
+    const t = h("input", { type: "time", class: "time" });
+    const sync = () => { if (document.activeElement !== t) t.value = a()[key]; };
+    t.addEventListener("change", () => t.value && Packs.writeAuto({ [key]: t.value }));
+    sync();
+    watch(names, sync);
+    return t;
+  };
+  const on = h("input", { type: "checkbox", class: "switch", role: "switch" });
+  const now = h("small", { class: "hint" });
+  const sync = () => {
+    on.checked = a().on;
+    now.textContent = a().on ? `Şu an: ${Packs.autoPeriod() === "day" ? "gündüz" : "gece"}` : "";
+  };
+  on.addEventListener("change", () => Packs.writeAuto({ on: on.checked }));
+  sync();
+  watch(names, sync);
+  return card("Otomatik gece/gündüz",
+    row({ id: "autoOn", label: "Saate göre paket değiştir", desc: "Geçiş saatinde seçili paket kendiliğinden uygulanır; arada elle değiştirebilirsin.", keywords: "otomatik gece gündüz saat zamanla karanlık auto dark",
+      control: h("div", { class: "toolrow" }, now, on) }),
+    row({ id: "autoDay", label: "Gündüz paketi", sub: true, keywords: "gündüz paket", control: h("div", { class: "toolrow" }, sel("day"), time("dayAt")) }),
+    row({ id: "autoNight", label: "Gece paketi", sub: true, keywords: "gece paket", control: h("div", { class: "toolrow" }, sel("night"), time("nightAt")) }));
 }
 
 export { studio };

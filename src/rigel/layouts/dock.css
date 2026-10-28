@@ -12,7 +12,7 @@
 
 /* --- Üst başlık şeridi ------------------------------------------------------------ */
 #rigel-docktop {
-  height: 36px;
+  height: calc(var(--rigel-tabbar-h, 40px) - 4px);
   justify-content: space-between;
   padding: 0 6px 0 8px;
 
@@ -47,21 +47,22 @@
 
 /* --- Alt dock --------------------------------------------------------------------- */
 #rigel-dock {
-  height: 68px;
+  height: calc(var(--rigel-navbar-h, 44px) + 24px);
   justify-content: center;
-  padding: 0 12px;
+  padding: 0 calc(var(--rigel-space, 8px) + 4px);
   border-top: 1px solid var(--border);
 }
 #rigel-dock .rigel-dock-body {
-  height: 50px;
+  height: calc(var(--rigel-navbar-h, 44px) + 6px);
   max-width: 100%;
   min-width: 0;
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 0 8px;
+  padding: 0 var(--rigel-space, 8px);
   border-radius: calc(var(--rigel-radius, 9px) * 16 / 9);
-  background: var(--surface);
+  background: var(--rigel-surface-bg, var(--surface));
+  backdrop-filter: var(--rigel-glass-filter, none);
   border: 1px solid var(--border-2);
   -moz-window-dragging: no-drag;
 
@@ -74,8 +75,8 @@
     padding-block: 6px;
   }
   .rigel-dtab {
-    height: 38px;
-    min-width: 38px;
+    height: calc(var(--rigel-navbar-h, 44px) - 6px);
+    min-width: calc(var(--rigel-navbar-h, 44px) - 6px);
     border-radius: calc(var(--rigel-radius, 9px) * 11 / 9);
     display: flex;
     align-items: center;
@@ -164,7 +165,7 @@
     box-shadow: 0 0 0 1.5px var(--private) inset;
   }
   .rigel-gchip {
-    height: 38px;
+    height: calc(var(--rigel-navbar-h, 44px) - 6px);
     padding: 0 10px 0 11px;
     margin-inline: 2px -3px;
     border-inline-end: none;
@@ -207,7 +208,7 @@
     flex: none;
   }
   .rigel-omni {
-    height: 36px;
+    height: calc(var(--rigel-navbar-h, 44px) - 8px);
     width: 250px;
     flex: none;
     border-radius: calc(var(--rigel-radius, 9px) * 10 / 9);
@@ -243,8 +244,25 @@
     align-items: center;
   }
   .rigel-tool {
-    width: 34px;
-    height: 34px;
+    width: calc(var(--rigel-navbar-h, 44px) - 10px);
+    height: calc(var(--rigel-navbar-h, 44px) - 10px);
     border-radius: var(--rigel-radius, 9px);
   }
+}
+
+/* --- Görünüm stüdyosu (rigel.look): zemin üst başlığa ve alttaki dock'a boyanır; `fixed` ile
+   ikisi pencere boyutunda tek bir arka planın üst ve alt parçasını gösterir. Şeritler --rigel-strip-bg. */
+:root[data-rigel-layout="dock"][rigel-look-bg] #navigator-toolbox {
+  background: var(--rigel-bg-image), var(--bg) !important;
+  background-attachment: fixed !important;
+}
+:root[data-rigel-layout="dock"][rigel-look-bg] #rigel-dock {
+  background: linear-gradient(var(--rigel-strip-bg), var(--rigel-strip-bg)), var(--rigel-bg-image), var(--bg);
+  background-attachment: fixed;
+}
+:root[data-rigel-layout="dock"][rigel-look-glass] #rigel-dock {
+  border-top-color: color-mix(in srgb, var(--border-2) 60%, transparent);
+}
+:root[data-rigel-layout="dock"][rigel-look-glass] #rigel-dock .rigel-omni {
+  background: color-mix(in srgb, var(--bg) 55%, transparent);
 }

@@ -128,3 +128,8 @@ pref("rigel.urlbar.simple", true);
 pref("rigel.look", "{}");
 pref("rigel.look.packs", "[]");
 pref("rigel.look.undo", "");
+// Araç düğmeleri ({ orig, hideMenu }), paketlerin açtığı modlar, otomatik gece/gündüz paketi
+pref("rigel.look.buttons", "{}");
+pref("rigel.look.packMods", "[]");
+pref("rigel.look.auto", "{}");
+pref("rigel.look.state.auto", "");

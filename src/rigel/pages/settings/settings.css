@@ -268,3 +268,20 @@ main input.clr { min-width: 40px; }
 .packwrap .pdel { right: 46px; }
 .packwrap .pdel2 { right: 12px; }
 .row .toolrow { padding: 0; }
+
+/* Görünüm stüdyosu 2: araç düğmeleri listesi, görsel arka plan, otomatik paket */
+.btnlist { display: flex; flex-direction: column; gap: 4px; margin: 4px 0 10px; }
+.bitem { display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 2px 8px 2px 6px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--border); }
+.bitem[draggable="true"] { cursor: grab; }
+.bitem.off { background: transparent; border-style: dashed; }
+.bitem.off .bname b { color: var(--text-faint); font-weight: 500; }
+.bitem.drag { opacity: 0.45; }
+.bitem.over { border-color: var(--accent); box-shadow: inset 0 2px 0 var(--accent); }
+.bitem .grip { width: 14px; flex: none; color: var(--text-faint); font-size: 11px; letter-spacing: -2px; text-align: center; }
+.bitem .bname { flex: 1; min-width: 0; display: flex; align-items: baseline; gap: 8px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.bitem .bname small { color: var(--text-faint); font-size: 11.5px; padding: 0 6px; border-radius: 6px; background: var(--hover); }
+.bitem .iconbtn { width: 28px; height: 28px; font-size: 14px; }
+.bitem .iconbtn:disabled { opacity: 0.3; pointer-events: none; }
+.bgfile { color: var(--text-dim); max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pname .pmods { color: var(--accent); }
+main input.time { width: 96px; }

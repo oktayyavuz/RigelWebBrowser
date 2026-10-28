@@ -8,9 +8,9 @@
 }
 
 #rigel-komuta {
-  height: 44px;
+  height: var(--rigel-navbar-h, 44px);
   gap: 6px;
-  padding: 0 8px 0 12px;
+  padding: 0 var(--rigel-space, 8px) 0 calc(var(--rigel-space, 8px) + 4px);
   border-bottom: 1px solid var(--border);
 
   .rigel-komuta-logo {
@@ -31,7 +31,7 @@
   .rigel-crumb {
     flex: 0 1 640px;
     margin: 0 auto;
-    height: 32px;
+    height: var(--rigel-urlbar-h, 32px);
     border-radius: var(--rigel-radius, 9px);
     display: flex;
     align-items: center;
@@ -95,7 +95,7 @@
     display: none;
   }
   .rigel-gchip {
-    height: 28px;
+    height: calc(var(--rigel-urlbar-h, 32px) - 4px);
     padding: 0 8px 0 10px;
     border-radius: calc(var(--rigel-radius, 9px) * 14 / 9);
   }
@@ -107,10 +107,11 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    height: 30px;
+    height: calc(var(--rigel-urlbar-h, 32px) - 2px);
     padding: 0 10px 0 6px;
     border-radius: var(--rigel-radius, 9px);
-    background: var(--surface);
+    background: var(--rigel-surface-bg, var(--surface));
+    backdrop-filter: var(--rigel-glass-filter, none);
     border: 1px solid var(--border);
     flex: none;
   }
@@ -143,4 +144,13 @@
   .rigel-progress {
     bottom: -1px;
   }
+}
+
+/* --- Görünüm stüdyosu (rigel.look): arka plan araç kutusuna boyanır (Klasik gibi); şerit
+   --rigel-strip-bg ile, yüzeyler --rigel-surface-bg ile saydamlaşır. {} iken bu kurallar devrede değil. */
+:root[data-rigel-layout="komuta"][rigel-look-bg] #navigator-toolbox {
+  background: var(--rigel-bg-image), var(--bg) !important;
+}
+:root[data-rigel-layout="komuta"][rigel-look-glass] #rigel-komuta {
+  border-bottom-color: color-mix(in srgb, var(--border-2) 60%, transparent);
 }

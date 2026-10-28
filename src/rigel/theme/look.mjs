@@ -4,17 +4,21 @@
 // `var(--rigel-…, eski değer)` yedekleri geri kalanını taşır.
 //
 // Şema: { radius 0–20, density "sıkı|normal|ferah", font "system|inter|noto|mono|<ad>", fontSize 11–15,
-//         glass 0–100, shadow 0–3, bg { type "none|solid|gradient", color, from, to, angle },
+//         glass 0–100, shadow 0–3, bg { type "none|solid|gradient|image", color, from, to, angle,
+//         file (profil/rigel-bg/ içindeki ad), fit "cover|center", blur 0–40, dim 0–80 },
 //         accentCustom "#rrggbb", tabStyle "kart|hap|çizgi|düz", tabWidth 120–320 }
 
 export const PREF = "rigel.look";
 export const UNDO_PREF = "rigel.look.undo";
 export const PACKS_PREF = "rigel.look.packs";
 export const STUDIO_ID = "studyo";
+export const BUTTONS_PREF = "rigel.look.buttons";
+export const AUTO_PREF = "rigel.look.auto";
+export const BG_DIR = "rigel-bg";
 
 export const DEFAULTS = {
   radius: 9, density: "normal", font: "system", fontSize: 13, glass: 0, shadow: 1,
-  bg: { type: "none", color: "#101624", from: "#1d3557", to: "#0c0f16", angle: 160 },
+  bg: { type: "none", color: "#101624", from: "#1d3557", to: "#0c0f16", angle: 160, file: "", fit: "cover", blur: 0, dim: 30 },
   accentCustom: "", tabStyle: "kart", tabWidth: 220,
 };
 export const DENSITIES = ["sıkı", "normal", "ferah"];
@@ -56,9 +60,12 @@ export function normalize(raw) {
   if ("fontSize" in raw) out.fontSize = clamp(raw.fontSize, 11, 15, 13);
   if ("glass" in raw) out.glass = clamp(raw.glass, 0, 100, 0);
   if ("shadow" in raw) out.shadow = clamp(raw.shadow, 0, 3, 1);
-  if (raw.bg && typeof raw.bg === "object" && ["solid", "gradient", "none"].includes(raw.bg.type)) {
+  if (raw.bg && typeof raw.bg === "object" && ["solid", "gradient", "image", "none"].includes(raw.bg.type)) {
     const b = raw.bg, D = DEFAULTS.bg;
     out.bg = { type: b.type, color: hex(b.color, D.color), from: hex(b.from, D.from), to: hex(b.to, D.to), angle: clamp(b.angle, 0, 360, D.angle) };
+    const file = bgFileName(b.file);
+    if (file) Object.assign(out.bg, { file, fit: b.fit === "center" ? "center" : "cover", blur: clamp(b.blur, 0, 40, 0), dim: clamp(b.dim, 0, 80, D.dim) });
+    else if (b.type === "image") out.bg.type = "none";
   }
   if (hex(raw.accentCustom, "")) out.accentCustom = hex(raw.accentCustom, "");
   if ("tabStyle" in raw) {
@@ -88,6 +95,20 @@ export function patch(changes) {
     else cur[k] = v;
   }
   write(cur);
+}
+
+/** Arka plan görseli: yalnız profil/rigel-bg/ içindeki düz dosya adı (yol yok). */
+export function bgFileName(v) {
+  return typeof v === "string" && /^[\w][\w.-]{0,90}\.(png|jpe?g|webp|gif|avif)$/i.test(v) ? v : "";
+}
+/** Bulanık kopya adı (theme/bg.mjs üretir): foto.jpg → foto.b12.jpg */
+export const blurName = (file, px) => file.replace(/\.[^.]+$/, `.b${px}.jpg`);
+export function bgFileUrl(file) {
+  try {
+    return PathUtils.toFileURI(PathUtils.join(PathUtils.profileDir, BG_DIR, file));
+  } catch {
+    return "";
+  }
 }
 
 function luminance(h) {
@@ -124,13 +145,23 @@ export function compute(raw) {
     attrs["rigel-look-fs"] = "";
   }
   const bg = look.bg?.type && look.bg.type !== "none" ? look.bg : null;
-  if (bg) {
+  if (bg?.type === "image") {
+    // Katmanlar: karartma, (varsa) önceden bulanıklaştırılmış kopya, özgün görsel. Bulanık kopya yoksa
+    // (ör. başka makineden gelen paket) altındaki özgün görsel görünür. Bulanıklık çalışma anında
+    // filter ile değil dosyada yapılır: her yerde aynı görünür ve yeniden boyamada maliyet yok.
+    const size = bg.fit === "center" ? "center / auto no-repeat" : "center / cover no-repeat";
+    const layer = f => `url("${bgFileUrl(f)}") ${size}`;
+    const dim = bg.dim / 100;
+    vars["--rigel-bg-image"] = [`linear-gradient(rgba(0,0,0,${dim}), rgba(0,0,0,${dim}))`,
+      ...(bg.blur > 0 ? [layer(blurName(bg.file, bg.blur))] : []), layer(bg.file)].join(", ");
+    attrs["rigel-look-img"] = "";
+  } else if (bg) {
     vars["--rigel-bg-image"] = bg.type === "solid"
       ? `linear-gradient(${bg.color}, ${bg.color})`
       : `linear-gradient(${bg.angle}deg, ${bg.from}, ${bg.to})`;
   }
   // Cam: arka plan varken şerit varsayılan olarak %70 saydam; arka plan yokken vurgu tonlu bir parıltı belirir.
-  const glass = look.glass ?? (bg ? 70 : 0);
+  const glass = look.glass ?? (bg ? (bg.type === "image" ? 50 : 70) : 0);
   if (glass > 0 || bg) {
     if (!bg) {
       vars["--rigel-bg-image"] = "radial-gradient(120% 160% at 12% 0%, color-mix(in srgb, var(--accent) 30%, transparent), transparent 62%), linear-gradient(var(--bg), var(--bg))";
@@ -138,7 +169,7 @@ export function compute(raw) {
     attrs["rigel-look-bg"] = "";
     vars["--rigel-glass"] = String(glass / 100);
     vars["--rigel-strip-bg"] = `color-mix(in srgb, var(--bar) ${100 - glass}%, transparent)`;
-    if ((look.glass ?? 0) > 0) {
+    if ((look.glass ?? 0) > 0 || bg?.type === "image") {
       vars["--rigel-surface-bg"] = `color-mix(in srgb, var(--surface) ${Math.round(100 - glass * 0.5)}%, transparent)`;
       vars["--rigel-glass-filter"] = `blur(${Math.round(6 + glass / 8)}px) saturate(1.4)`;
       attrs["rigel-look-glass"] = "";
@@ -156,7 +187,7 @@ export function compute(raw) {
   return { vars, attrs };
 }
 
-const ALL_ATTRS = ["rigel-look-font", "rigel-look-fs", "rigel-look-bg", "rigel-look-glass", "rigel-look-shadow", "rigel-tabstyle"];
+const ALL_ATTRS = ["rigel-look-img", "rigel-look-font", "rigel-look-fs", "rigel-look-bg", "rigel-look-glass", "rigel-look-shadow", "rigel-tabstyle"];
 const written = new WeakMap();
 
 /** Değişkenleri ve öznitelikleri öğeye yazar; artık olmayanları kaldırır (başkalarının satır içi stiline dokunmaz). */
@@ -213,7 +244,43 @@ export function init(win) {
   const Rigel = (win.Rigel ??= {});
   Rigel.look = { get: read, set: write, patch, openStudio: () => openStudio(win) };
 
+  // Araç düğmeleri: ☰ menüsü CustomizableUI dışında; gizleme yalnız kök özniteliği (look.css).
+  const syncButtons = () => {
+    let b = {};
+    try { b = JSON.parse(Services.prefs.getStringPref(BUTTONS_PREF, "{}")) ?? {}; } catch {}
+    root.toggleAttribute("rigel-hide-menu", !!b.hideMenu);
+    // Kaldırılamayan düğmeler (geri/ileri/eklentiler) CSS ile gizlenir.
+    const ids = Array.isArray(b.hidden) ? b.hidden.filter(x => typeof x === "string" && /^[\w-]{1,80}$/.test(x)) : [];
+    let st = win.document.getElementById("rigel-buttons-hidden");
+    if (!ids.length) { st?.remove(); return; }
+    if (!st) {
+      st = win.document.createElementNS("http://www.w3.org/1999/xhtml", "style");
+      st.id = "rigel-buttons-hidden";
+      root.append(st);
+    }
+    st.textContent = `${ids.map(x => `#nav-bar #${win.CSS.escape(x)}`).join(", ")} { display: none !important; }`;
+  };
+  const btnObs = { observe: syncButtons };
+  Services.prefs.addObserver(BUTTONS_PREF, btnObs);
+  win.addEventListener("unload", () => Services.prefs.removeObserver(BUTTONS_PREF, btnObs), { once: true });
+  syncButtons();
+
+  // Palet komutları; kullanıcı paketleri değişince (rigel.look.packs) yeni pencere açmadan güncellenir.
   let registered = false;
+  const packIds = new Set();
+  let packs = null;
+  async function syncPackCommands() {
+    const cmds = win.Rigel?.commands;
+    if (!cmds?.register || !packs) return;
+    const list = packs.allPacks();
+    const live = new Set(list.map(p => `look.pack.${p.id}`));
+    for (const id of [...packIds]) if (!live.has(id)) { cmds.unregister?.(id); packIds.delete(id); }
+    for (const p of list) {
+      const id = `look.pack.${p.id}`;
+      cmds.register({ id, label: `Tema paketi: ${p.name}`, icon: "brush", run: () => packs.applyPack(p) });
+      packIds.add(id);
+    }
+  }
   async function registerCommands() {
     const reg = win.Rigel?.commands?.register;
     if (!reg || registered) return;
@@ -221,11 +288,13 @@ export function init(win) {
     try {
       reg({ id: "look.studio", label: "Görünüm stüdyosu", icon: "brush", run: () => openStudio(win) });
       reg({ id: "look.reset", label: "Görünümü varsayılana döndür", icon: "brush", run: () => write({}) });
-      const packs = await import("chrome://userscripts/content/theme/packs.mjs");
-      for (const p of packs.allPacks()) {
-        reg({ id: `look.pack.${p.id}`, label: `Tema paketi: ${p.name}`, icon: "brush", run: () => packs.applyPack(p) });
-      }
+      packs = await import("chrome://userscripts/content/theme/packs.mjs");
+      await syncPackCommands();
       reg({ id: "look.pack.undo", label: "Tema paketini geri al", icon: "undo", run: () => packs.undo() });
+      const packsObs = { observe: () => syncPackCommands().catch(e => dump(`[rigel] paket komutları: ${e}\n`)) };
+      Services.prefs.addObserver(PACKS_PREF, packsObs);
+      win.addEventListener("unload", () => Services.prefs.removeObserver(PACKS_PREF, packsObs), { once: true });
+      packs.startAuto(win);
     } catch (e) {
       dump(`[rigel] görünüm komutları kaydedilemedi: ${e}\n`);
     }

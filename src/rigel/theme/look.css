@@ -13,3 +13,11 @@
 :root[rigel-look-bg] {
   background: var(--rigel-bg-image), var(--bg) !important;
 }
+/* Görsel arka plan: şerit yazıları için temaya uygun ince hale (okunabilirlik). */
+:root[rigel-look-img] :is(#navigator-toolbox, #rigel-dock, #sidebar-container) {
+  text-shadow: 0 0 3px color-mix(in srgb, var(--bg) 85%, transparent);
+}
+/* Araç düğmeleri: ☰ menüsü CustomizableUI dışında, stüdyo gizleyebilir (rigel.look.buttons.hideMenu). */
+:root[rigel-hide-menu] #PanelUI-button {
+  display: none !important;
+}

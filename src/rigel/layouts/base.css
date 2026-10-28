@@ -102,9 +102,9 @@
   align-items: center;
   flex: none;
   position: relative;
-  background: var(--bar);
+  background: var(--rigel-strip-bg, var(--bar));
   color: var(--text);
-  font: 13px/1.4 var(--font);
+  font: var(--rigel-font-size, 13px)/1.4 var(--font);
   -moz-window-dragging: drag;
   -moz-user-focus: ignore;
   user-select: none;
@@ -507,4 +507,9 @@
   .rigel-progress {
     animation: none;
   }
+}
+
+/* Görünüm stüdyosu cam etkisi: Rigel şeritlerinin arkası bulanıklaşır. */
+:root[data-rigel-layout][rigel-look-glass] .rigel-bar {
+  backdrop-filter: var(--rigel-glass-filter, none);
 }
