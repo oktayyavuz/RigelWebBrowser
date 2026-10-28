@@ -1,8 +1,8 @@
 {
-  "name": "Alan renk tonu",
-  "description": "Aktif alana göre bütün arayüz renklenir: şeritler, araç çubuğu, menüler ve alan çipi. Kişisel alan bir renk, diğer alanlar başka bir renk alır; şeridin altında alan renginde çizgi. Bütün düzenlerde.",
+  "name": "Alana göre renk",
+  "description": "Arayüzün rengini etkin alana bağlar: Kişisel alan bir renk, diğer alanlar başka bir renk alır (şeritler, araç çubuğu, menüler, alan çipi); şeridin altında alan renginde çizgi. Alan değiştirince (Ctrl+Alt+1..9) renk de değişir. Vurgu tonu ile aynı renkleri değiştirdiğinden birlikte açma. Bütün düzenlerde.",
   "author": "Rigel",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "target": "chrome",
   "prefs": [
     {
@@ -96,5 +96,10 @@
       "default": true
     }
   ],
-  "license": "MPL-2.0"
+  "license": "MPL-2.0",
+  "category": "renk",
+  "summary": "Arayüz rengi etkin alana (Ctrl+Alt+1..9) göre değişir",
+  "conflicts": [
+    "accent-chrome"
+  ]
 }

@@ -154,3 +154,16 @@
 :root[data-rigel-layout="komuta"][rigel-look-glass] #rigel-komuta {
   border-bottom-color: color-mix(in srgb, var(--border-2) 60%, transparent);
 }
+
+/* Sade adres (rigel.urlbar.simple, shell/urlsimple.mjs): yol ve başlık gizli, alan adı ortada. */
+:root[data-rigel-layout="komuta"][rigel-url-simple] .rigel-crumb {
+  justify-content: center;
+  &:has(b) .path,
+  .t {
+    display: none;
+  }
+  b {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

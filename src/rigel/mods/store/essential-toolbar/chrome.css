@@ -23,6 +23,23 @@
   opacity: 1 !important;
   pointer-events: auto !important;
 }
+/* Ada, Dock, Komuta ve Yan Panel: kullanılmayan geri/ileri ve pencere düğmeleri (Rigel'in kendi şeritleri) */
+:root:root:root[rigel-mod-essential-toolbar-backfwd] :is(#rigel-ada, #rigel-docktop, #rigel-komuta) .rigel-nav > :nth-child(-n+2):disabled,
+:root:root:root[rigel-mod-essential-toolbar-wctl] :is(#rigel-ada, #rigel-docktop, #rigel-komuta, #rigel-side-top) .rigel-wctl {
+  max-width: 0 !important;
+  min-width: 0 !important;
+  margin-inline: 0 !important;
+  padding-inline: 0 !important;
+  opacity: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+  transition: max-width 0.18s ease, opacity 0.14s ease;
+}
+:root:root:root[rigel-mod-essential-toolbar-wctl] :is(#rigel-ada, #rigel-docktop, #rigel-komuta, #rigel-side-top):hover .rigel-wctl {
+  max-width: 160px !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
 /* Kalan düğmeler biraz daha ferah */
 :root:root:root #nav-bar toolbarbutton.toolbarbutton-1:not([disabled]):hover > :is(.toolbarbutton-icon, .toolbarbutton-badge-stack) {
   background-color: color-mix(in srgb, var(--accent) 16%, transparent) !important;

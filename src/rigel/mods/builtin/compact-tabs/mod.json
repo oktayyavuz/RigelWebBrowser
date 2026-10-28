@@ -1,8 +1,8 @@
 {
   "name": "Kompakt sekme satırları",
-  "description": "Sekme satırlarının yüksekliğini, yazı boyutunu ve aralığını kaydırıcılarla daraltır ya da genişletir: yan panel dikey sekmeleri, Klasik şeridi ve sekme paneli.",
+  "description": "Sekme satırlarının yüksekliğini, yazı boyutunu ve aralığını kaydırıcılarla daraltır ya da genişletir: Klasik şeridi, Yan Panel dikey sekmeleri ve sekme paneli (bütün düzenlerde Ctrl+Shift+A). Ada yıldızları ve Dock sekmeleri yalnız simge olduğundan etkilenmez.",
   "author": "Rigel",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "target": "chrome",
   "prefs": [
     {
@@ -35,5 +35,7 @@
       "unit": "px",
       "default": 0
     }
-  ]
+  ],
+  "category": "sekme",
+  "summary": "Sekme satırlarının yüksekliği, yazısı ve aralığı ayarlanır"
 }

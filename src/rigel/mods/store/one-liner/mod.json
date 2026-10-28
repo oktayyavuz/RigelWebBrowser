@@ -2,7 +2,7 @@
   "name": "Tek satır Klasik",
   "description": "Klasik düzende sekme şeridi ve araç çubuğu tek satırda birleşir: solda gezinme düğmeleri ve adres çubuğu, sağda sekmeler. Sayfaya 42 px daha fazla yer kalır. İstersen geri/ileri/yenile de gizlenir.",
   "author": "Rigel",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "target": "chrome",
   "prefs": [
     {
@@ -32,5 +32,13 @@
       "default": false
     }
   ],
-  "license": "MPL-2.0"
+  "license": "MPL-2.0",
+  "category": "duzen",
+  "summary": "Klasik'te sekmeler ve adres çubuğu tek satırda birleşir",
+  "conflicts": [
+    "minimal-klasik-tabs"
+  ],
+  "layouts": [
+    "klasik"
+  ]
 }

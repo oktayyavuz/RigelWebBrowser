@@ -1,8 +1,8 @@
 {
   "name": "Gizli pencere vurgusu",
-  "description": "Gizli pencerede şeritler renkli bir degrade (ya da düz renk) alır, sayfanın çevresine renkli bir çerçeve çizilir ve adres çubuğunun soluna maske simgesi gelir. Hangi pencerenin gizli olduğu hiç karışmaz. Normal pencereler etkilenmez.",
+  "description": "Yalnız gizli pencerede: şeritler renkli bir degrade (ya da düz renk) alır, sayfanın çevresine renkli bir çerçeve çizilir ve adres alanının başına maske simgesi gelir (Ada adası, Dock arama düğmesi, Komuta kırıntısı dahil). Hangi pencerenin gizli olduğu hiç karışmaz. Normal pencereler etkilenmez.",
   "author": "danm36",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "target": "chrome",
   "homepage": "https://github.com/danm36/zen-browser-private-browsing-toolbar-highlighting",
   "license": "MIT",
@@ -86,5 +86,10 @@
       "type": "checkbox",
       "default": true
     }
+  ],
+  "category": "renk",
+  "summary": "Gizli pencerede şeritler renklenir, sayfaya çerçeve çizilir",
+  "conflicts": [
+    "zen-content"
   ]
 }

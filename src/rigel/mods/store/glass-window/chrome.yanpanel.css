@@ -1,0 +1,15 @@
+/* Cam şeritler — Yan Panel: sol sütun ve kartın çevresi renk tonlu cam; sütunun içi cama karışır. Üst üste binme Yan Panel'de yok. */
+:root:root:root[data-rigel-layout="yanpanel"]:not([inDOMFullscreen]) #browser {
+  background: var(--glass-sheen), var(--glass-tint), var(--bar) !important;
+}
+:root:root:root[data-rigel-layout="yanpanel"]:not([inDOMFullscreen]) #sidebar-container {
+  background: linear-gradient(90deg, color-mix(in srgb, white 9%, transparent), transparent 70%), var(--glass-tint), var(--bar) !important;
+  -webkit-backdrop-filter: blur(var(--rigel-mod-glass-window-blur, 18px)) saturate(1.6) !important;
+  backdrop-filter: blur(var(--rigel-mod-glass-window-blur, 18px)) saturate(1.6) !important;
+  box-shadow: inset -1px 0 0 var(--glass-edge) !important;
+}
+:root:root:root[data-rigel-layout="yanpanel"]:not([inDOMFullscreen]) :is(#sidebar-container > #nav-bar, #rigel-side-top, #rigel-side-bottom) { background: transparent !important; }
+:root:root:root[data-rigel-layout="yanpanel"]:not([inDOMFullscreen]) #sidebar-container .tabbrowser-tab:is([selected], [multiselected]) .tab-background {
+  background: color-mix(in srgb, white 18%, transparent) !important;
+  border: 1px solid var(--glass-edge) !important;
+}

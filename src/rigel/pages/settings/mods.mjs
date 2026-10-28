@@ -4,8 +4,10 @@ import { h, icon, watch, onDispose, toggle, select, notify, chromeWin, openInTab
 
 const { Mods } = ChromeUtils.importESModule("chrome://userscripts/content/mods/manager.sys.mjs");
 const { enableWithConsent } = ChromeUtils.importESModule("chrome://userscripts/content/mods/consent.sys.mjs");
+const Store = ChromeUtils.importESModule("chrome://userscripts/content/mods/store.sys.mjs");
+import { CATEGORIES, catInfo, catBadge, catIcon, view, layoutsOf, modFiles, layoutMeter, inertNote, codeBadge, currentLayout, ensureStyle, LAYOUT_NAMES } from "../store/modmeta.mjs";
 
-export const LAYOUT_LABELS = { ada: "Ada", dock: "Dock", komuta: "Komuta", yanpanel: "Yan Panel", klasik: "Klasik" };
+export const LAYOUT_LABELS = LAYOUT_NAMES;
 
 // Kaydırıcı ve renk seçici için küçük stil (settings.css bu dosyanın sahibine ait değil; sayfa başına bir kez eklenir).
 if (!document.getElementById("rigel-modctl-style")) {
@@ -19,7 +21,28 @@ if (!document.getElementById("rigel-modctl-style")) {
     .tbadge.layout { background: color-mix(in srgb, var(--accent, #7c9cff) 16%, transparent); }
     .tbadge.script { background: color-mix(in srgb, var(--danger, #e5484d) 22%, transparent); color: var(--text, #eee); }
     .moderr { color: var(--danger, #e5484d); font-size: 12px; }
+    .modcat { display: flex; align-items: center; gap: 8px; padding: 14px 0 6px; font-size: 12.5px; font-weight: 600; color: var(--text-dim, #aaa); border-top: 1px solid var(--border, #333); }
+    .modlist > .modcat:first-child { border-top: 0; }
+    .modcat svg { color: color-mix(in srgb, var(--cat) 80%, var(--text, #eee)); }
+    .modcat .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--cat); }
+    .modcat .n { font: 11px var(--mono, monospace); color: var(--text-faint, #888); font-weight: 400; }
+    .modcat + .mod { border-top: 0 !important; }
+    .mod .modsum { color: var(--text, #eee); font-weight: 500; }
+    .mod .modline { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin-top: 2px; }
+    .mod.inert .modhead .txt > b, .mod.inert .modsum, .mod.inert .modhead .txt > small:not(.modline) { opacity: .55; }
+    .mod.inert .modprefs { opacity: .5; }
+    .modfind { margin: 10px 0 4px; }
+    .modfind input[type="search"] { background: none !important; border: 0 !important; box-shadow: none !important; padding: 0 !important; height: 100% !important; width: auto !important; }
+    .modfind input[type="search"]::-moz-search-clear-button { display: none; }
   ` }));
+}
+ensureStyle();
+
+/** Açılan modun, açık başka bir modla çakışması varsa kısa uyarı (engellemez). */
+export function warnConflicts(id) {
+  const c = Mods.conflictsOf(id);
+  if (c.length) notify(`Uyarı: "${Mods.get(id)?.meta.name ?? id}", ${c.map(o => `"${o.name}"`).join(", ")} ile çakışıyor; biri diğerini ezebilir.`, false);
+  return c;
 }
 
 /** Her çağrıda en fazla her `ms` bir kez (sondaki çağrı kaybolmaz). */
@@ -94,22 +117,16 @@ export function prefControl(mod, p) {
 export function modToggle(mod) {
   const sw = toggle(null, {
     get: () => Mods.isEnabled(mod.id),
-    set: on => enableWithConsent(chromeWin(), Mods, mod.id, on).then(ok => { if (!ok) sw.checked = Mods.isEnabled(mod.id); }),
+    set: on => enableWithConsent(chromeWin(), Mods, mod.id, on).then(ok => { if (!ok) sw.checked = Mods.isEnabled(mod.id); else if (on) warnConflicts(mod.id); }),
     names: ["rigel.mods.enabled"],
   });
   return sw;
 }
 
-/** Modun hangi düzenlerde çalıştığı + kod rozeti. */
-export const layoutBadges = mod => [
-  mod.layouts?.length ? mod.layouts.map(l => h("span", { class: "tbadge layout", title: "Yalnız bu düzende çalışır", text: LAYOUT_LABELS[l] ?? l })) : null,
-  mod.script && h("span", { class: "tbadge script", title: "Bu mod kod çalıştırır", text: "Kod çalıştırır" }),
-];
-
 function badges(mod) {
   return [
-    h("span", { class: "tbadge " + mod.target, text: TARGETS[mod.target] }),
-    layoutBadges(mod),
+    mod.target !== "chrome" && h("span", { class: "tbadge " + mod.target, text: TARGETS[mod.target] }),
+    mod.script && codeBadge(mod.trust === "bundled" || mod.builtin),
     mod.builtin && h("span", { class: "tbadge builtin", text: "Yerleşik" }),
     mod.store && h("span", { class: "tbadge builtin", text: "Mağaza" }),
   ];
@@ -118,17 +135,42 @@ function badges(mod) {
 export function modlar() {
   const listBox = h("div", { class: "modlist" });
   const editorBox = h("div", {});
+  const findBox = h("label", { class: "search modfind" }, icon("search", 15),
+    h("input", { type: "search", placeholder: "Kurulu modlarda ara (ad, özet, kategori)", spellcheck: "false", "aria-label": "Kurulu modlarda ara" }));
+  const findInput = findBox.querySelector("input");
+  findInput.addEventListener("input", () => renderList());
+  let confSyncs = []; // çakışma satırları: tek gözlemci hepsini günceller
+  watch("rigel.mods.enabled", () => confSyncs.forEach(f => f()));
+  let catalog = new Map(); // id -> katalog girdisi (eski kurulumlarda eksik alanlar için)
+  const fold = t => String(t ?? "").toLocaleLowerCase("tr").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/ı/g, "i");
   let armed = null; // silme onayı bekleyen mod
   let editing = null; // düzenleyici durumu
 
   // ---- liste ----
   function renderList() {
     const mods = Mods.list();
+    confSyncs = [];
+    findBox.hidden = mods.length < 9;
     if (!mods.length) {
       listBox.replaceChildren(h("p", { class: "hint", text: "Henüz mod yok. \"Yeni mod\" ile kendi CSS'ini yaz ya da bir klasör / .css dosyası içe aktar." }));
       return;
     }
-    listBox.replaceChildren(...mods.map(modItem));
+    const cur = currentLayout();
+    const q = findBox.hidden ? "" : fold(findInput.value.trim());
+    const rows = mods.map(m => {
+      const v = view(m, catalog.get(m.store?.id ?? m.id));
+      return { m, v, layouts: layoutsOf(m, modFiles(Mods.get(m.id))) };
+    }).filter(({ m, v }) => !q || fold(`${m.name} ${v.summary} ${m.description} ${m.author} ${catInfo(v.category).label} ${m.id}`).includes(q));
+    if (!rows.length) { listBox.replaceChildren(h("p", { class: "hint", text: "Aramaya uyan kurulu mod yok." })); return; }
+    // Kategoriye göre gruplu (CATEGORIES sırası, en sonda "Diğer").
+    const out = [];
+    for (const c of CATEGORIES) {
+      const sub = rows.filter(r => r.v.category === c.id);
+      if (!sub.length) continue;
+      out.push(h("div", { class: "modcat", style: `--cat:${c.color}` }, h("span", { class: "dot" }), catIcon(c.id, 14), c.label, h("span", { class: "n", text: sub.length })));
+      out.push(...sub.map(r => modItem(r.m, r.v, r.layouts, cur)));
+    }
+    listBox.replaceChildren(...out);
   }
   function errLine(id) {
     const e = h("small", { class: "moderr" });
@@ -137,7 +179,7 @@ export function modlar() {
     watch("topic:rigel-mods-state", sync);
     return e;
   }
-  function modItem(mod) {
+  function modItem(mod, v, layouts, cur) {
     const sw = modToggle(mod);
     sw.setAttribute("aria-label", mod.name + " aç/kapat");
     const del = h("button", { type: "button", class: "iconbtn", title: "Sil", "aria-label": "Sil" }, icon("trash", 16));
@@ -155,16 +197,27 @@ export function modlar() {
       notify(`"${mod.name}" silindi`);
     });
     const meta = [mod.author && `${mod.author}`, `v${mod.version}`].filter(Boolean).join(" · ");
+    const conf = h("span", { class: "rgconf" });
+    const syncConf = () => {
+      const c = Mods.isEnabled(mod.id) ? Mods.conflictsOf(mod.id) : [];
+      conf.textContent = c.length ? c.map(o => o.name).join(", ") + " ile çakışıyor" : "";
+      conf.hidden = !c.length;
+    };
+    syncConf();
+    confSyncs.push(syncConf);
+    const inert = inertNote(layouts, cur);
     const head = h("div", { class: "row modhead" },
       h("span", { class: "txt" },
         h("b", {}, mod.name, badges(mod)),
-        mod.description && h("small", { text: mod.description }),
+        h("small", { class: "modsum", text: v.summary || mod.description }),
+        v.hasSummary && mod.description && mod.description !== v.summary ? h("small", { text: mod.description }) : null,
+        h("small", { class: "modline" }, layoutMeter(layouts, cur), inert, conf),
         h("small", { class: "modmeta", text: meta }),
         mod.script && errLine(mod.id)),
       h("span", { class: "modact" },
         h("button", { type: "button", class: "iconbtn", title: "Düzenle", "aria-label": "Düzenle", onclick: () => openEditor(mod.id) }, icon("edit", 16)),
         del, sw));
-    const item = h("div", { class: "mod", "data-keywords": `${mod.name} ${mod.description} ${mod.author} mod css ${TARGETS[mod.target]} ${mod.builtin ? "yerleşik" : ""}` }, head);
+    const item = h("div", { class: "mod" + (inert ? " inert" : ""), "data-cat": v.category, "data-keywords": `${mod.name} ${v.summary} ${mod.description} ${mod.author} mod css ${TARGETS[mod.target]} ${catInfo(v.category).label} ${mod.builtin ? "yerleşik" : ""}` }, head);
     if (mod.prefs?.length) {
       const form = h("div", { class: "modprefs" }, mod.prefs.map(p => h("div", { class: "row sub" },
         h("span", { class: "txt" }, h("b", { text: p.label })), prefControl(mod, p))));
@@ -290,10 +343,20 @@ export function modlar() {
       btn("Modlar klasörünü aç", () => Mods.revealFolder(), "ghost", "folder"),
       btn("Yenile", guard(async () => { await Mods.reload(); notify("Modlar yenilendi"); }), "ghost", "undo")));
 
-  Mods.init().then(renderList);
+  // Katalog: eski kurulumlarda eksik kategori/özet/çakışma alanları (yönetici diske de işler).
+  const loadCatalog = async () => {
+    try {
+      const { entries } = await Store.loadCatalog();
+      catalog = new Map(entries.map(e => [e.id, e]));
+      await Mods.enrich(entries);
+    } catch {}
+    renderList();
+  };
+  Mods.init().then(renderList).then(loadCatalog);
   renderList();
   watch("topic:rigel-mods-list", renderList);
+  watch("rigel.layout", renderList);
   onDispose(() => { if (editing) { editing = null; Mods.clearPreview(); } });
 
-  return [toolbar, editorBox, h("section", { class: "card mods" }, listBox)];
+  return [toolbar, editorBox, h("section", { class: "card mods" }, findBox, listBox)];
 }

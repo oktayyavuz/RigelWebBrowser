@@ -7,9 +7,39 @@
   "license": "MPL-2.0",
   "script": true,
   "prefs": [
-    { "key": "shortcut", "label": "Kısayol", "type": "string", "default": "Ctrl+Alt+F" },
-    { "key": "edge", "label": "Kenar bölgesi kalınlığı", "type": "range", "min": 2, "max": 24, "step": 1, "unit": "px", "default": 6 },
-    { "key": "delay", "label": "Gizlenme gecikmesi", "type": "range", "min": 0, "max": 1500, "step": 50, "unit": "ms", "default": 350 },
-    { "key": "hint", "label": "Açılıp kapanınca bildirim göster", "type": "checkbox", "default": true }
-  ]
+    {
+      "key": "shortcut",
+      "label": "Kısayol",
+      "type": "string",
+      "default": "Ctrl+Alt+F"
+    },
+    {
+      "key": "edge",
+      "label": "Kenar bölgesi kalınlığı",
+      "type": "range",
+      "min": 2,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 6
+    },
+    {
+      "key": "delay",
+      "label": "Gizlenme gecikmesi",
+      "type": "range",
+      "min": 0,
+      "max": 1500,
+      "step": 50,
+      "unit": "ms",
+      "default": 350
+    },
+    {
+      "key": "hint",
+      "label": "Açılıp kapanınca bildirim göster",
+      "type": "checkbox",
+      "default": true
+    }
+  ],
+  "category": "davranis",
+  "summary": "Kısayolla bütün arayüz gizlenir, sayfa pencereyi doldurur"
 }

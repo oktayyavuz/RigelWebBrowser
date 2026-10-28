@@ -92,7 +92,11 @@ function syncCommands() {
       icon: "bolt",
       run: async () => {
         const on = !Mods.isEnabled(m.id);
-        if (await enableWithConsent(window, Mods, m.id, on)) toast(`${Mods.get(m.id)?.meta.name ?? m.name}: ${on ? "açık" : "kapalı"}`);
+        if (!(await enableWithConsent(window, Mods, m.id, on))) return;
+        const name = Mods.get(m.id)?.meta.name ?? m.name;
+        // Çakışan açık mod varsa kısa uyarı (engellemez).
+        const c = on ? Mods.conflictsOf(m.id) : [];
+        toast(c.length ? `${name}: açık. Uyarı: ${c.map(o => o.name).join(", ")} ile çakışıyor` : `${name}: ${on ? "açık" : "kapalı"}`);
       },
     });
   }

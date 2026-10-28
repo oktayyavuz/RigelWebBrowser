@@ -58,7 +58,34 @@
 }
 /* Yükleme simgesi vurgu renginde */
 :root:root:root .tabbrowser-tab[busy] .tab-throbber { color: var(--accent) !important; fill: var(--accent) !important; }
+/* Dock: yüklenen sekmenin altında nabız gibi atan çubuk; Dock alttayken üst çizgi alttaki gövdeye de çizilir */
+@keyframes rigel-loadbar-pulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+:root:root:root:not([rigel-mod-tab-loadbar-where="top"]) #rigel-dock .rigel-dtab:has(.spin) > .fav::after {
+  content: "";
+  position: absolute;
+  inset: auto -6px -8px -6px;
+  height: var(--lb-h);
+  border-radius: var(--lb-h);
+  background: var(--lb-color);
+  animation: rigel-loadbar-pulse 1.1s ease-in-out infinite;
+  pointer-events: none;
+}
+:root:root:root:not([rigel-mod-tab-loadbar-where="tab"])[data-rigel-layout="dock"]:has(#tabbrowser-tabs .tabbrowser-tab[selected][busy]) #rigel-dock .rigel-dock-body { position: relative; overflow: hidden; }
+:root:root:root:not([rigel-mod-tab-loadbar-where="tab"])[data-rigel-layout="dock"]:has(#tabbrowser-tabs .tabbrowser-tab[selected][busy]) #rigel-dock .rigel-dock-body::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 40%;
+  height: var(--lb-h);
+  pointer-events: none;
+  background: var(--lb-color);
+  animation: rigel-loadbar-slide 1.1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+/* Ada: yıldızın yükleme halkası çubuk renginde */
+:root:root:root #rigel-ada .rigel-star.loading::before { border-top-color: var(--accent) !important; border-right-color: color-mix(in srgb, var(--accent-2) 60%, transparent) !important; }
 @media (prefers-reduced-motion: reduce) {
   :root:root:root .tabbrowser-tab[busy] > .tab-stack > .tab-background::after,
-  :root:root:root #navigator-toolbox::after { animation: none !important; width: 100%; }
+  :root:root:root #navigator-toolbox::after,
+  :root:root:root #rigel-dock .rigel-dock-body::after { animation: none !important; width: 100%; }
+  :root:root:root #rigel-dock .fav::after { animation: none !important; }
 }

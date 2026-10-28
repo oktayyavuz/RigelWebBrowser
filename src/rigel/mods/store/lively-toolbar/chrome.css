@@ -42,6 +42,28 @@
 :root:root:root[rigel-mod-lively-toolbar-tabs] .tabbrowser-tab:not([selected]):hover > .tab-stack { transform: translateY(var(--lt-lift)); }
 :root:root:root[rigel-mod-lively-toolbar-tabs] .tabbrowser-tab .tab-icon-image { transition: transform var(--lt-dur) ease; }
 :root:root:root[rigel-mod-lively-toolbar-tabs] .tabbrowser-tab:hover .tab-icon-image { transform: scale(1.15) rotate(-6deg); }
+/* Ada, Dock, Komuta ve Yan Panel'in kendi düğmeleri (gezinme, araç, pencere, yeni sekme) */
+:root:root:root :is(.rigel-tool, .rigel-nb, .rigel-wbtn, .rigel-add, #rigel-side-bottom .rigel-new) {
+  transition: transform var(--lt-dur) cubic-bezier(0.3, 1.5, 0.5, 1), background-color var(--lt-dur) ease, box-shadow var(--lt-dur) ease !important;
+}
+:root:root:root :is(.rigel-tool, .rigel-nb, .rigel-wbtn, .rigel-add, #rigel-side-bottom .rigel-new):not(:disabled):hover {
+  transform: translateY(var(--lt-lift)) scale(var(--lt-scale)) !important;
+  background-color: color-mix(in srgb, var(--accent) 18%, transparent) !important;
+}
+:root:root:root[rigel-mod-lively-toolbar-glow] :is(.rigel-tool, .rigel-nb, .rigel-wbtn, .rigel-add, #rigel-side-bottom .rigel-new):not(:disabled):hover {
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--accent) 35%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent) !important;
+  color: var(--accent) !important;
+}
+:root:root:root :is(.rigel-tool, .rigel-nb, .rigel-wbtn, .rigel-add, #rigel-side-bottom .rigel-new):not(:disabled):hover:active { transform: scale(0.9) !important; transition-duration: 0.08s !important; }
+:root:root:root .rigel-add:hover > svg { transform: rotate(90deg); transition: transform var(--lt-dur) ease; }
+/* Adres düğmeleri (Ada adası, Dock arama, Komuta kırıntısı): üstüne gelince vurgu halkası */
+:root:root:root :is(.rigel-identity, .rigel-omni, .rigel-crumb) { transition: box-shadow var(--lt-dur) ease, transform var(--lt-dur) ease !important; }
+:root:root:root :is(.rigel-identity, .rigel-omni, .rigel-crumb):hover {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent), 0 8px 24px color-mix(in srgb, var(--accent) 18%, transparent) !important;
+}
+/* Ada yıldızları ve Dock sekmeleri de yaylı kalkar */
+:root:root:root[rigel-mod-lively-toolbar-tabs] :is(.rigel-star, .rigel-dtab[role="tab"]) { transition: transform var(--lt-dur) cubic-bezier(0.3, 1.5, 0.5, 1), background-color var(--lt-dur) ease !important; }
+:root:root:root[rigel-mod-lively-toolbar-tabs] :is(.rigel-star, .rigel-dtab[role="tab"]):not(.on):hover { transform: translateY(calc(var(--lt-lift) * 1.5)) scale(var(--lt-scale)) !important; }
 @media (prefers-reduced-motion: reduce) {
-  :root:root:root toolbarbutton > *, :root:root:root .tabbrowser-tab > .tab-stack, :root:root:root .tab-icon-image, :root:root:root #urlbar > .urlbar-background { transition: none !important; transform: none !important; }
+  :root:root:root toolbarbutton > *, :root:root:root :is(.rigel-tool, .rigel-nb, .rigel-wbtn, .rigel-add, .rigel-new, .rigel-star, .rigel-dtab, .rigel-identity, .rigel-omni, .rigel-crumb), :root:root:root .tabbrowser-tab > .tab-stack, :root:root:root .tab-icon-image, :root:root:root #urlbar > .urlbar-background { transition: none !important; transform: none !important; }
 }

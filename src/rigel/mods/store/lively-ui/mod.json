@@ -1,12 +1,32 @@
 {
-  "name": "Canlı arayüz",
-  "description": "Arayüze yay gibi sıçrayan, yumuşak animasyonlar katar: sekmeler büyüyerek açılır ve küçülerek kapanır, düğmeler üzerine gelince kabarır ve basınca çöker, menüler ve paletle yan panel açılırken hafifçe sıçrar, sekme değişince sayfa yumuşakça belirir. Hız ve sıçrama gücü kaydırıcıyla ayarlanır. Yalnız transform ve opacity kullanır; sistem \"hareketi azalt\" dediğinde kapanır. Her düzende çalışır.",
+  "name": "Yaylı animasyonlar",
+  "description": "Açılış ve geçişlere yay gibi sıçrayan animasyonlar katar: sekmeler büyüyerek açılır ve küçülerek kapanır, menüler, palet, çekmece ve bildirimler hafifçe sıçrayarak gelir, sekme değişince sayfa yumuşakça belirir; düğmeler (Ada, Dock, Komuta düğmeleri dahil) üstüne gelince kabarır. Hız ve sıçrama ayarlanır. Yalnız transform ve opacity; \"hareketi azalt\" iken kapanır. Bütün düzenlerde.",
   "author": "Rigel",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "target": "chrome",
   "license": "MPL-2.0",
   "prefs": [
-    { "key": "speed", "label": "Hız", "type": "range", "min": 40, "max": 250, "step": 5, "unit": "", "default": 100 },
-    { "key": "bounce", "label": "Sıçrama gücü", "type": "range", "min": 0, "max": 100, "step": 1, "unit": "", "default": 55 }
-  ]
+    {
+      "key": "speed",
+      "label": "Hız",
+      "type": "range",
+      "min": 40,
+      "max": 250,
+      "step": 5,
+      "unit": "",
+      "default": 100
+    },
+    {
+      "key": "bounce",
+      "label": "Sıçrama gücü",
+      "type": "range",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "",
+      "default": 55
+    }
+  ],
+  "category": "animasyon",
+  "summary": "Sekme açılışı, menü, palet ve sayfa geçişi yaylı sıçrar"
 }

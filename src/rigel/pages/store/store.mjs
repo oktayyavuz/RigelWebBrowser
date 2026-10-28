@@ -1,7 +1,8 @@
-// Mod mağazası: katalog (yerleşik + uzak), arama, etiket süzgeçleri, kart ızgarası, ayrıntı paneli,
+// Mod mağazası: katalog (yerleşik + uzak), arama, durum + kategori süzgeçleri (kategori bölümleri), kart ızgarası (özet, düzen göstergesi, "etkisi yok" notu), ayrıntı paneli,
 // kur / güncelle / kaldır ve "bağlantıdan kur". Yönetici: mods/manager.sys.mjs, katalog: mods/store.sys.mjs.
 import { h, icon, logo, watch, onDispose, toggle, notify, chromeWin } from "../settings/ui.mjs";
-import { prefControl, modToggle, layoutBadges, LAYOUT_LABELS } from "../settings/mods.mjs";
+import { prefControl, modToggle, warnConflicts } from "../settings/mods.mjs";
+import { CATEGORIES, catInfo, catBadge, catIcon, view, layoutsOf, entryFiles, layoutMeter, inertNote, codeBadge, currentLayout, ensureStyle, LAYOUT_NAMES } from "./modmeta.mjs";
 
 const { Mods } = ChromeUtils.importESModule("chrome://userscripts/content/mods/manager.sys.mjs");
 const { confirmScript } = ChromeUtils.importESModule("chrome://userscripts/content/mods/consent.sys.mjs");
@@ -11,7 +12,12 @@ const TARGETS = { chrome: "Arayüz", content: "Web sayfaları", both: "Arayüz +
 const fold = s => String(s ?? "").toLocaleLowerCase("tr").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/ı/g, "i");
 
 const $ = id => document.getElementById(id);
-const state = { entries: [], remote: { state: "none" }, extra: [], q: "", chip: "all", busy: new Set(), selected: null, loading: true };
+// chip: durum süzgeci (all | installed | update); cat: kategori süzgeci (null | kategori kimliği).
+const state = { entries: [], remote: { state: "none" }, extra: [], q: "", chip: "all", cat: null, busy: new Set(), selected: null, loading: true };
+ensureStyle();
+// Görünüm alanları (kategori, özet, düzenler). Kurulu modun meta verisi önce, katalog girdisi yedek.
+const vOf = e => ({ ...view(installed(e.id), e), layouts: layoutsOf(e, entryFiles(e)) });
+const nameOf = id => installed(id)?.name ?? [...state.entries, ...state.extra].find(x => x.id === id)?.name ?? id;
 let armed = null;
 
 // ---- üst kısım ----
@@ -39,6 +45,7 @@ async function reload(force = false) {
     const res = await Store.loadCatalog({ refresh: force });
     state.entries = res.entries;
     state.remote = res.remote;
+    await Mods.enrich(res.entries).catch(() => 0); // eski kurulumlara kategori/özet/çakışma
   } catch (e) {
     state.entries = [];
     state.remote = { state: "error", error: String(e.message ?? e) };
@@ -58,6 +65,7 @@ async function install(e) {
     const r = await Mods.installFromCatalog(e, { allowScript: needsOk });
     notify(r.updated ? `"${e.name}" güncellendi` : `"${e.name}" kuruldu ve açıldı`);
     if (r.notes?.length) notify(r.notes[0], true);
+    if (!r.updated) warnConflicts(e.id);
   } catch (err) {
     notify("Kurulamadı: " + (err.message ?? err), false);
   }
@@ -88,7 +96,6 @@ function preview(e, cls = "pv") {
   return box;
 }
 const targetBadge = e => h("span", { class: "tbadge " + e.target, text: TARGETS[e.target] });
-// Çalıştığı düzenler ve "Kod çalıştırır" rozeti (betikli modlar).
 
 // Uyarlanan modların kaynağı: "Kaynak: Zen mod mağazası — yazar (lisans)".
 function sourceName(url) {
@@ -124,17 +131,26 @@ function actionButton(e, { sm = true } = {}) {
 
 function card(e) {
   const st = stateOf(e);
+  const v = vOf(e);
   const pv = preview(e);
   const open = () => openDetail(e.id);
   pv.addEventListener("click", open);
+  pv.append(catBadge(v.category, "oncard"));
   if (st === "installed" || st === "update") pv.append(h("span", { class: "tbadge tag-installed " + (st === "update" ? "upd" : "kurulu") }, st === "update" ? "Güncelleme var" : "Kurulu"));
   const by = [e.author, "v" + e.version].filter(Boolean).join(" · ");
-  const c = h("article", { class: "mcard", "data-id": e.id },
+  const inert = inertNote(v.layouts, state.layout);
+  const conf = (st === "installed" || st === "update") && Mods.isEnabled(e.id) ? Mods.conflictsOf(e.id) : [];
+  const c = h("article", { class: "mcard" + (inert ? " inert" : ""), "data-id": e.id, "data-cat": v.category },
     pv,
     h("div", { class: "body", onclick: open },
-      h("h3", { text: e.name }), h("span", { class: "by", text: by }), sourceLine(e), h("p", { text: e.description })),
+      h("h3", { text: e.name }),
+      h("span", { class: "rgsum sum", text: v.summary }),
+      h("span", { class: "by", text: by }), sourceLine(e),
+      v.hasSummary && e.description !== v.summary ? h("p", { text: e.description }) : null,
+      inert, conf.length ? h("span", { class: "rgconf", text: conf.map(o => o.name).join(", ") + " ile çakışıyor" }) : null),
     h("div", { class: "foot" },
-      h("span", { class: "badges" }, targetBadge(e), layoutBadges(e), e.origin === "remote" && h("span", { class: "tbadge dim", text: "Uzak" })),
+      h("span", { class: "badges" }, layoutMeter(v.layouts, state.layout), e.script && codeBadge(e.origin === "bundled"),
+        e.target !== "chrome" && targetBadge(e), e.origin === "remote" && h("span", { class: "tbadge dim", text: "Uzak" })),
       actionButton(e)));
   return c;
 }
@@ -143,15 +159,14 @@ function card(e) {
 function filtered(list) {
   const q = fold(state.q.trim());
   return list.filter(e => {
-    if (q && !fold(`${e.name} ${e.description} ${e.author} ${e.tags.join(" ")} ${TARGETS[e.target]}`).includes(q)) return false;
+    const v = vOf(e);
+    if (q && !fold(`${e.name} ${v.summary} ${e.description} ${e.author} ${e.tags.join(" ")} ${TARGETS[e.target]} ${catInfo(v.category).label} ${e.id}`).includes(q)) return false;
+    if (state.cat && v.category !== state.cat) return false;
     const st = stateOf(e);
     switch (state.chip) {
-      case "all": return true;
       case "installed": return st === "installed" || st === "update";
       case "update": return st === "update";
-      case "t:chrome": return e.target !== "content";
-      case "t:content": return e.target !== "chrome";
-      default: return state.chip.startsWith("tag:") ? e.tags.includes(state.chip.slice(4)) : true;
+      default: return true;
     }
   });
 }
@@ -159,17 +174,19 @@ function renderChips() {
   const all = [...state.entries, ...state.extra];
   const nInst = all.filter(e => ["installed", "update"].includes(stateOf(e))).length;
   const nUpd = all.filter(e => stateOf(e) === "update").length;
-  const tags = [...new Set(all.flatMap(e => e.tags))].sort((a, b) => a.localeCompare(b, "tr"));
   const chip = (id, label, n) => {
-    const b = h("button", { type: "button", class: "chip" + (state.chip === id ? " on" : ""), "aria-pressed": String(state.chip === id), onclick: () => { state.chip = state.chip === id && id !== "all" ? "all" : id; render(); } }, label, n != null && h("span", { class: "n", text: n }));
+    const b = h("button", { type: "button", class: "chip" + (state.chip === id ? " on" : ""), "aria-pressed": String(state.chip === id), onclick: () => { state.chip = state.chip === id && id !== "all" ? "all" : id; if (id === "all") state.cat = null; render(); } }, label, n != null && h("span", { class: "n", text: n }));
     return b;
   };
+  // Kategori çipleri: simge + renk noktası + sayı. Boş kategori gösterilmez ("Diğer" yalnız gerekirse).
+  const counts = new Map();
+  for (const e of all) { const c = vOf(e).category; counts.set(c, (counts.get(c) ?? 0) + 1); }
+  const catChip = c => h("button", { type: "button", class: "chip cat" + (state.cat === c.id ? " on" : ""), style: `--cat:${c.color}`, "aria-pressed": String(state.cat === c.id), title: c.label,
+    onclick: () => { state.cat = state.cat === c.id ? null : c.id; render(); } }, h("span", { class: "dot" }), catIcon(c.id, 14), c.label, h("span", { class: "n", text: counts.get(c.id) }));
   $("chips").replaceChildren(...[
     chip("all", "Tümü", all.length), chip("installed", "Kurulu", nInst), nUpd ? chip("update", "Güncelleme var", nUpd) : null,
     h("span", { class: "chip sep" }),
-    chip("t:chrome", "Arayüz"), chip("t:content", "Web sayfaları"),
-    tags.length ? h("span", { class: "chip sep" }) : null,
-    ...tags.map(t => chip("tag:" + t, t))].filter(Boolean));
+    ...CATEGORIES.filter(c => counts.get(c.id)).map(catChip)].filter(Boolean));
 }
 function renderNotice() {
   const r = state.remote;
@@ -180,14 +197,22 @@ function renderNotice() {
   else box.replaceChildren();
 }
 function render() {
+  state.layout = currentLayout();
   renderChips();
   renderNotice();
   const main = $("main");
   if (state.loading && !state.entries.length) { main.replaceChildren(h("p", { class: "empty", text: "Mağaza yükleniyor…" })); return; }
   const list = filtered(state.entries);
   const parts = [];
-  if (list.length) parts.push(h("div", { class: "grid" }, list.map(card)));
-  else parts.push(h("p", { class: "empty", text: state.q || state.chip !== "all" ? "Bu süzgece uyan mod yok." : "Katalog boş." }));
+  // Süzgeç yokken kategoriye göre bölümler; arama ya da kategori seçiliyken düz ızgara.
+  if (list.length && !state.q.trim() && !state.cat) {
+    for (const c of CATEGORIES) {
+      const sub = list.filter(e => vOf(e).category === c.id);
+      if (!sub.length) continue;
+      parts.push(h("div", { class: "sectitle cathead", style: `--cat:${c.color}` }, catIcon(c.id, 15), c.label, h("span", { class: "n", text: sub.length })), h("div", { class: "grid" }, sub.map(card)));
+    }
+  } else if (list.length) parts.push(h("div", { class: "grid" }, list.map(card)));
+  else parts.push(h("p", { class: "empty", text: state.q || state.chip !== "all" || state.cat ? "Bu süzgece uyan mod yok." : "Katalog boş." }));
   main.replaceChildren(...parts);
   // URL sonuçları
   const res = $("urlres");
@@ -211,18 +236,25 @@ function renderDetail() {
   if (!e) { box.hidden = true; return; }
   const st = stateOf(e);
   const meta = installed(e.id);
+  const v = vOf(e);
+  const cur = currentLayout();
+  const conf = v.conflicts.filter(id => id !== e.id);
   const kids = [
     h("div", { class: "head" },
       h("button", { type: "button", class: "close", "aria-label": "Kapat", onclick: closeDetail }, icon("close", 16)),
       preview(e, "pvbig")),
-    h("div", {}, h("h2", { text: e.name }),
+    h("div", { class: "dhead" }, h("div", { class: "badges" }, catBadge(v.category), e.script && codeBadge(e.origin === "bundled")),
+      h("h2", { text: e.name }), h("p", { class: "rgsum dsum", text: v.summary }),
       h("div", { class: "meta" }, e.author && h("span", { text: e.author }), h("span", { text: "v" + e.version }),
         meta?.store && meta.version !== e.version && h("span", { text: `kurulu: v${meta.version}` }), targetBadge(e),
         e.homepage && h("a", { href: e.homepage, onclick: ev => { ev.preventDefault(); chromeWin()?.openTrustedLinkIn?.(e.homepage, "tab"); } }, "Ana sayfa"),
         e.upstream && e.upstream !== e.homepage && h("a", { href: e.upstream, onclick: ev => { ev.preventDefault(); chromeWin()?.openTrustedLinkIn?.(e.upstream, "tab"); } }, "Özgün mod")),
       sourceLine(e, "src big")),
     h("p", { class: "desc", text: e.description }),
-    e.layouts?.length ? h("p", { class: "layoutnote", text: "Yalnız şu düzenlerde çalışır: " + e.layouts.map(l => LAYOUT_LABELS[l] ?? l).join(", ") + "." }) : null,
+    h("div", { class: "dlayouts" }, layoutMeter(v.layouts, cur),
+      h("span", { class: "layoutnote", text: v.layouts.length === 5 ? "Tüm düzenlerde çalışır." : "Yalnız şu düzenlerde çalışır: " + v.layouts.map(l => LAYOUT_NAMES[l]).join(", ") + "." }),
+      inertNote(v.layouts, cur)),
+    conf.length ? h("p", { class: "layoutnote", text: "Birlikte açılınca çakışır: " + conf.map(nameOf).join(", ") + "." }) : null,
     e.script && e.origin !== "bundled" ? h("div", { class: "codewarn", role: "alert" }, h("b", { text: "Bu mod kod çalıştırır." }), " Betiği tarayıcının tam yetkileriyle çalışır. Kurarken onayını isteriz; yalnız yazarına güveniyorsan kur.") : null,
     e.script && e.origin === "bundled" ? h("p", { class: "layoutnote", text: "Bu mod Rigel ile gelen, sınırlı bir betik çalıştırır (davranış değiştirir)." }) : null,
     e.tags.length && h("div", { class: "badges" }, e.tags.map(t => h("span", { class: "tbadge dim", text: t }))),
@@ -267,8 +299,10 @@ addEventListener("keydown", ev => {
   if (ev.key === "/" && !/^(input|select|textarea)$/i.test(ev.target.tagName)) { ev.preventDefault(); $("q").focus(); }
 });
 
-watch(["topic:rigel-mods-list"], () => { render(); if (state.selected) renderDetail(); });
+watch(["topic:rigel-mods-list", "rigel.mods.enabled"], () => { render(); if (state.selected) renderDetail(); });
 watch(["rigel.mods.storeUrl"], () => reload(true));
+// Düzen değişince "etkisi yok" notları ve göstergeler yenilenir.
+watch(["rigel.layout"], () => { render(); if (state.selected) renderDetail(); });
 onDispose(() => {});
 
 const m = location.hash.match(/^#kur=(.+)$/);

@@ -63,6 +63,48 @@
 :root:root:root[rigel-mod-quick-grid-grid] #urlbar:not([usertyping]) :is(.urlbarView-url, .urlbarView-title-separator, .urlbarView-type-icon, .urlbarView-action, .urlbarView-row-body-description, .urlbarView-row-body-bottom) {
   display: none !important;
 }
+/* Ada, Dock ve Komuta: adres paleti boşken açık sekmeler büyük simgeli karolar olur (adres çubuğunun yerine palet açılır) */
+:root:root:root[rigel-mod-quick-grid-grid]:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette:has(input:placeholder-shown) .rgl-pal-inner {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)) !important;
+  gap: 8px !important;
+  padding: 2px 4px 6px !important;
+}
+:root:root:root[rigel-mod-quick-grid-grid]:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette:has(input:placeholder-shown) .rgl-pal-inner > :not(.rgl-pal-row[data-key^="t-"]) {
+  grid-column: 1 / -1;
+}
+:root:root:root[rigel-mod-quick-grid-grid]:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette:has(input:placeholder-shown) .rgl-pal-row[data-key^="t-"] {
+  flex-direction: column !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  height: auto !important;
+  min-height: 92px;
+  padding: 14px 8px 10px !important;
+  border-radius: 14px !important;
+  background: color-mix(in srgb, var(--text) 4%, transparent);
+}
+:root:root:root[rigel-mod-quick-grid-grid]:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette:has(input:placeholder-shown) .rgl-pal-row[data-key^="t-"].sel {
+  background: color-mix(in srgb, var(--accent) 22%, transparent) !important;
+}
+:root:root:root[rigel-mod-quick-grid-grid]:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette:has(input:placeholder-shown) .rgl-pal-row[data-key^="t-"] .ico {
+  width: 32px !important;
+  height: 32px !important;
+  padding: 6px;
+  box-sizing: content-box;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+}
+:root:root:root[rigel-mod-quick-grid-grid]:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette:has(input:placeholder-shown) .rgl-pal-row[data-key^="t-"] .ico > :is(img, svg, span) {
+  width: 32px !important;
+  height: 32px !important;
+}
+:root:root:root[rigel-mod-quick-grid-grid]:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette:has(input:placeholder-shown) .rgl-pal-row[data-key^="t-"] .t {
+  flex: none !important;
+  max-width: 100%;
+  font-size: 12.5px;
+  text-align: center;
+}
+:root:root:root[rigel-mod-quick-grid-grid]:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette:has(input:placeholder-shown) .rgl-pal-row[data-key^="t-"] :is(.sub, kbd) { display: none !important; }
 /* Açıkken sayfa arkada bulanık */
 :root:root:root[rigel-mod-quick-grid-dim] #tabbrowser-tabbox::after {
   content: "";

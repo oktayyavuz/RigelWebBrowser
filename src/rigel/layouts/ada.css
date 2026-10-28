@@ -263,3 +263,23 @@
 :root[data-rigel-layout="ada"][rigel-look-glass] #rigel-ada {
   border-bottom-color: color-mix(in srgb, var(--border-2) 60%, transparent);
 }
+
+/* Sade adres (rigel.urlbar.simple, shell/urlsimple.mjs): adada yalnız alan adı, ortada. */
+:root[data-rigel-layout="ada"][rigel-url-simple] #rigel-ada .rigel-identity {
+  justify-content: center;
+  gap: 7px;
+  .title,
+  kbd {
+    display: none;
+  }
+  .host {
+    margin-inline-end: 0;
+    color: var(--text);
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .placeholder {
+    margin-inline-end: 0;
+  }
+}

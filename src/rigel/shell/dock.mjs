@@ -5,6 +5,7 @@ import {
   Disposer, adoptNavBarTools, bindTab, clusterTabs, doCmd, el, favicon, groupChip, icon, isPrivate, liveTabs, navButtons,
   openAddress, tabLabel, tabUri, toggleTabsDrawer, uriParts, watchTabs, windowButtons,
 } from "./common.mjs";
+import { shownHost } from "./urlsimple.mjs";
 import { enableTabDnD } from "./tabdnd.mjs";
 
 const MAX = 16;
@@ -121,7 +122,7 @@ export function init(win) {
 
     // Adres düğmesi
     omni.replaceChildren(icon(doc, "search", 15),
-      parts.host ? el(doc, "b", { text: parts.host }) : el(doc, "span", { text: "Ara ya da adres yaz" }),
+      parts.host ? el(doc, "b", { text: shownHost(tabUri(sel), parts.host) }) : el(doc, "span", { text: "Ara ya da adres yaz" }),
       el(doc, "kbd", { text: "Ctrl K" }));
   };
 

@@ -1,16 +1,55 @@
 {
-  "name": "Aura",
-  "description": "Araç çubukları, seçili sekme ve odaklı adres çubuğu iki renk arasında canlı bir gradyana bürünür; altta ince bir ışık şeridi akar. İstersen renkler otomatik olarak vurgu renginden gelir, istersen iki rengi kendin seçersin. Açı ve yoğunluk kaydırıcıyla ayarlanır. Klasik, Ada, Dock ve Komuta'da çalışır.",
+  "name": "Aura gradyanı",
+  "description": "Şeritleri iki renk arasında canlı bir gradyana boyar: araç çubukları, seçili sekme (Ada'da yıldız, Dock'ta sekme) ve odaklı adres çubuğu; altta ince bir ışık şeridi akar. Yan Panel'de sol sütun ve sayfa kartının çevresi. Renkler otomatik olarak vurgudan gelebilir ya da iki rengi kendin seçersin; açı ve yoğunluk ayarlanır. Bütün düzenlerde.",
   "author": "Rigel",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "target": "chrome",
   "license": "MPL-2.0",
-  "layouts": ["klasik", "ada", "dock", "komuta"],
   "prefs": [
-    { "key": "accent", "label": "Vurgu rengini kullan (iki renk vurgudan türer)", "type": "checkbox", "default": false },
-    { "key": "c1", "label": "Birinci renk", "type": "color", "default": "#7c5cff" },
-    { "key": "c2", "label": "İkinci renk", "type": "color", "default": "#22d3ee" },
-    { "key": "angle", "label": "Gradyan açısı", "type": "range", "min": 0, "max": 360, "step": 5, "unit": "deg", "default": 100 },
-    { "key": "intensity", "label": "Yoğunluk", "type": "range", "min": 5, "max": 100, "step": 1, "unit": "", "default": 60 }
+    {
+      "key": "accent",
+      "label": "Vurgu rengini kullan (iki renk vurgudan türer)",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "key": "c1",
+      "label": "Birinci renk",
+      "type": "color",
+      "default": "#7c5cff"
+    },
+    {
+      "key": "c2",
+      "label": "İkinci renk",
+      "type": "color",
+      "default": "#22d3ee"
+    },
+    {
+      "key": "angle",
+      "label": "Gradyan açısı",
+      "type": "range",
+      "min": 0,
+      "max": 360,
+      "step": 5,
+      "unit": "deg",
+      "default": 100
+    },
+    {
+      "key": "intensity",
+      "label": "Yoğunluk",
+      "type": "range",
+      "min": 5,
+      "max": 100,
+      "step": 1,
+      "unit": "",
+      "default": 60
+    }
+  ],
+  "category": "renk",
+  "summary": "Şeritler ve seçili sekme iki renkli canlı gradyan olur",
+  "conflicts": [
+    "glass-window",
+    "transparent-window",
+    "accent-chrome"
   ]
 }

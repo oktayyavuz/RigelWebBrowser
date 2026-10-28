@@ -76,3 +76,21 @@
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--ph-base) 25%, transparent);
   pointer-events: none;
 }
+
+/* Dock'un alt gövdesi de renk alır */
+:root:root:root[data-rigel-private] #rigel-dock .rigel-dock-body {
+  background: linear-gradient(to top, color-mix(in srgb, var(--ph-base) 45%, var(--bar)), color-mix(in srgb, var(--ph-base) 18%, var(--bar))) !important;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ph-base) 55%, transparent) inset !important;
+}
+/* Ada, Dock, Komuta: maske simgesi adres düğmesinin başında */
+:root:root:root[data-rigel-private][rigel-mod-private-highlight-icon] :is(#rigel-ada .rigel-identity, #rigel-dock .rigel-omni, #rigel-komuta .rigel-crumb)::before {
+  content: "";
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-inline-end: 4px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ph-base) 85%, #000000) url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48c3R5bGU+KntmaWxsOm5vbmU7c3Ryb2tlOiNGRkZGRkY7c3Ryb2tlLW1pdGVybGltaXQ6MTA7c3Ryb2tlLXdpZHRoOjEuOTJweDt9PC9zdHlsZT48L2RlZnM+PHBvbHlsaW5lIHBvaW50cz0iMC41IDExLjA0IDEyIDExLjA0IDIzLjUgMTEuMDQiLz48cGF0aCBkPSJNMTkuNjcsMTFINC4zM0w1LDQuNjhBMi41NCwyLjU0LDAsMCwxLDcuNTcsMi40MmgwYTIuNDcsMi40NywwLDAsMSwxLjEzLjI3aDBhNy40Myw3LjQzLDAsMCwwLDYuNiwwaDBhMi40NywyLjQ3LDAsMCwxLDEuMTMtLjI3aDBBMi41NCwyLjU0LDAsMCwxLDE5LDQuNjhaIi8+PGNpcmNsZSBjeD0iNi43MyIgY3k9IjE4LjIzIiByPSIzLjM1Ii8+PGNpcmNsZSBjeD0iMTcuMjciIGN5PSIxOC4yMyIgcj0iMy4zNSIvPjxwYXRoIGQ9Ik0xMC4wOCwxOC43MWExLjkyLDEuOTIsMCwxLDEsMy44NCwwIi8+PGxpbmUgeDE9IjEuNDYiIHkxPSIxNS44MyIgeDI9IjQuMzMiIHkyPSIxNS44MyIvPjxsaW5lIHgxPSIxOS42NyIgeTE9IjE1LjgzIiB4Mj0iMjIuNTQiIHkyPSIxNS44MyIvPjwvc3ZnPg==") center / 65% no-repeat;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--ph-base) 25%, transparent);
+  pointer-events: none;
+}

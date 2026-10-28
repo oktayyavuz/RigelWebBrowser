@@ -6,9 +6,10 @@
 :root:root:root {
   --tn-bg: color-mix(in srgb, var(--accent) 22%, transparent);
   --tn-ink: var(--accent);
+  --tn-bg-solid: color-mix(in srgb, var(--accent) 30%, var(--surface-2));
 }
-:root:root:root[rigel-mod-tab-numbers-color="dim"] { --tn-bg: var(--hover); --tn-ink: var(--text-dim); }
-:root:root:root[rigel-mod-tab-numbers-color="solid"] { --tn-bg: var(--accent); --tn-ink: var(--accent-ink); }
+:root:root:root[rigel-mod-tab-numbers-color="dim"] { --tn-bg: var(--hover); --tn-ink: var(--text-dim); --tn-bg-solid: var(--surface-2); }
+:root:root:root[rigel-mod-tab-numbers-color="solid"] { --tn-bg: var(--accent); --tn-ink: var(--accent-ink); --tn-bg-solid: var(--accent); }
 
 /* Rozet ve sade: simgenin solunda */
 :root:root:root #tabbrowser-tabs .tabbrowser-tab:not([pinned]) .tab-content::before {
@@ -53,3 +54,50 @@
   text-align: center;
   box-shadow: 0 0 0 1.5px var(--bar);
 }
+
+/* Ada yıldızları ve Dock sekmeleri: simgenin sol üst köşesinde küçük sayı (yükleme halkası varken gizli) */
+:root:root:root :is(#rigel-ada .rigel-stars, #rigel-dock .rigel-seg) { counter-reset: rigeltab; }
+:root:root:root :is(#rigel-ada .rigel-star, #rigel-dock .rigel-dtab[role="tab"]) { counter-increment: rigeltab; }
+:root:root:root :is(#rigel-ada .rigel-star:not(.loading), #rigel-dock .rigel-dtab[role="tab"])::before {
+  content: counter(rigeltab) !important;
+  position: absolute !important;
+  inset: -3px auto auto -3px !important;
+  z-index: 2;
+  min-width: 13px;
+  height: 13px;
+  padding: 0 3px;
+  box-sizing: border-box;
+  border: none !important;
+  border-radius: 5px !important;
+  background: var(--tn-bg-solid, var(--surface-2)) !important;
+  color: var(--tn-ink) !important;
+  font: 700 8.5px/13px var(--mono);
+  text-align: center;
+  pointer-events: none;
+  box-shadow: 0 0 0 1.5px var(--bar) !important;
+  animation: none !important;
+  transform: none !important;
+}
+:root:root:root :is(#rigel-ada .rigel-star.on, #rigel-dock .rigel-dtab.on)::before { background: var(--accent) !important; color: var(--accent-ink) !important; }
+
+/* Sekme paneli (Ctrl+Shift+A; Komuta'da sekmelerin tek yeri): arama boşken simgenin köşesinde sayı */
+:root:root:root .rgl-tabs .rgl-dr-list { counter-reset: rigeltab; }
+:root:root:root .rgl-tabs .rgl-row { counter-increment: rigeltab; }
+:root:root:root .rgl-tabs .rgl-row > .fav { position: relative; }
+:root:root:root .rgl-tabs:has(input:placeholder-shown) .rgl-row > .fav::after {
+  content: counter(rigeltab);
+  position: absolute;
+  right: -7px;
+  bottom: -6px;
+  min-width: 13px;
+  height: 13px;
+  padding: 0 3px;
+  box-sizing: border-box;
+  border-radius: 5px;
+  background: var(--tn-bg-solid, var(--surface-2));
+  color: var(--tn-ink);
+  font: 700 8.5px/13px var(--mono);
+  text-align: center;
+  box-shadow: 0 0 0 1.5px var(--surface);
+}
+:root:root:root .rgl-tabs:has(input:placeholder-shown) .rgl-row.on > .fav::after { background: var(--accent); color: var(--accent-ink); }

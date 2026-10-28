@@ -1,8 +1,8 @@
 {
-  "name": "Yüzen durum çubuğu",
-  "description": "Bir bağlantının üstüne gelince sol altta beliren adres, kenarlardan ayrılmış yuvarlak, çerçeveli ve gölgeli bir hap olur. Köşe, boşluk, çerçeve kalınlığı ve renk seçilebilir.",
+  "name": "Bağlantı adresi hapı",
+  "description": "Bir bağlantının üstüne gelince sol altta beliren adres (durum çubuğu) kenarlardan ayrılmış, yuvarlak, çerçeveli ve gölgeli bir hap olur. Köşe, boşluk, çerçeve kalınlığı ve renk seçilebilir. Bütün düzenlerde.",
   "author": "Archer7x",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "target": "chrome",
   "homepage": "https://github.com/Archer7x/Zen-Themes/tree/main/CustomStatusbar",
   "license": "MIT",
@@ -88,5 +88,7 @@
         }
       ]
     }
-  ]
+  ],
+  "category": "duzen",
+  "summary": "Bağlantı üstündeki adres yuvarlak, gölgeli bir hap olur"
 }

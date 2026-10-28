@@ -1,16 +1,10 @@
 {
-  "name": "Cam pencere",
-  "description": "Sekme şeridi ve araç çubuğu buzlu cama döner: renk tonlu, yarı saydam, üstte ışık parıltısı. \"Sayfa çubukların arkasından aksın\" açılırsa şeritler sayfanın üstüne biner ve sayfa camın ardında bulanık görünür. Ton yoğunluğu, bulanıklık ve ton rengi kaydırıcı ve renk seçiciyle ayarlanır. Klasik, Ada, Dock ve Komuta'da çalışır.",
+  "name": "Cam şeritler",
+  "description": "Pencerenin kendisi değil, yalnız şeritleri cam yapar: sekme şeridi ve araç çubuğu (Ada, Dock, Komuta şeritleri; Yan Panel'de sol sütun) renk tonlu, yarı saydam, üstte ışık parıltısı. \"Sayfa çubukların arkasından aksın\" açılırsa şeritler sayfanın üstüne biner ve sayfa camın ardında bulanık görünür (Yan Panel'de yok). Ton yoğunluğu, bulanıklık ve ton rengi ayarlanır.",
   "author": "Rigel",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "target": "chrome",
   "license": "MPL-2.0",
-  "layouts": [
-    "klasik",
-    "ada",
-    "dock",
-    "komuta"
-  ],
   "prefs": [
     {
       "key": "opacity",
@@ -44,5 +38,11 @@
       "type": "checkbox",
       "default": false
     }
+  ],
+  "category": "cam",
+  "summary": "Sekme şeridi ve araç çubuğu renk tonlu buzlu cam olur",
+  "conflicts": [
+    "aura",
+    "transparent-window"
   ]
 }

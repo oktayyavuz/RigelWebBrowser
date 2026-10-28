@@ -1,8 +1,8 @@
 {
-  "name": "SuperPins",
-  "description": "Sabitlenmiş sekmeler Zen'in Essentials'ı gibi büyük karolar olur. Klasik'te sekme şeridinin başında çerçeveli bir grup, Yan Panel'de ayarlanabilir bir ızgara. Seçili karo vurgu rengini alır; uyuyanlar soluklaşır.",
+  "name": "Büyük sabit sekmeler",
+  "description": "Sabitlenmiş sekmeler Zen'in Essentials'ı gibi büyük karolar olur: Klasik'te sekme şeridinin başında çerçeveli bir grup, Yan Panel'de ayarlanabilir bir ızgara. Seçili karo vurgu rengini alır; uyuyanlar soluklaşır. Ada, Dock ve Komuta'da sabit sekmeler zaten simge olduğundan yalnız Klasik ve Yan Panel.",
   "author": "CosmoCreeper",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "target": "chrome",
   "homepage": "https://github.com/CosmoCreeper/Zen-Themes/tree/main/SuperPins",
   "license": "MIT",
@@ -46,5 +46,11 @@
       "type": "checkbox",
       "default": true
     }
+  ],
+  "category": "sekme",
+  "summary": "Sabitlenmiş sekmeler çerçeveli bir grupta büyük karolar olur",
+  "layouts": [
+    "klasik",
+    "yanpanel"
   ]
 }

@@ -1,8 +1,8 @@
 {
-  "name": "Temiz adres çubuğu",
-  "description": "Adres çubuğu açıldığında yarı saydam, bulanık ve kalın yumuşak kenarlı bir karta dönüşür. Öneriler yuvarlak satırlarda, seçili satır vurgu renginde dolu; arama motoru düğmeleri ayrı bir kutuda.",
+  "name": "Yuvarlak öneri kartı",
+  "description": "Adres önerilerinin açıldığı yeri yarı saydam, bulanık ve kalın yumuşak kenarlı bir karta çevirir: öneriler yuvarlak satırlarda, seçili satır vurgu renginde dolu, arama motoru düğmeleri ayrı bir kutuda. Ada, Dock ve Komuta'da adres çubuğu yerine açılan adres paletine aynı görünüm uygulanır.",
   "author": "Dinno-DEV",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "target": "chrome",
   "homepage": "https://github.com/Dinno-DEV/zen-cleaned-url-bar",
   "license": "MIT",
@@ -58,5 +58,10 @@
       "type": "checkbox",
       "default": true
     }
+  ],
+  "category": "arac",
+  "summary": "Adres önerileri yuvarlak, bulanık bir kartta açılır",
+  "conflicts": [
+    "frosted-panels"
   ]
 }

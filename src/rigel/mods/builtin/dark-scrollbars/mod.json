@@ -1,13 +1,39 @@
 {
-  "name": "Web sayfalarında koyu kaydırma çubukları",
-  "description": "Tüm sitelerde ince, koyu renkli kaydırma çubukları kullanır.",
+  "name": "Koyu kaydırma çubukları",
+  "description": "Bütün sitelerde ince, koyu renkli kaydırma çubukları kullanır; çubuk ve yuva rengi ile kalınlık ayarlanır.",
   "author": "Rigel",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "target": "content",
   "prefs": [
-    { "key": "thumb", "label": "Çubuk rengi", "type": "string", "default": "#5a6273" },
-    { "key": "track", "label": "Yuva rengi", "type": "string", "default": "#151b27" },
-    { "key": "width", "label": "Kalınlık", "type": "dropdown", "default": "thin",
-      "options": [ { "value": "auto", "label": "Normal" }, { "value": "thin", "label": "İnce" } ] }
-  ]
+    {
+      "key": "thumb",
+      "label": "Çubuk rengi",
+      "type": "string",
+      "default": "#5a6273"
+    },
+    {
+      "key": "track",
+      "label": "Yuva rengi",
+      "type": "string",
+      "default": "#151b27"
+    },
+    {
+      "key": "width",
+      "label": "Kalınlık",
+      "type": "dropdown",
+      "default": "thin",
+      "options": [
+        {
+          "value": "auto",
+          "label": "Normal"
+        },
+        {
+          "value": "thin",
+          "label": "İnce"
+        }
+      ]
+    }
+  ],
+  "category": "sayfa",
+  "summary": "Web sayfalarında ince, koyu renkli kaydırma çubukları"
 }

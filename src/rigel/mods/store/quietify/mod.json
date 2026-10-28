@@ -1,8 +1,8 @@
 {
-  "name": "Quietify ses göstergesi",
-  "description": "Ses çalan sekmede site simgesinin yerine dans eden bir ekolayzer, sessize alınmışta düz noktalar. Üstüne gelince simge geri gelir. Vurgu, yazı ya da gökkuşağı renkli; sekmenin altında hafif parıltı.",
+  "name": "Ekolayzer ses simgesi",
+  "description": "Ses çalan sekmede site simgesinin yerine dans eden bir ekolayzer, sessize alınmışta düz noktalar; üstüne gelince simge geri gelir. Ada yıldızlarında ve Dock sekmelerinde ses rozeti, Komuta'da sekme sayacındaki ses simgesi ekolayzer olur. Vurgu, yazı ya da gökkuşağı renkli; sekmenin altında hafif parıltı.",
   "author": "wysh3",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "target": "chrome",
   "homepage": "https://github.com/wysh3/Zen-Mods/tree/main/Quietify",
   "license": "MIT",
@@ -40,5 +40,7 @@
       "type": "checkbox",
       "default": true
     }
-  ]
+  ],
+  "category": "sekme",
+  "summary": "Ses çalan sekmede simge yerine dans eden ekolayzer çıkar"
 }

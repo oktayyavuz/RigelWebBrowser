@@ -1,8 +1,8 @@
 {
-  "name": "Okuma dostu sayfalar",
+  "name": "Okunaklı sayfalar",
   "description": "Web yazılarını okunaklı yapar: metne okuma yazı tipi ve ferah satır aralığı, ince alt çizgili bağlantılar, dengeli başlıklar, renkli alıntı çizgisi, belirgin seçim rengi ve yumuşak kaydırma. Kod ve simgeler değişmez.",
   "author": "Rigel",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "target": "content",
   "prefs": [
     {
@@ -68,5 +68,7 @@
       ]
     }
   ],
-  "license": "MPL-2.0"
+  "license": "MPL-2.0",
+  "category": "sayfa",
+  "summary": "Web yazılarına okuma yazı tipi, ferah satır, ince bağlantı"
 }

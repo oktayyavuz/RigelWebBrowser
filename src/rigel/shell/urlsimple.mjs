@@ -3,6 +3,8 @@
 // görünmez olur, üstüne ortalanmış bir etiket (#rigel-urlbar-simple) yalnız alan adını gösterir.
 // Tıklayınca/odaklanınca Firefox'un kendi davranışı (tam adres, seçili) aynen çalışır: input'un değerine
 // ve gURLBar durumuna dokunulmaz; etiket pointer-events:none. Kurallar layouts/base.css'te.
+// Ada/Dock/Komuta kendi adres kutusunu çizer: tercih açıkken kökte [rigel-url-simple] olur, o düzenlerin
+// CSS'i başlık/yol kısmını gizleyip yalnız alan adını ortalar (layouts/ada.css, dock.css, komuta.css).
 
 import { el } from "./common.mjs";
 
@@ -45,6 +47,12 @@ export function simpleName(uri) {
   return spec.length > 40 ? spec.slice(0, 40) + "…" : spec;
 }
 
+/** Ada/Dock/Komuta adres kutusundaki alan adı yazısı: sade görünüm açıksa simpleName, değilse uriParts'ın host'u. */
+export function shownHost(uri, host) {
+  if (!host || !Services.prefs.getBoolPref(PREF, true)) return host;
+  return simpleName(uri) || host;
+}
+
 export function init(win) {
   const doc = win.document;
   const urlbar = doc.getElementById("urlbar");
@@ -55,6 +63,7 @@ export function init(win) {
 
   const update = () => {
     const on = Services.prefs.getBoolPref(PREF, true);
+    doc.documentElement.toggleAttribute("rigel-url-simple", on);
     const name = on ? simpleName(gBrowser.currentURI) : "";
     label.textContent = name;
     urlbar.toggleAttribute("rigel-simple", !!name);
@@ -76,6 +85,7 @@ export function init(win) {
     gBrowser.tabContainer.removeEventListener("TabSelect", update);
     Services.prefs.removeObserver(PREF, obs);
     urlbar.removeAttribute("rigel-simple");
+    doc.documentElement.removeAttribute("rigel-url-simple");
     label.remove();
   };
 }

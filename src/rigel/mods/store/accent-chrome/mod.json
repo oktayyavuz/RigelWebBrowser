@@ -1,8 +1,8 @@
 {
-  "name": "Vurgu tonlu arayüz",
-  "description": "Bütün arayüzü vurgu renginin tonuna boyar: şeritler, araç çubuğu, paneller ve menüler. Vurgu rengini değiştirince ton da değişir. İsteğe bağlı: sekme şeridinde degrade ve vurgu renkli ayırıcı çizgiler. Bütün düzenlerde.",
+  "name": "Vurgu tonu",
+  "description": "Bütün arayüzü vurgu renginin hafif tonuna boyar: şeritler, araç çubuğu, paneller ve menüler. Vurgu rengini değiştirince ton da değişir. İsteğe bağlı: şeritte degrade ve vurgu renkli ayırıcı çizgiler. Alana göre renk ile aynı renkleri değiştirir; birlikte açma. Bütün düzenlerde.",
   "author": "Rigel",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "target": "chrome",
   "prefs": [
     {
@@ -38,5 +38,11 @@
       "default": false
     }
   ],
-  "license": "MPL-2.0"
+  "license": "MPL-2.0",
+  "category": "renk",
+  "summary": "Bütün arayüz seçili vurgu renginin tonuna boyanır",
+  "conflicts": [
+    "workspace-tint",
+    "aura"
+  ]
 }

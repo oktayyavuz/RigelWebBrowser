@@ -1,8 +1,8 @@
 {
   "name": "Hızlı erişim ızgarası",
-  "description": "Adres çubuğuna tıklayınca açılan en çok ziyaret edilenler listesi, büyük simgeli bir karo ızgarasına dönüşür. Açıkken sayfa arkada bulanıklaşır. İstersen araç çubuğu da incelir. (Zen \"Super Sleek UI\" modundan.)",
+  "description": "Adres çubuğuna tıklayınca açılan en çok ziyaret edilenler listesi büyük simgeli bir karo ızgarasına dönüşür; açıkken sayfa arkada bulanıklaşır. Ada, Dock ve Komuta'da adres paleti boşken açık sekmeler karo olur. İstersen Klasik'te araç çubuğu da incelir. (Zen \"Super Sleek UI\" modundan.)",
   "author": "lingais",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "target": "chrome",
   "homepage": "https://github.com/lingais/Zen-Browser-Super-Sleek-UI-Theme",
   "license": "MIT",
@@ -26,5 +26,7 @@
       "type": "checkbox",
       "default": false
     }
-  ]
+  ],
+  "category": "arac",
+  "summary": "Boş adres önerileri büyük simgeli karo ızgarası olur"
 }

@@ -1,8 +1,8 @@
 {
-  "name": "Yer imi çubuğu",
-  "description": "Rigel'in yer imi çubuğunu (Ctrl+Shift+B ile aç/kapat) biçimlendirir: hap biçimli düğmeler, ortalama, yalnız simge ya da yalnız ad, ve yer kaplamadan üstüne gelince açılma.",
+  "name": "Hap yer imleri",
+  "description": "Yer imi çubuğunu (Ctrl+Shift+B ile aç/kapat) biçimlendirir: hap biçimli düğmeler, ortalama, yalnız simge ya da yalnız ad. \"Üstüne gelince aç\" Klasik, Ada, Dock ve Komuta'da çalışır (Yan Panel'de çubuk sayfa kartının üstünde durur).",
   "author": "n7itro",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "target": "chrome",
   "homepage": "https://github.com/zen-browser/theme-store/tree/main/themes/ea1a5ace-f698-4b45-ab88-6e8bd3a563f0",
   "license": "MIT",
@@ -40,5 +40,7 @@
       "type": "checkbox",
       "default": false
     }
-  ]
+  ],
+  "category": "arac",
+  "summary": "Yer imi çubuğu düğmeleri hap olur; ortalama, yalnız simge"
 }

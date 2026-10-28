@@ -23,6 +23,9 @@ Esinlenme: Zen theme-store (`themes.json`, `theme.json`, `chrome.css`, `preferen
       "author": "Ad",
       "version": "1.0.0",
       "tags": ["dock", "görünüm"],
+      "category": "duzen",
+      "summary": "Dock hap biçimli, yüzen bir şeride dönüşür",
+      "conflicts": ["baska-dock-modu"],
       "target": "chrome",
       "homepage": "https://örnek.dev/pill-dock",
       "license": "MIT",
@@ -42,7 +45,12 @@ Esinlenme: Zen theme-store (`themes.json`, `theme.json`, `chrome.css`, `preferen
 }
 ```
 - `id`: `a-z`, `0-9`, `-`; en çok 48 karakter. Kurulum klasörü adı budur.
-- `target`: `chrome` (tarayıcı arayüzü), `content` (web sayfaları) ya da `both`. `content` için `content.css` zorunlu; `chrome` için `chrome.css`, bir `chrome.<düzen>.css` ya da `chrome.mjs`'den en az biri gerekir. `layouts` (isteğe bağlı) kartta etiket olarak gösterilir.
+- `target`: `chrome` (tarayıcı arayüzü), `content` (web sayfaları) ya da `both`. `content` için `content.css` zorunlu; `chrome` için `chrome.css`, bir `chrome.<düzen>.css` ya da `chrome.mjs`'den en az biri gerekir.
+- `category` (önerilir): tam olarak biri: `renk` (Renk), `cam` (Saydamlık ve cam), `animasyon` (Animasyon), `sekme` (Sekmeler), `arac` (Adres ve araç çubuğu), `davranis` (Davranış), `sayfa` (Web sayfaları), `duzen` (Düzen ve yerleşim). Mağazadaki süzgeç çipleri ve bölümler, Ayarlar › Modlar'daki gruplar bundan çıkar. Bilinmeyen değer yok sayılır; yoksa mod "Diğer"de görünür.
+- `summary` (önerilir): tek satır, en çok 60 karakter; modun **ne değiştirdiğini** somut söyler ("Seçili sekme iki renkli gradyan olur"; "güzel görünüm" değil). Kartta kalın satır olarak çıkar; uzunsa 59 karakter + "…" olarak kırpılır, satır sonları boşluğa çevrilir. Yoksa açıklamanın ilk cümlesi gösterilir.
+- `layouts` (isteğe bağlı): yalnız gerçekten sınırlıysa yaz; yoksa mod 5 düzende de çalışıyor sayılır. Kartta 5 küçük düzen simgesi (Klasik, Yan Panel, Ada, Dock, Komuta) çıkar: çalıştığı düzenler dolu, diğerleri soluk, şu anki düzen çerçeveli. Şu anki düzen listede yoksa kartta ve Ayarlar'da "Şu anki düzeninde (X) etkisi yok" notu çıkar. `layouts` yoksa ama mod yalnız `chrome.<düzen>.css` dosyaları taşıyorsa (genel `chrome.css` ve betik yok), etkili düzenler o dosyalardan çıkarılır.
+- `conflicts` (isteğe bağlı): birlikte açılınca birbirini ezen mod kimlikleri (en çok 16). İki yönlü sayılır (A, B'yi listelerse B açıkken A'yı açmak da uyarır). Engellemez: açarken kısa uyarı, ikisi açıkken her iki satırda "X ile çakışıyor".
+- `tags`: yalnız ayrıntı panelinde gösterilir ve aramada kullanılır (en çok 6). Arama ad, özet, açıklama, yazar, etiketler ve kategori adını kapsar.
 - `files`: yalnız şu adlar: `mod.json`, `chrome.css`, `content.css`, `preferences.json`, `chrome.mjs` (betik), `chrome.<düzen>.css` (`ada|dock|komuta|yanpanel|klasik`). Adresler `index.json`'a göre göreli olabilir. `preferences.json` isteğe bağlı. Uzak dizinde adresler http/https olmalı.
 - `preview` isteğe bağlı (png/svg/jpg adresi). Kart 16:9 gösterir; 640×360 PNG önerilir. Yerleşik modların önizlemeleri tarayıcının gerçek görüntüsüdür (aşağıda "Önizleme üretmek").
 - `license` (SPDX, ör. `MIT`) ve `source` (özgün modun adresi) isteğe bağlı; uyarlanan modlarda zorunlu say. Mağaza kartında "Kaynak: Zen mod mağazası — yazar (lisans)" satırı bunlardan çıkar (adres `github.com/zen-browser/theme-store` ise "Zen mod mağazası", değilse alan adı). Kurulumda `mod.json`'a `homepage`, `license`, `source` olarak yazılır.
@@ -65,6 +73,7 @@ preferences.json    isteğe bağlı: mod ayarları (mod.json içindeki prefs ile
   "name": "Ad", "description": "…", "author": "…", "version": "1.0.0", "target": "chrome",
   "homepage": "https://…", "license": "MIT", "source": "https://…",
   "layouts": ["klasik", "ada"],
+  "category": "sekme", "summary": "Seçili sekme iki renkli gradyan olur", "conflicts": ["diger-mod"],
   "priority": "override",
   "script": true,
   "prefs": [
@@ -78,7 +87,8 @@ preferences.json    isteğe bağlı: mod ayarları (mod.json içindeki prefs ile
 }
 ```
 - `prefs` tipleri: `checkbox`, `dropdown`, `string`, `range` (`min`, `max`, `step`, `unit`; Ayarlar'da değer göstergeli kaydırıcı), `color` (`#rrggbb`; Ayarlar'da renk seçici + onaltılı alan). Zen'in `property` / `defaultValue` alanları da kabul edilir. Kurulumdan sonra Mağaza ayrıntı panelinde ve Ayarlar › Modlar'da form olarak görünür; değişiklik canlı uygulanır (yeniden yükleme yok).
-- `layouts` (isteğe bağlı): mod yalnız bu düzenlerde etkindir (CSS, kök öznitelikleri ve betik). Boşsa her düzende. Mağaza kartında ve Ayarlar'da küçük düzen etiketleri çıkar.
+- `layouts` (isteğe bağlı): mod yalnız bu düzenlerde etkindir (CSS, kök öznitelikleri ve betik). Boşsa her düzende. Mağaza kartında ve Ayarlar'da 5 düzenlik gösterge çıkar.
+- `category`, `summary`, `conflicts`: `index.json` ile aynı anlam (yukarıda). Kurulumda mod.json'daki değer önce gelir, yoksa dizin girdisindeki alınır; kurulu modun `mod.json`'una yazılır. Eski kurulumlarda eksikse mağaza/Ayarlar açılınca katalogdan doldurulur (`Mods.enrich(entries)`, diske de işler); yerleşik modlarda aynı sürümde bile bu üç alan yerleşik `mod.json`'dan güncellenir.
 - `priority`: `"override"` (varsayılan) ya da `"normal"`. Aşağıda "Öncelik katmanı".
 - `script: true`: `chrome.mjs` betiği var (aşağıda).
 
@@ -143,6 +153,13 @@ Chrome betiği **tam yetkilidir** (sekmeleri, geçmişi, parolaları okuyabilir)
 ## CSS ipuçları (content)
 - Sayfa CSS'i otomatik olarak yalnız web adreslerine (`http`, `https`, `file`, `data`, …) uygulanır; `about:` ve Rigel sayfalarına dokunmaz. Kullanıcı stil katmanı: `!important` siteyi geçer, kullan ama saygılı ol.
 - Rigel belirteçleri (`--accent` …) web sayfalarında **yoktur**; renkleri değer ya da mod ayarı olarak ver.
+
+## Arayüz API'si
+- `Mods.conflictsOf(id)`: bu modla çakışan ve şu an **açık** modların meta verileri (iki yönlü).
+- `Mods.enrich(entries)`: kurulu mağaza modlarında eksik `category`/`summary`/`conflicts` alanlarını katalog girdilerinden doldurur; değişen sayıyı döndürür, bildirim göndermez.
+- `store.sys.mjs`: `CATEGORIES` (`[[kimlik, ad], …]` sıralı), `cleanMeta(raw, id)`, `cleanSummary(t)`; `normalizeEntry` çıktısında `category`, `summary`, `conflicts`.
+- Ortak arayüz parçaları `pages/store/modmeta.mjs` (mağaza ve Ayarlar › Modlar): `CATEGORIES` (simge + renk), `view(meta, entry)` (geri düşüşlü alanlar), `layoutsOf`, `currentLayout()` (`rigel.layout`, yoksa pencere kökündeki `data-rigel-layout`), `layoutMeter`, `inertNote`, `catBadge`, `codeBadge`.
+- Mod kapanınca son `--rigel-mod-*` değişkeni silindiğinde kökte boş `style=""` kalmaz (öznitelik kaldırılır).
 
 ## Doğrulama (mağazadan gelen her dosya)
 - Yalnız `.json`, `.css` ve (onaylı betikli modlarda) tek `chrome.mjs`; indirilen metin boyut sınırlarını aşarsa reddedilir.

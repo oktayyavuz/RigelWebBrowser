@@ -28,14 +28,14 @@
   :root:root:root .tabbrowser-tab[closing] > .tab-stack { animation: lv-tab-out calc(var(--lv-d) * 0.7) ease-in forwards !important; }
 
   /* Düğmeler: hover'da kabarır, basınca çöker (yaylı geçiş) */
-  :root:root:root :is(toolbarbutton.toolbarbutton-1, .tabs-newtab-button, .tab-close-button, .rigel-star, .rigel-dtab, .rigel-island, .rigel-identity, .rigel-ibtn, #rigel-spaces .rigel-space) {
+  :root:root:root :is(toolbarbutton.toolbarbutton-1, .tabs-newtab-button, .tab-close-button, .rigel-star, .rigel-dtab, .rigel-island, .rigel-identity, .rigel-ibtn, #rigel-spaces .rigel-space, .rigel-tool, .rigel-nb, .rigel-wbtn, .rigel-add, .rigel-omni, .rigel-crumb, .rigel-counter, .rgl-tabs .rgl-row) {
     transition: transform var(--lv-d) var(--lv-ease), background-color 120ms ease !important;
   }
-  :root:root:root :is(toolbarbutton.toolbarbutton-1, .tabs-newtab-button, .tab-close-button, .rigel-star, .rigel-dtab, .rigel-ibtn):hover:not([disabled]) {
+  :root:root:root :is(toolbarbutton.toolbarbutton-1, .tabs-newtab-button, .tab-close-button, .rigel-star, .rigel-dtab, .rigel-ibtn, .rigel-tool, .rigel-nb, .rigel-wbtn, .rigel-add):hover:not([disabled], :disabled) {
     transform: scale(calc(1.1 + var(--lv-o))) !important;
   }
-  :root:root:root :is(.rigel-island, .rigel-identity, #rigel-spaces .rigel-space):hover { transform: scale(calc(1.03 + var(--lv-o) * 0.4)) !important; }
-  :root:root:root :is(toolbarbutton.toolbarbutton-1, .tabs-newtab-button, .tab-close-button, .rigel-star, .rigel-dtab, .rigel-island, .rigel-identity, .rigel-ibtn):active:not([disabled]) {
+  :root:root:root :is(.rigel-island, .rigel-identity, #rigel-spaces .rigel-space, .rigel-omni, .rigel-crumb, .rigel-counter):hover { transform: scale(calc(1.03 + var(--lv-o) * 0.4)) !important; }
+  :root:root:root :is(toolbarbutton.toolbarbutton-1, .tabs-newtab-button, .tab-close-button, .rigel-star, .rigel-dtab, .rigel-island, .rigel-identity, .rigel-ibtn, .rigel-tool, .rigel-nb, .rigel-wbtn, .rigel-add, .rigel-omni, .rigel-crumb, .rigel-counter):active:not([disabled], :disabled) {
     transform: scale(0.86) !important;
     transition-duration: 80ms !important;
   }
@@ -43,6 +43,8 @@
   :root:root:root .tabbrowser-tab:not([selected], [pinned]):hover > .tab-stack { transform: translateY(-1px) scale(calc(1.015 + var(--lv-o) * 0.2)); }
   :root:root:root .tabbrowser-tab > .tab-stack { transition: transform var(--lv-d) var(--lv-ease); }
 
+  /* Sekme panelinde satırlar üstüne gelince hafifçe kayar */
+  :root:root:root .rgl-tabs .rgl-row:hover { transform: translateX(calc(2px + var(--lv-o) * 4px)); }
   /* Menü ve paneller (açılır pencereler) */
   :root:root:root :is(menupopup, panel)::part(content) { animation: lv-pop var(--lv-d) var(--lv-ease) !important; transform-origin: top center; }
   :root:root:root .panel-arrowcontent { animation: lv-pop var(--lv-d) var(--lv-ease) !important; transform-origin: top center; }

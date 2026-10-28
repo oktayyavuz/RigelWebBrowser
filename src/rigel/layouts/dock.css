@@ -266,3 +266,11 @@
 :root[data-rigel-layout="dock"][rigel-look-glass] #rigel-dock .rigel-omni {
   background: color-mix(in srgb, var(--bg) 55%, transparent);
 }
+
+/* Sade adres (rigel.urlbar.simple, shell/urlsimple.mjs): adres düğmesinde alan adı ortada. */
+:root[data-rigel-layout="dock"][rigel-url-simple] .rigel-omni:has(b) {
+  justify-content: center;
+  kbd {
+    display: none;
+  }
+}

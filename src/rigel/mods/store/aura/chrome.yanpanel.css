@@ -1,0 +1,14 @@
+/* Aura — Yan Panel: sol sütun ve sayfa kartının çevresi tek gradyan; sütunun sağ kenarında ışık şeridi */
+:root:root:root[data-rigel-layout="yanpanel"]:not([inDOMFullscreen]) #browser {
+  background:
+    linear-gradient(180deg, var(--au-a), var(--au-b)) left calc(var(--rigel-side-w, 264px) - 2px) top / 2px 100% no-repeat,
+    linear-gradient(var(--au-ang), color-mix(in srgb, var(--au-a) var(--au-i), var(--au-base)), color-mix(in srgb, var(--au-b) var(--au-i), var(--au-base))) !important;
+}
+:root:root:root[data-rigel-layout="yanpanel"]:not([inDOMFullscreen]) :is(#sidebar-container, #sidebar-container > #nav-bar, #rigel-side-top, #rigel-side-bottom) {
+  background: transparent !important;
+  border-color: transparent !important;
+}
+:root:root:root[data-rigel-layout="yanpanel"]:not([inDOMFullscreen]) #sidebar-container #urlbar:not([focused]) > .urlbar-background {
+  background: color-mix(in srgb, white 10%, transparent) !important;
+  border-color: color-mix(in srgb, white 16%, transparent) !important;
+}

@@ -21,5 +21,7 @@
       "type": "checkbox",
       "default": true
     }
-  ]
+  ],
+  "category": "duzen",
+  "summary": "Bütün köşeler tek kaydırıcıyla keskinleşir ya da yumuşar"
 }

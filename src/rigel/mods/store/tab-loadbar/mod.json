@@ -1,8 +1,8 @@
 {
   "name": "Yükleme çubuğu",
-  "description": "Sayfa yüklenirken sekmenin altında kayan bir vurgu çubuğu, seçili sekme yükleniyorsa araç çubuğunun altında ince bir ilerleme çizgisi. Vurgu ya da gökkuşağı renkli. Bütün düzenlerin üst çizgisi, Klasik ve Yan Panel sekmeleri.",
+  "description": "Sayfa yüklenirken sekmenin altında kayan bir vurgu çubuğu, seçili sekme yükleniyorsa şeridin alt kenarında ince bir ilerleme çizgisi. Dock'ta sekmenin altında nabız gibi atan çubuk ve gövdenin üstünde çizgi, Ada'da yıldızın yükleme halkası. Vurgu ya da gökkuşağı renkli. Bütün düzenlerde.",
   "author": "Rigel",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "target": "chrome",
   "prefs": [
     {
@@ -62,5 +62,7 @@
       ]
     }
   ],
-  "license": "MPL-2.0"
+  "license": "MPL-2.0",
+  "category": "sekme",
+  "summary": "Yüklenen sekmenin altında ve şeridin kenarında kayan çubuk"
 }

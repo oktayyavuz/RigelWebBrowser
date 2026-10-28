@@ -26,6 +26,27 @@ const CACHE_DIR = () => PathUtils.join(PathUtils.profileDir, "rigel-mods-cache")
 
 const str = (v, max) => (typeof v === "string" ? v.trim().slice(0, max) : "");
 
+// ---- Ayırt edici meta: kategori, tek satır özet, çakışan modlar ----
+/** Kategori kimlikleri ve adları (mağaza/ayarlar arayüzü sırası budur). Bilinmeyen kategori yok sayılır. */
+export const CATEGORIES = [
+  ["renk", "Renk"], ["cam", "Saydamlık ve cam"], ["animasyon", "Animasyon"], ["sekme", "Sekmeler"],
+  ["arac", "Adres ve araç çubuğu"], ["davranis", "Davranış"], ["sayfa", "Web sayfaları"], ["duzen", "Düzen ve yerleşim"],
+];
+const CATEGORY_IDS = CATEGORIES.map(c => c[0]);
+export const SUMMARY_MAX = 60;
+/** Tek satır, en çok 60 karakter (uzunsa "…" ile kırpılır). */
+export function cleanSummary(v) {
+  const t = typeof v === "string" ? v.replace(/\s+/g, " ").trim() : "";
+  return t.length > SUMMARY_MAX ? t.slice(0, SUMMARY_MAX - 1).trimEnd() + "…" : t;
+}
+/** mod.json / index girdisinden { category, summary, conflicts } (geçersiz alanlar boş). */
+export function cleanMeta(raw, selfId = "") {
+  const category = CATEGORY_IDS.includes(raw?.category) ? raw.category : "";
+  const conflicts = [...new Set((Array.isArray(raw?.conflicts) ? raw.conflicts : [])
+    .map(x => String(x ?? "").trim().toLowerCase()).filter(x => ID_RE.test(x) && x !== selfId))].slice(0, 16);
+  return { category, summary: cleanSummary(raw?.summary), conflicts };
+}
+
 // ---- adresler ----
 function schemeOf(url) {
   try { return Services.io.newURI(url).scheme; } catch { return ""; }
@@ -263,6 +284,7 @@ export function normalizeEntry(raw, base, origin) {
     version: str(raw.version, 20) || "1.0.0", tags, target, homepage, preview, files, origin, license, upstream,
     layouts: (Array.isArray(raw.layouts) ? raw.layouts : []).filter(l => LAYOUTS.includes(l)),
     script: !!files["chrome.mjs"],
+    ...cleanMeta(raw, id),
   };
 }
 
@@ -390,6 +412,7 @@ export async function fetchEntryFiles(entry, { allowScript = false } = {}) {
     content = r.css; notes.push(...r.notes);
   }
   if (!chrome.trim() && !content.trim() && !script && !Object.keys(layoutCss).length) throw new Error("Mod CSS'i boş.");
+  const own = cleanMeta(meta, entry.id);
   return {
     meta: {
       name: str(meta.name, 60) || entry.name, description: str(meta.description, 400) || entry.description,
@@ -399,6 +422,9 @@ export async function fetchEntryFiles(entry, { allowScript = false } = {}) {
       homepage: isRemote(str(meta.homepage, 300)) ? str(meta.homepage, 300) : entry.homepage || "",
       license: str(meta.license, 40) || entry.license || "",
       source: isRemote(str(meta.source, 300)) ? str(meta.source, 300) : entry.upstream || "",
+      // mod.json'daki değer önce; yoksa dizin girdisindeki.
+      category: own.category || entry.category || "", summary: own.summary || entry.summary || "",
+      conflicts: own.conflicts.length ? own.conflicts : entry.conflicts ?? [],
     },
     chrome, content, layoutCss, script, notes,
   };

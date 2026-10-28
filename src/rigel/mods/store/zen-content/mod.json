@@ -54,5 +54,10 @@
       "default": true
     }
   ],
-  "license": "MPL-2.0"
+  "license": "MPL-2.0",
+  "category": "duzen",
+  "summary": "Sayfa boşluklu, yuvarlak köşeli, gölgeli bir kart olur",
+  "conflicts": [
+    "private-highlight"
+  ]
 }

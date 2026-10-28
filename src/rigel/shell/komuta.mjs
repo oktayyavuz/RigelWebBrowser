@@ -5,6 +5,7 @@ import {
   Disposer, adoptNavBarTools, clusterTabs, containerOf, el, favicon, groupChip, icon, liveTabs, logo, navButtons, openAddress,
   tabLabel, tabUri, toggleTabsDrawer, uriParts, watchTabs, windowButtons,
 } from "./common.mjs";
+import { shownHost } from "./urlsimple.mjs";
 import { enableLinkDrop } from "./tabdnd.mjs";
 
 export function init(win) {
@@ -43,7 +44,7 @@ export function init(win) {
     if (parts.host) {
       crumb.replaceChildren(
         parts.secure ? el(doc, "span", { class: "lock" }, icon(doc, "lock", 14)) : icon(doc, "globe", 14),
-        el(doc, "b", { text: parts.host }),
+        el(doc, "b", { text: shownHost(tabUri(sel), parts.host) }),
         el(doc, "span", { class: "path", text: parts.rest }),
         el(doc, "span", { class: "t", text: tabLabel(sel) }));
       const ctr = containerOf(win, sel);

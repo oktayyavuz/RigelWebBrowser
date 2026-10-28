@@ -1,10 +1,17 @@
 {
-  "name": "Sekme kapatma düğmesini gizle",
-  "description": "Sekmelerdeki x düğmesini kaldırır. Sekmeyi orta tıkla ya da Ctrl+W ile kapatırsın.",
+  "name": "Kapatma düğmesiz sekmeler",
+  "description": "Sekmelerdeki ve sekme panelindeki × düğmesini kaldırır; istersen üstüne gelince gösterir. Sekmeyi orta tıkla ya da Ctrl+W ile kapatırsın. Ada ve Dock sekmelerinde zaten × yok.",
   "author": "Rigel",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "target": "chrome",
   "prefs": [
-    { "key": "on-hover", "label": "Üzerine gelince göster", "type": "checkbox", "default": false }
-  ]
+    {
+      "key": "on-hover",
+      "label": "Üzerine gelince göster",
+      "type": "checkbox",
+      "default": false
+    }
+  ],
+  "category": "sekme",
+  "summary": "Sekmelerdeki ve sekme panelindeki × düğmesi gizlenir"
 }

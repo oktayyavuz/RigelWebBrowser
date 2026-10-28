@@ -19,7 +19,10 @@
 //             stil sayfaları yeniden yüklenmeden canlı güncellenir.
 // Bildirimler: Services.obs "rigel-mods-list" (liste/dosya değişti), "rigel-mods-state" (etkin/ayar değişti).
 
-import { fetchEntryFiles, compareVersions } from "chrome://userscripts/content/mods/store.sys.mjs";
+import { fetchEntryFiles, compareVersions, cleanMeta } from "chrome://userscripts/content/mods/store.sys.mjs";
+
+// Ayırt edici meta alanları (mod.json): category, summary, conflicts. Katalogdan sonradan doldurulabilir (enrich).
+const META_KEYS = ["category", "summary", "conflicts"];
 
 const BUILTIN_BASE = "chrome://userscripts/content/mods/builtin/";
 const PREF_ENABLED = "rigel.mods.enabled";
@@ -194,6 +197,8 @@ class ModManager {
       script: !!raw?.script, trust: ["bundled", "user"].includes(raw?.trust) ? raw.trust : undefined,
       // Uyarlanan modlar için atıf: ana sayfa, lisans (SPDX), özgün kaynak adresi.
       homepage: String(raw?.homepage ?? ""), license: String(raw?.license ?? ""), source: String(raw?.source ?? ""),
+      // Kategori (renk|cam|animasyon|sekme|arac|davranis|sayfa|duzen; bilinmeyen = ""), ≤60 karakter özet, çakışan mod kimlikleri.
+      ...cleanMeta(raw, id),
       // Mağazadan kurulduysa köken: { id, version, origin: "bundled"|"remote"|"url", source? }
       store: raw?.store && typeof raw.store === "object" ? { id: String(raw.store.id ?? id), version: String(raw.store.version ?? ""), origin: String(raw.store.origin ?? ""), source: String(raw.store.source ?? "") } : undefined,
     };
@@ -242,7 +247,17 @@ class ModManager {
         // Yerleşik mod yeni sürümse dosyalar güncellenir (kullanıcı düzenlemeleri bu sürümde kaybolur).
         let cur = {};
         try { cur = JSON.parse(await IOUtils.readUTF8(PathUtils.join(base, "mod.json"))); } catch {}
-        if (!cur.builtin || cur.version === meta.version) continue;
+        if (!cur.builtin) continue;
+        if (cur.version === meta.version) {
+          // Aynı sürüm: yalnız ayırt edici meta (kategori/özet/çakışma) değiştiyse mod.json'a işlenir.
+          const want = cleanMeta(meta, id);
+          const have = cleanMeta(cur, id);
+          if (JSON.stringify(want) !== JSON.stringify(have)) {
+            for (const k of META_KEYS) { if (k === "conflicts" ? want[k].length : want[k]) cur[k] = want[k]; else delete cur[k]; }
+            try { await IOUtils.writeUTF8(PathUtils.join(base, "mod.json"), JSON.stringify(cur, null, 2)); } catch {}
+          }
+          continue;
+        }
       }
       await IOUtils.makeDirectory(base, { ignoreExisting: true });
       await IOUtils.writeUTF8(PathUtils.join(base, "mod.json"), JSON.stringify({ ...meta, id, builtin: true }, null, 2));
@@ -269,6 +284,9 @@ class ModManager {
     for (const k of ["homepage", "license", "source"]) if (meta[k]) out[k] = meta[k];
     if (meta.prefs?.length) out.prefs = meta.prefs;
     if (meta.layouts?.length) out.layouts = meta.layouts;
+    if (meta.category) out.category = meta.category;
+    if (meta.summary) out.summary = meta.summary;
+    if (meta.conflicts?.length) out.conflicts = meta.conflicts;
     if (meta.priority === "normal") out.priority = "normal";
     if (script) { out.script = true; if (meta.trust) out.trust = meta.trust; }
     if (meta.builtin) out.builtin = true;
@@ -369,6 +387,34 @@ class ModManager {
     return !!m?.meta.store && compareVersions(entry.version, m.meta.version) > 0;
   }
   isFromStore(id) { return !!this.mods.get(id)?.meta.store; }
+  /** Eski kurulumlar: kurulu mağaza modunda eksik kategori/özet/çakışma alanlarını katalog girdisinden doldurur
+   *  (bellekte ve mod.json'da). Bildirim göndermez; değişen mod sayısını döndürür. */
+  async enrich(entries) {
+    await this.init();
+    let n = 0;
+    for (const e of entries ?? []) {
+      const m = this.mods.get(e?.id);
+      if (!m?.meta.store || m.meta.store.id !== e.id) continue;
+      const add = {};
+      if (!m.meta.category && e.category) add.category = e.category;
+      if (!m.meta.summary && e.summary) add.summary = e.summary;
+      if (!m.meta.conflicts?.length && e.conflicts?.length) add.conflicts = e.conflicts;
+      if (!Object.keys(add).length) continue;
+      Object.assign(m.meta, cleanMeta({ ...m.meta, ...add }, m.meta.id));
+      n++;
+      const file = PathUtils.join(this.dir, m.meta.id, "mod.json");
+      try { const raw = JSON.parse(await IOUtils.readUTF8(file)); Object.assign(raw, add); await IOUtils.writeUTF8(file, JSON.stringify(raw, null, 2)); } catch {}
+    }
+    return n;
+  }
+  /** Bu modla çakışan ve şu an açık olan modların meta verileri (çakışma iki yönlü sayılır: A B'yi ya da B A'yı listeler). */
+  conflictsOf(id) {
+    const me = this.mods.get(id)?.meta;
+    if (!me) return [];
+    const on = new Set(this.enabledIds());
+    return [...this.mods.values()].map(m => m.meta)
+      .filter(o => o.id !== id && on.has(o.id) && (me.conflicts?.includes(o.id) || o.conflicts?.includes(id)));
+  }
 
   /** Klasörden içe aktarır: mod.json'lu klasör ya da içinde chrome.css/content.css/*.css olan klasör. Yeni kimliği döndürür. */
   async importFolder(path) {
@@ -506,6 +552,8 @@ class ModManager {
     const had = this.windowVars.get(win) ?? new Set();
     for (const n of had) if (!want.has(n)) root.style.removeProperty(n);
     for (const [n, v] of want) if (root.style.getPropertyValue(n) !== v) root.style.setProperty(n, v);
+    // Son değişken silinince kökte boş style="" kalmasın (başka sistemlerin satır içi stili varsa dokunulmaz).
+    if (!root.style.length && root.hasAttribute("style") && !root.getAttribute("style").trim()) root.removeAttribute("style");
     this.windowVars.set(win, new Set(want.keys()));
   }
 

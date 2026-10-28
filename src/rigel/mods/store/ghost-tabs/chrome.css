@@ -45,3 +45,11 @@
 @media (prefers-reduced-motion: reduce) {
   :root:root:root .tabbrowser-tab > .tab-stack > .tab-content { transition: none; }
 }
+/* Sekme paneli (Ctrl+Shift+A; Komuta'da sekmelerin tek yeri) */
+:root:root:root .rgl-tabs .rgl-row.asleep > :is(.fav, .txt) {
+  filter: var(--gt-filter);
+  opacity: var(--gt-op) !important;
+  transition: opacity 0.18s ease;
+}
+:root:root:root .rgl-tabs .rgl-row.asleep .t { font-style: italic; }
+:root:root:root[rigel-mod-ghost-tabs-hover] .rgl-tabs .rgl-row.asleep:hover > :is(.fav, .txt) { filter: none; opacity: 0.95 !important; }

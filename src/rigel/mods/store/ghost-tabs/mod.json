@@ -1,8 +1,8 @@
 {
   "name": "Hayalet sekmeler",
-  "description": "Uyuyan (henüz yüklenmemiş) sekmeler siyah-beyaz, yarı saydam ve italik görünür; hangilerinin bellekte olduğunu bir bakışta görürsün. Klasik ve Yan Panel sekmeleri, Ada yıldızları, Dock sekmeleri ve gruplar.",
+  "description": "Uyuyan (henüz yüklenmemiş) sekmeler siyah-beyaz, yarı saydam ve italik görünür; hangilerinin bellekte olduğunu bir bakışta görürsün. Klasik ve Yan Panel sekmeleri, Ada yıldızları, Dock sekmeleri, sekme paneli (Komuta'da sekmelerin yeri) ve gruplar.",
   "author": "Seismix",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "target": "chrome",
   "homepage": "https://github.com/Seismix/zen-ghost-tabs",
   "license": "MIT",
@@ -40,5 +40,7 @@
       "type": "checkbox",
       "default": true
     }
-  ]
+  ],
+  "category": "sekme",
+  "summary": "Uyuyan sekmeler soluk, siyah-beyaz ve italik görünür"
 }

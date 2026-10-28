@@ -2,7 +2,7 @@
   "name": "Hap sekmeler",
   "description": "Klasik düzende sekmeler şeride yapışık kulakçıklar yerine dikey ortalanmış, tam yuvarlak haplar olur. Seçili hap vurgu tonunda, dolu vurgu renginde ya da çerçeveli. Kapatma düğmesi istersen yalnız üstüne gelince.",
   "author": "Rigel",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "target": "chrome",
   "prefs": [
     {
@@ -72,5 +72,14 @@
       "default": true
     }
   ],
-  "license": "MPL-2.0"
+  "license": "MPL-2.0",
+  "category": "sekme",
+  "summary": "Klasik sekmeler dikey ortalanmış tam yuvarlak haplar olur",
+  "conflicts": [
+    "one-liner",
+    "tab-hues"
+  ],
+  "layouts": [
+    "klasik"
+  ]
 }

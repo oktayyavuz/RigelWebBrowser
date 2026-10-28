@@ -1,8 +1,8 @@
 {
-  "name": "Daha iyi bul çubuğu",
-  "description": "Bul çubuğu (Ctrl+F) sayfanın altında ortalanmış, geniş, yüzen bir çubuk olur; aşağıdan kayarak açılır. Seçenekler hap düğmelere döner, istersen kapalı olanlar gizlenir. Cam görünüm ve konum seçilebilir.",
+  "name": "Geniş bul çubuğu",
+  "description": "Bul çubuğunu (Ctrl+F) sağ üstteki küçük karttan alıp sayfanın altında ortalanmış, geniş, yüzen bir çubuğa çevirir; aşağıdan kayarak açılır. Seçenekler hap düğmelere döner, istersen kapalı olanlar gizlenir. Cam görünüm ve konum seçilebilir. Bütün düzenlerde.",
   "author": "RobotoSkunk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "target": "chrome",
   "homepage": "https://github.com/RobotoSkunk/zen-better-findbar",
   "license": "MIT",
@@ -68,5 +68,7 @@
       "type": "checkbox",
       "default": false
     }
-  ]
+  ],
+  "category": "duzen",
+  "summary": "Bul çubuğu (Ctrl+F) altta ortada geniş, yüzen çubuk olur"
 }

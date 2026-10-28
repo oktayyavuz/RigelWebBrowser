@@ -6,6 +6,7 @@ import {
   Disposer, adoptNavBarTools, bindTab, clusterTabs, el, favicon, groupChip, icon, isPrivate, liveTabs, logo, navButtons,
   openAddress, tabLabel, tabUri, toggleTabsDrawer, uriParts, watchTabs, windowButtons, doCmd,
 } from "./common.mjs";
+import { shownHost } from "./urlsimple.mjs";
 import { enableTabDnD } from "./tabdnd.mjs";
 
 const MAX_STARS = 14;
@@ -54,7 +55,7 @@ export function init(win) {
     if (parts.host) {
       kids.push(favicon(doc, shown, 16),
         el(doc, "span", { class: "title", text: tabLabel(shown) }),
-        el(doc, "span", { class: "host", text: parts.host }));
+        el(doc, "span", { class: "host", text: shownHost(tabUri(shown), parts.host) }));
     } else {
       kids.push(icon(doc, "search", 14), el(doc, "span", { class: "placeholder", text: "Ara ya da adres yaz" }));
     }

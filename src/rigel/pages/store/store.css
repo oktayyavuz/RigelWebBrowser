@@ -120,3 +120,23 @@ code { font: 12px var(--mono); background: var(--hover); padding: 1px 5px; borde
 .layoutnote { margin: 0 0 10px; font-size: 12.5px; color: var(--text-dim); }
 .tbadge.layout { background: color-mix(in srgb, var(--accent) 16%, transparent); }
 .tbadge.script { background: color-mix(in srgb, var(--danger, #e5484d) 24%, transparent); }
+
+/* Kategori, özet, düzen göstergesi (ortak parçalar pages/store/modmeta.mjs) */
+.mcard .pv .oncard { position: absolute; top: 10px; inset-inline-start: 10px; background: color-mix(in srgb, var(--cat) 18%, var(--surface)); box-shadow: 0 0 0 1px color-mix(in srgb, var(--cat) 35%, transparent), var(--shadow-sm); }
+.mcard .sum { font-size: 13px; line-height: 1.35; }
+.mcard .body p { -webkit-line-clamp: 2; font-size: 12.5px; color: var(--text-faint); }
+.mcard .rginert, .mcard .rgconf { margin-top: 4px; }
+.mcard.inert .pv img, .mcard.inert .pv .ph { opacity: .45; filter: grayscale(.6); }
+.mcard.inert h3, .mcard.inert .sum { color: var(--text-dim); }
+.mcard .foot .badges { align-items: center; }
+.sectitle.cathead { display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--text); margin: 14px 2px 10px; }
+.sectitle.cathead svg { color: color-mix(in srgb, var(--cat) 80%, var(--text)); }
+.sectitle.cathead .n { font: 11px var(--mono); color: var(--text-faint); font-weight: 400; }
+.sectitle.cathead::after { content: ""; flex: 1; height: 1px; background: var(--border); margin-inline-start: 6px; }
+#main > .grid + .sectitle.cathead { margin-top: 26px; }
+.panel .dhead { display: flex; flex-direction: column; gap: 6px; }
+.panel .dsum { margin: 0; font-size: 14.5px; }
+.panel .dlayouts { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+.panel .dlayouts .layoutnote { margin: 0; }
+.panel .dlayouts .rglm .g { width: 22px; height: 19px; }
+.panel .dlayouts .rglm svg { width: 18px; height: 14px; }

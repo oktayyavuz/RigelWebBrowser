@@ -75,3 +75,26 @@
 :root:root:root #urlbar .searchbar-engine-one-off-item { border-radius: 8px !important; margin-right: 3px !important; }
 /* Bulanıklığın web sayfası üstünde de çalışması için sayfa kendi katmanına alınır (özgün modun düzeltmesi). */
 :root:root:root[rigel-mod-cleaned-urlbar-blur] .browserStack > browser { transform: translateX(0); }
+/* Ada, Dock ve Komuta'da adres çubuğu yerine adres paleti açılır (Ctrl+L, adres düğmesi): aynı kart görünümü */
+:root:root:root:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette > .rgl-pal-card {
+  border: 3px solid color-mix(in srgb, var(--text) 11%, transparent) !important;
+  border-radius: 18px !important;
+  background-color: color-mix(in srgb, var(--surface) calc(100% - var(--rigel-mod-cleaned-urlbar-transparency, 12%)), transparent) !important;
+  box-shadow: 0 26px 64px rgba(0, 0, 0, 0.42) !important;
+}
+:root:root:root[rigel-mod-cleaned-urlbar-blur]:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette > .rgl-pal-card {
+  backdrop-filter: blur(25px) saturate(2) !important;
+}
+:root:root:root:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette .rgl-pal-in { border-bottom-color: transparent !important; }
+:root:root:root:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette .rgl-pal-row { border-radius: 11px !important; }
+:root:root:root:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette .rgl-pal-row.sel {
+  background-color: var(--cu-sel) !important;
+  color: var(--cu-ink) !important;
+}
+:root:root:root:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette .rgl-pal-row.sel :is(.t, .sub, .ico, kbd) { color: inherit !important; }
+:root:root:root:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette .rgl-pal-foot {
+  border-top: none !important;
+  margin: 2px 6px 7px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--text) 6%, transparent);
+}
