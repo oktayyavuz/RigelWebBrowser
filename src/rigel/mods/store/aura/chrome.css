@@ -1,0 +1,39 @@
+/* Aura — Rigel modu. İki renkli gradyan: araç çubukları, seçili sekme, odaklı adres çubuğu, alt ışık şeridi.
+   Ayarlar: accent (vurgu rengini kullan), c1/c2 (renkler), angle (deg), intensity (5-100). `!important` Rigel'in kurallarını user katmanından yener. */
+:root:root:root[data-rigel-layout]:not([inDOMFullscreen]) {
+  --au-a: var(--rigel-mod-aura-c1, #7c5cff);
+  --au-b: var(--rigel-mod-aura-c2, #22d3ee);
+  --au-ang: var(--rigel-mod-aura-angle, 100deg);
+  --au-i: calc(var(--rigel-mod-aura-intensity, 60) * 1%);
+  --au-t: calc(28% + var(--rigel-mod-aura-intensity, 60) * 0.62%);
+  --au-base: var(--bar, #0f131c);
+}
+:root:root:root[data-rigel-layout][rigel-mod-aura-accent]:not([inDOMFullscreen]) {
+  --au-a: var(--accent, #5fa9dd);
+  --au-b: var(--accent-2, #7cc3dc);
+}
+/* Çubuklar: gradyan + altta ışık şeridi */
+:root:root:root[data-rigel-layout]:not([inDOMFullscreen]) :is(#navigator-toolbox, #rigel-dock) {
+  background:
+    linear-gradient(90deg, var(--au-a), var(--au-b)) bottom / 100% 2px no-repeat,
+    linear-gradient(var(--au-ang), color-mix(in srgb, var(--au-a) var(--au-i), var(--au-base)), color-mix(in srgb, var(--au-b) var(--au-i), var(--au-base))) !important;
+  border-color: color-mix(in srgb, var(--au-a) 40%, transparent) !important;
+}
+:root:root:root[data-rigel-layout]:not([inDOMFullscreen]) :is(#nav-bar, #TabsToolbar, #rigel-ada, #rigel-docktop, #rigel-komuta, #PersonalToolbar) { background: transparent !important; border-color: transparent !important; }
+:root:root:root[data-rigel-layout]:not([inDOMFullscreen]) :is(.rigel-island, .rigel-identity) { background: color-mix(in srgb, white 10%, transparent) !important; border-color: color-mix(in srgb, white 16%, transparent) !important; }
+/* Seçili sekme / yıldız / dock sekmesi */
+:root:root:root[data-rigel-layout]:not([inDOMFullscreen]) .tabbrowser-tab:is([selected], [multiselected]) .tab-background,
+:root:root:root[data-rigel-layout]:not([inDOMFullscreen]) :is(.rigel-star.on, .rigel-dtab.on) {
+  background: linear-gradient(var(--au-ang), color-mix(in srgb, var(--au-a) var(--au-t), var(--surface-2, #1c2433)), color-mix(in srgb, var(--au-b) var(--au-t), var(--surface-2, #1c2433))) !important;
+  border-color: color-mix(in srgb, white 30%, transparent) !important;
+  box-shadow: 0 0 16px -3px color-mix(in srgb, var(--au-a) 70%, transparent), 0 2px 8px -2px color-mix(in srgb, var(--au-b) 60%, transparent) !important;
+}
+:root:root:root[data-rigel-layout]:not([inDOMFullscreen]) .tabbrowser-tab[selected] .tab-label { color: #fff !important; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important; }
+:root:root:root[data-rigel-layout]:not([inDOMFullscreen]) .rigel-star.on::after { box-shadow: 0 0 0 1.5px color-mix(in srgb, white 70%, transparent) inset !important; }
+/* Adres çubuğu odakta: gradyan halka */
+:root:root:root[data-rigel-layout]:not([inDOMFullscreen]) #urlbar[focused] .urlbar-background,
+:root:root:root[data-rigel-layout]:not([inDOMFullscreen]) #urlbar[open] .urlbar-background {
+  background: linear-gradient(var(--surface, #151b27), var(--surface, #151b27)) padding-box, linear-gradient(var(--au-ang), var(--au-a), var(--au-b)) border-box !important;
+  border: 2px solid transparent !important;
+  box-shadow: 0 0 18px -4px color-mix(in srgb, var(--au-a) 70%, transparent) !important;
+}

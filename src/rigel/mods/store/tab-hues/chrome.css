@@ -1,0 +1,24 @@
+/* Sekme renkleri — Rigel modu. Betik sekmelere (ve Ada/Dock düğmelerine) --rtc rengini yazar. */
+:root:root:root .tabbrowser-tab[rigel-hue] .tab-background {
+  background: color-mix(in srgb, var(--rtc) calc(var(--rigel-mod-tab-hues-intensity, 55) * 0.55%), transparent) !important;
+  box-shadow: inset 0 -2.5px 0 var(--rtc) !important;
+}
+:root:root:root .tabbrowser-tab[rigel-hue]:is([selected], [multiselected]) .tab-background {
+  background: color-mix(in srgb, var(--rtc) calc(12% + var(--rigel-mod-tab-hues-intensity, 55) * 0.6%), var(--surface-2, #1c2433)) !important;
+  box-shadow: inset 0 -3px 0 var(--rtc), 0 0 14px -4px var(--rtc) !important;
+}
+:root:root:root .tabbrowser-tab[rigel-hue]:not([selected]):hover .tab-background {
+  background: color-mix(in srgb, var(--rtc) calc(var(--rigel-mod-tab-hues-intensity, 55) * 0.85%), transparent) !important;
+}
+:root:root:root[rigel-mod-tab-hues-active-only] .tabbrowser-tab[rigel-hue]:not([selected], [multiselected]) .tab-background { background: transparent !important; box-shadow: none !important; }
+:root:root:root[rigel-mod-tab-hues-active-only] .tabbrowser-tab[rigel-hue]:not([selected], [multiselected]):hover .tab-background { background: color-mix(in srgb, var(--rtc) 22%, transparent) !important; }
+/* Ada yıldızları, Dock sekmeleri */
+:root:root:root [rigel-hue]:is(.rigel-star, .rigel-dtab) {
+  background: color-mix(in srgb, var(--rtc) calc(var(--rigel-mod-tab-hues-intensity, 55) * 0.5%), transparent) !important;
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--rtc) 80%, transparent) inset !important;
+}
+:root:root:root [rigel-hue]:is(.rigel-star, .rigel-dtab):is(.on) {
+  background: color-mix(in srgb, var(--rtc) calc(15% + var(--rigel-mod-tab-hues-intensity, 55) * 0.6%), transparent) !important;
+  box-shadow: 0 0 0 2px var(--rtc) inset, 0 0 14px -2px var(--rtc) !important;
+}
+:root:root:root[rigel-mod-tab-hues-active-only] [rigel-hue]:is(.rigel-star, .rigel-dtab):not(.on) { background: transparent !important; box-shadow: none !important; }

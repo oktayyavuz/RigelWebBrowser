@@ -213,3 +213,58 @@ textarea.code { width: 100%; resize: vertical; min-height: 120px; padding: 10px 
 textarea.code:focus { border-color: var(--accent); }
 .edactions { display: flex; gap: 8px; margin-top: 14px; }
 @media (max-width: 760px) { .edgrid { grid-template-columns: 1fr; } }
+
+/* Görünüm stüdyosu (studio.mjs): şerit maketi pencerenin kullandığı stüdyo değişkenleriyle çizilir. */
+.rngbox { display: flex; align-items: center; gap: 12px; flex: none; }
+.rng { width: 200px; accent-color: var(--accent); }
+.rngval { min-width: 52px; text-align: end; font: 12px var(--mono); color: var(--text-dim); }
+.clr { width: 40px !important; height: 32px !important; padding: 2px !important; border-radius: 8px; cursor: pointer; }
+main input.clr { min-width: 40px; }
+
+.mockwrap { position: sticky; top: 0; z-index: 2; padding: 10px 0 12px; margin-top: -10px; background: var(--bg); display: flex; flex-direction: column; gap: 8px; }
+.mockbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--text-faint); }
+.mock {
+  --r: var(--rigel-radius, 9px);
+  border-radius: 14px; overflow: hidden; border: 1px solid var(--border-2);
+  background: var(--rigel-bg-image, linear-gradient(var(--bar), var(--bar))), var(--bar);
+  font: var(--rigel-font-size, 13px)/1.4 var(--font); color: var(--text); box-shadow: var(--shadow-sm);
+  user-select: none; pointer-events: none;
+}
+.mock .mstrip { height: var(--rigel-tabbar-h, 40px); padding: 6px 6px 0 8px; display: flex; align-items: flex-end; gap: 2px; background: var(--rigel-strip-bg, var(--bar)); }
+.mock .mt { display: flex; align-items: center; gap: 8px; height: var(--rigel-tab-h, 34px); width: min(var(--rigel-tab-width, 220px), 28%); padding: 0 8px 0 11px; border-radius: var(--r) var(--r) 0 0; color: var(--text-dim); font-style: normal; white-space: nowrap; overflow: hidden; flex: none; }
+.mock .mt u { width: 14px; height: 14px; border-radius: 4px; background: var(--surface-2); flex: none; }
+.mock .mt.on u { background: var(--accent); }
+.mock .mt span { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+.mock .mt s { text-decoration: none; opacity: 0.5; font-size: 0.95em; }
+.mock .mt.on { color: var(--text); background: linear-gradient(var(--accent), var(--accent)) 12px 0 / calc(100% - 24px) 2px no-repeat, var(--rigel-surface-bg, var(--surface)); }
+.mock .mplus { align-self: center; margin-inline-start: 6px; color: var(--text-faint); font-size: 1.3em; }
+.mock .mnav { height: var(--rigel-navbar-h, 44px); display: flex; align-items: center; gap: 4px; padding: 0 var(--rigel-space, 8px); background: var(--rigel-surface-bg, var(--surface)); backdrop-filter: var(--rigel-glass-filter, none); border-bottom: 1px solid var(--border); }
+.mock .mbtn { width: 28px; height: 28px; border-radius: var(--rigel-radius-sm, 7px); background: var(--hover); flex: none; }
+.mock .mbtn.acc { background: color-mix(in srgb, var(--accent) 35%, transparent); }
+.mock .murl { flex: 1; height: var(--rigel-urlbar-h, 32px); margin-inline: 8px; border-radius: calc(var(--r) * 16 / 9); background: var(--bg); display: flex; align-items: center; justify-content: center; color: var(--text-dim); }
+.mock .mpage { background: var(--bg); padding: 12px 20px 14px; display: flex; flex-direction: column; gap: 8px; }
+.mock .mpage b { width: 38%; height: 12px; border-radius: 4px; background: var(--surface-2); }
+.mock .mpage i { width: 72%; height: 8px; border-radius: 4px; background: var(--surface); }
+.mock .mpage i.short { width: 54%; }
+.mock .mpage em { width: 92px; height: 22px; border-radius: var(--rigel-radius-sm, 7px); background: var(--accent); margin-top: 4px; }
+.mock[data-ts="hap"] .mt { border-radius: var(--rigel-pill-radius, 999px); height: calc(var(--rigel-tab-h, 34px) - 5px); margin-bottom: 4px; }
+.mock[data-ts="hap"] .mt.on { background: var(--rigel-surface-bg, var(--surface)); box-shadow: inset 0 0 0 1px var(--border-2), var(--shadow-sm); }
+.mock[data-ts="cizgi"] .mt { border-radius: 0; }
+.mock[data-ts="cizgi"] .mt.on { background: linear-gradient(var(--accent), var(--accent)) center bottom / calc(100% - 16px) 2px no-repeat; color: var(--accent); }
+.mock[data-ts="duz"] .mt { border-radius: var(--rigel-radius-sm, 7px); height: calc(var(--rigel-tab-h, 34px) - 5px); margin-bottom: 4px; }
+.mock[data-ts="duz"] .mt.on { background: color-mix(in srgb, var(--text) 11%, transparent); }
+
+.packs { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; padding: 8px 0 14px; }
+.packs[hidden] { display: none; }
+.pack { display: flex; flex-direction: column; gap: 8px; padding: 8px; border-radius: 12px; background: var(--bg); border: 1px solid var(--border); text-align: start; width: 100%; cursor: pointer; }
+.pack:hover { border-color: var(--accent-line); background: var(--accent-wash); }
+.pack .mock.mini { width: 480px; align-self: center; zoom: 0.42; border-radius: 22px; box-shadow: none; }
+.pack .mock.mini .mpage { padding-block: 12px 14px; }
+.pname { display: flex; flex-direction: column; gap: 1px; padding: 0 4px 2px; }
+.pname b { font-weight: 600; }
+.pname small { color: var(--text-faint); }
+.packwrap { position: relative; }
+.packwrap .iconbtn { position: absolute; top: 12px; background: var(--surface); }
+.packwrap .pdel { right: 46px; }
+.packwrap .pdel2 { right: 12px; }
+.row .toolrow { padding: 0; }

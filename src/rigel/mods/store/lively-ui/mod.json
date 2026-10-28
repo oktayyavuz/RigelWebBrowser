@@ -1,0 +1,12 @@
+{
+  "name": "Canlı arayüz",
+  "description": "Arayüze yay gibi sıçrayan, yumuşak animasyonlar katar: sekmeler büyüyerek açılır ve küçülerek kapanır, düğmeler üzerine gelince kabarır ve basınca çöker, menüler ve paletle yan panel açılırken hafifçe sıçrar, sekme değişince sayfa yumuşakça belirir. Hız ve sıçrama gücü kaydırıcıyla ayarlanır. Yalnız transform ve opacity kullanır; sistem \"hareketi azalt\" dediğinde kapanır. Her düzende çalışır.",
+  "author": "Rigel",
+  "version": "1.0.0",
+  "target": "chrome",
+  "license": "MPL-2.0",
+  "prefs": [
+    { "key": "speed", "label": "Hız", "type": "range", "min": 40, "max": 250, "step": 5, "unit": "", "default": 100 },
+    { "key": "bounce", "label": "Sıçrama gücü", "type": "range", "min": 0, "max": 100, "step": 1, "unit": "", "default": 55 }
+  ]
+}

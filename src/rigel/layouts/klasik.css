@@ -3,16 +3,16 @@
    ve nav-bar'ı yeniden biçimlenir; shell/klasik.mjs yalnız pencere düğmelerini ekler. */
 
 :root[data-rigel-layout="klasik"] {
-  --tab-min-height: 34px;
+  --tab-min-height: var(--rigel-tab-h, 34px);
   --tab-min-width: 44px;
   --tab-block-margin: 0px;
-  --tab-border-radius: 9px;
+  --tab-border-radius: var(--rigel-radius, 9px);
   --tab-shadow-max-size: 0px;
   --tab-pinned-horizontal-margin: 0px;
   --toolbarbutton-outer-padding: 1px;
   --toolbarbutton-inner-padding: 7px;
-  --urlbar-min-height: 32px;
-  --urlbar-container-height: 44px;
+  --urlbar-min-height: var(--rigel-urlbar-h, 32px);
+  --urlbar-container-height: var(--rigel-navbar-h, 44px);
 
   .titlebar-spacer,
   #tabbrowser-arrowscrollbox-periphery > .closing-tabs-spacer {
@@ -22,19 +22,19 @@
 
 /* --- Sekme şeridi ----------------------------------------------------------------- */
 :root[data-rigel-layout="klasik"] #TabsToolbar {
-  height: 40px;
-  min-height: 40px !important;
-  max-height: 40px;
+  height: var(--rigel-tabbar-h, 40px);
+  min-height: var(--rigel-tabbar-h, 40px) !important;
+  max-height: var(--rigel-tabbar-h, 40px);
   padding: 6px 6px 0 8px !important;
-  background: var(--bar) !important;
+  background: var(--rigel-strip-bg, var(--bar)) !important;
   color: var(--text);
-  font: 13px/1.4 var(--font);
+  font: var(--rigel-font-size, 13px)/1.4 var(--font);
 
   .toolbar-items {
     align-items: flex-end !important;
   }
   #tabbrowser-tabs {
-    min-height: 34px !important;
+    min-height: var(--rigel-tab-h, 34px) !important;
     border: none !important;
     padding: 0 !important;
     margin: 0 !important;
@@ -50,20 +50,20 @@
 
 :root[data-rigel-layout="klasik"] .tabbrowser-tab {
   padding: 0 1px !important;
-  min-height: 34px !important;
+  min-height: var(--rigel-tab-h, 34px) !important;
 
   /* Yalnız açık (fadein) sekmeler: Firefox kapanırken fadein'i kaldırıp genişliği 0'a çeker ve
      geçiş bitince sekmeyi siler. Burada sabit genişlik o geçişi engellerse sekme DOM'da takılı kalır. */
   &[fadein]:not([pinned]) {
-    max-width: 220px !important;
+    max-width: var(--rigel-tab-width, 220px) !important;
   }
   .tab-background {
     margin: 0 !important;
     border: none !important;
-    border-radius: 9px 9px 0 0 !important;
+    border-radius: var(--rigel-radius, 9px) var(--rigel-radius, 9px) 0 0 !important;
     box-shadow: none !important;
     outline: none !important;
-    min-height: 34px !important;
+    min-height: var(--rigel-tab-h, 34px) !important;
   }
   &:hover > .tab-stack > .tab-background:not([selected], [multiselected]) {
     background: var(--hover) !important;
@@ -71,12 +71,12 @@
   .tab-background:is([selected], [multiselected]) {
     background:
       linear-gradient(var(--accent), var(--accent)) 12px 0 / calc(100% - 24px) 2px no-repeat,
-      var(--surface) !important;
+      var(--rigel-surface-bg, var(--surface)) !important;
   }
   &[pinned] .tab-background:is([selected], [multiselected]) {
     background:
       linear-gradient(var(--accent), var(--accent)) 8px 0 / calc(100% - 16px) 2px no-repeat,
-      var(--surface) !important;
+      var(--rigel-surface-bg, var(--surface)) !important;
   }
   .tab-content {
     padding-inline: 11px 6px !important;
@@ -103,7 +103,7 @@
     width: 20px !important;
     height: 20px !important;
     padding: 4px !important;
-    border-radius: 5px !important;
+    border-radius: calc(var(--rigel-radius, 9px) * 5 / 9) !important;
     opacity: 0.6;
     margin-inline-end: 0 !important;
   }
@@ -129,16 +129,17 @@
     width: 30px !important;
     height: 30px !important;
     padding: 7px !important;
-    border-radius: 8px !important;
+    border-radius: calc(var(--rigel-radius, 9px) * 8 / 9) !important;
   }
 }
 
 /* --- Araç çubuğu ------------------------------------------------------------------ */
 :root[data-rigel-layout="klasik"] #nav-bar {
-  height: 44px;
-  min-height: 44px !important;
-  padding: 0 8px !important;
-  background: var(--surface) !important;
+  height: var(--rigel-navbar-h, 44px);
+  min-height: var(--rigel-navbar-h, 44px) !important;
+  padding: 0 var(--rigel-space, 8px) !important;
+  background: var(--rigel-surface-bg, var(--surface)) !important;
+  backdrop-filter: var(--rigel-glass-filter, none);
   border: none !important;
   border-bottom: 1px solid var(--border) !important;
   box-shadow: none !important;
@@ -148,7 +149,7 @@
     display: none !important;
   }
   toolbarbutton.toolbarbutton-1 > :is(.toolbarbutton-icon, .toolbarbutton-badge-stack) {
-    border-radius: 7px !important;
+    border-radius: var(--rigel-radius-sm, 7px) !important;
   }
   #urlbar-container {
     flex: 1 !important;
@@ -159,12 +160,49 @@
 :root[data-rigel-layout="klasik"] #urlbar {
   --urlbar-background-color: var(--bg);
   --urlbar-background-color-focus: var(--bg);
-  --urlbar-border-radius: 16px;
+  --urlbar-border-radius: calc(var(--rigel-radius, 9px) * 16 / 9);
 
   & > .urlbar-background {
-    border-radius: 16px;
+    border-radius: calc(var(--rigel-radius, 9px) * 16 / 9);
   }
   &[popover-open] > .urlbar-background {
-    border-radius: 16px 16px 0 0 !important;
+    border-radius: calc(var(--rigel-radius, 9px) * 16 / 9) calc(var(--rigel-radius, 9px) * 16 / 9) 0 0 !important;
   }
+}
+
+/* --- Görünüm stüdyosu (rigel.look) ------------------------------------------------- */
+/* Arka plan/cam: zemin araç kutusuna boyanır; şerit (--rigel-strip-bg) ve araç çubuğu (--rigel-surface-bg) saydamlaşır. */
+:root[data-rigel-layout="klasik"][rigel-look-bg] #navigator-toolbox {
+  background: var(--rigel-bg-image), var(--bg) !important;
+}
+:root[data-rigel-layout="klasik"][rigel-look-glass] #nav-bar {
+  border-bottom-color: color-mix(in srgb, var(--border-2) 60%, transparent) !important;
+}
+
+/* Sekme biçimleri: kart (varsayılan, yukarıda) | hap | çizgi | düz. Seçiciler sabitlenmiş kuralı da yener. */
+:root[data-rigel-layout="klasik"][rigel-tabstyle="hap"] .tabbrowser-tab .tab-background {
+  border-radius: var(--rigel-pill-radius, 999px) !important;
+  margin-block: 1px 4px !important;
+  min-height: 0 !important;
+}
+:root[data-rigel-layout="klasik"][rigel-tabstyle="hap"] .tabbrowser-tab .tab-background:is([selected], [multiselected]) {
+  background: var(--rigel-surface-bg, var(--surface)) !important;
+  box-shadow: inset 0 0 0 1px var(--border-2), var(--shadow-sm) !important;
+}
+:root[data-rigel-layout="klasik"][rigel-tabstyle="cizgi"] .tabbrowser-tab .tab-background {
+  border-radius: 0 !important;
+}
+:root[data-rigel-layout="klasik"][rigel-tabstyle="cizgi"] .tabbrowser-tab .tab-background:is([selected], [multiselected]) {
+  background: linear-gradient(var(--accent), var(--accent)) center bottom / calc(100% - 16px) 2px no-repeat !important;
+}
+:root[data-rigel-layout="klasik"][rigel-tabstyle="cizgi"] .tabbrowser-tab[selected] .tab-label {
+  color: var(--accent) !important;
+}
+:root[data-rigel-layout="klasik"][rigel-tabstyle="duz"] .tabbrowser-tab .tab-background {
+  border-radius: var(--rigel-radius-sm, 7px) !important;
+  margin-block: 1px 4px !important;
+  min-height: 0 !important;
+}
+:root[data-rigel-layout="klasik"][rigel-tabstyle="duz"] .tabbrowser-tab .tab-background:is([selected], [multiselected]) {
+  background: color-mix(in srgb, var(--text) 11%, transparent) !important;
 }

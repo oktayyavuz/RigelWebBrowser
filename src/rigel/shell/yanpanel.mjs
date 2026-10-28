@@ -21,7 +21,9 @@ function buildBottom(win) {
 // sidebar-main'in gölge DOM'una (araç düğmeleri vb.) stil eklemek için.
 let sheetText = null;
 async function styleSidebarMain(win, sidebarMain, d) {
-  sheetText ??= await (await win.fetch(BASE + "shell/sidebar-main.css")).text();
+  // Açılışta fetch ara sıra NetworkError veriyor; bir kez daha dene.
+  const load = async () => (await win.fetch(BASE + "shell/sidebar-main.css")).text();
+  sheetText ??= await load().catch(() => new Promise(r => win.setTimeout(r, 400)).then(load));
   const sheet = new win.CSSStyleSheet();
   sheet.replaceSync(sheetText);
   let cancelled = false;

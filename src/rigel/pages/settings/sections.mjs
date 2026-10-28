@@ -6,6 +6,7 @@ import {
 } from "./ui.mjs";
 import { BUILTIN_BANGS, normalizeTrigger, normalizeCustomBangs } from "chrome://userscripts/content/search/bangs.mjs";
 import { modlar } from "./mods.mjs";
+import { studio } from "./studio.mjs";
 import { ACTIONS } from "chrome://userscripts/content/search/keymap.mjs";
 
 const P = Services.prefs;
@@ -482,6 +483,7 @@ export const GROUPS = {
 };
 export const SECTIONS = [
   { id: "gorunum", group: "kisisel", title: "Görünüm", icon: "layout", description: "Düzen, tema ve vurgu rengiyle Rigel'i kendine göre ayarla.", build: gorunum },
+  { id: "studyo", group: "kisisel", title: "Görünüm stüdyosu", icon: "edit", description: "Köşeler, yoğunluk, yazı, sekme biçimi, arka plan ve hazır tema paketleri. Her değişiklik anında uygulanır.", build: studio },
   { id: "modlar", group: "kisisel", title: "Modlar", icon: "brush", description: "CSS modlarıyla arayüzü ve web sayfalarını kendine göre biçimlendir.", build: modlar },
   { id: "kisayollar", group: "kisisel", title: "Kısayollar", icon: "keyboard", description: "Klavye kısayollarını değiştir, kapat ya da sıfırla.", build: kisayollar },
   { id: "arama", group: "genel", title: "Arama", icon: "search", description: "Adres çubuğundan yapılan aramaların gideceği motor ve !kısayollar.", build: arama },

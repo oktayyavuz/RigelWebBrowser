@@ -1,0 +1,28 @@
+/* Buzlu paneller — Rigel modu. Palet, çekmece, Rigel menüleri, bildirim, bul çubuğu, adres önerileri: yarı saydam + backdrop-filter.
+   Açılır menü/paneller ayrı pencere: yalnız yarı saydam renk. Ayarlar: opacity (15-95), blur (px), tint (renk), tone (0-80). */
+:root:root:root {
+  --fp-tone: color-mix(in srgb, var(--surface, #151b27) calc(100% - var(--rigel-mod-frosted-panels-tone, 35) * 1%), var(--rigel-mod-frosted-panels-tint, #5b6bd6));
+  --fp-bg: color-mix(in srgb, var(--fp-tone) calc(var(--rigel-mod-frosted-panels-opacity, 55) * 1%), transparent);
+  --fp-blur: blur(var(--rigel-mod-frosted-panels-blur, 24px)) saturate(1.7);
+  --fp-edge: color-mix(in srgb, white 20%, transparent);
+}
+/* Rigel paneller */
+:root:root:root :is(#rigel-palette > .rgl-pal-card, #rigel-drawer .rgl-drawer, .rgl-menu, #rigel-toast > *, findbar, .urlbarView-body-outer, #urlbar[open] .urlbarView-background) {
+  background: var(--fp-bg) !important;
+  -webkit-backdrop-filter: var(--fp-blur) !important;
+  backdrop-filter: var(--fp-blur) !important;
+  border-color: var(--fp-edge) !important;
+}
+:root:root:root :is(#rigel-palette > .rgl-pal-card, #rigel-drawer .rgl-drawer, .rgl-menu) { box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45), inset 0 1px 0 color-mix(in srgb, white 22%, transparent) !important; }
+/* Palet perdesi: arkadaki sayfa da hafifçe bulanır */
+:root:root:root #rigel-palette:not([hidden]) {
+  -webkit-backdrop-filter: blur(calc(var(--rigel-mod-frosted-panels-blur, 24px) * 0.4)) !important;
+  backdrop-filter: blur(calc(var(--rigel-mod-frosted-panels-blur, 24px) * 0.4)) !important;
+}
+:root:root:root :is(#rigel-palette, #rigel-drawer) :is(input, .rgl-pal-input) { background: transparent !important; }
+/* Açılır menü ve paneller */
+:root:root:root :is(menupopup, panel) {
+  --panel-background-color: var(--fp-bg) !important;
+  --panel-border-color: var(--fp-edge) !important;
+  --panel-background-color-dimmed: color-mix(in srgb, white 10%, transparent) !important;
+}

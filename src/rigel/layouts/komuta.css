@@ -32,7 +32,7 @@
     flex: 0 1 640px;
     margin: 0 auto;
     height: 32px;
-    border-radius: 9px;
+    border-radius: var(--rigel-radius, 9px);
     display: flex;
     align-items: center;
     gap: 8px;
@@ -97,7 +97,7 @@
   .rigel-gchip {
     height: 28px;
     padding: 0 8px 0 10px;
-    border-radius: 14px;
+    border-radius: calc(var(--rigel-radius, 9px) * 14 / 9);
   }
   .rigel-gchip .gname {
     max-width: 96px;
@@ -109,7 +109,7 @@
     gap: 8px;
     height: 30px;
     padding: 0 10px 0 6px;
-    border-radius: 9px;
+    border-radius: var(--rigel-radius, 9px);
     background: var(--surface);
     border: 1px solid var(--border);
     flex: none;

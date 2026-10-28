@@ -28,3 +28,6 @@ window.addEventListener("unload", () => {
   Services.prefs.removeObserver("rigel.accent", observer);
 }, { once: true });
 apply();
+
+// Görünüm stüdyosu (rigel.look): yarıçap, yazı, vurgu vb. değişkenleri sayfaya da yazılır.
+import("chrome://userscripts/content/theme/look.mjs").then(m => m.initPage(document)).catch(e => console.error("[rigel] görünüm", e));

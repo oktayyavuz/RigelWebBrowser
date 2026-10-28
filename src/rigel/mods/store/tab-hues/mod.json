@@ -1,0 +1,15 @@
+{
+  "name": "Sekme renkleri",
+  "description": "Her sekme, sitenin ikonundan (olmazsa alan adından) türetilen kendi rengiyle boyanır: sekmenin zemini ve alt çizgisi, Ada'daki yıldızlar ve Dock sekmeleri. Yoğunluk kaydırıcıyla ayarlanır; istersen yalnız etkin sekme renklenir. Davranış değiştiren, Rigel ile gelen sınırlı bir betik çalıştırır.",
+  "author": "Rigel",
+  "version": "1.0.0",
+  "target": "chrome",
+  "license": "MPL-2.0",
+  "script": true,
+  "prefs": [
+    { "key": "intensity", "label": "Yoğunluk", "type": "range", "min": 5, "max": 100, "step": 1, "unit": "", "default": 55 },
+    { "key": "active-only", "label": "Yalnız etkin sekme renklensin", "type": "checkbox", "default": false },
+    { "key": "source", "label": "Renk kaynağı", "type": "dropdown", "default": "favicon",
+      "options": [ { "value": "favicon", "label": "Site ikonu (olmazsa alan adı)" }, { "value": "domain", "label": "Yalnız alan adı" } ] }
+  ]
+}

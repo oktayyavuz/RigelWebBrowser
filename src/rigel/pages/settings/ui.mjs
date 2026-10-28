@@ -304,3 +304,36 @@ export async function engineIcon(engine) {
     return null;
   }
 }
+
+// ---- Görünüm stüdyosu denetimleri ----
+/** Kaydırıcı + değer göstergesi. opts: min, max, step, unit, format(v), get(), set(v) (her input'ta), names. */
+export function range({ min, max, step = 1, unit = "", format, get, set, names = [] }) {
+  const input = h("input", { type: "range", min: String(min), max: String(max), step: String(step), class: "rng" });
+  const out = h("output", { class: "rngval" });
+  const show = v => (out.textContent = format ? format(Number(v)) : `${v}${unit}`);
+  input.addEventListener("input", () => { show(input.value); set(Number(input.value)); });
+  const refresh = () => {
+    if (document.activeElement === input) return;
+    input.value = String(get());
+    show(input.value);
+  };
+  refresh();
+  watch(names, refresh);
+  return h("div", { class: "rngbox" }, input, out);
+}
+
+/** Renk seçici (#rrggbb). opts: get(), set(v), names. */
+export function colorInput({ get, set, names = [], title = "" }) {
+  const input = h("input", { type: "color", class: "clr", title });
+  input.addEventListener("input", () => set(input.value));
+  const refresh = () => (input.value = get() || "#5fa9dd");
+  refresh();
+  watch(names, refresh);
+  return input;
+}
+
+/** Fonksiyonu son çağrıdan `ms` sonra bir kez çalıştırır. */
+export function debounce(fn, ms = 60) {
+  let t = 0;
+  return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); };
+}

@@ -124,3 +124,7 @@ pref("rigel.groups.collapseOnSwitch", false);
 // Arayüz: alan seçici (auto|icon|full|hidden) ve sade adres görünümü
 pref("rigel.spaces.switcher", "auto");
 pref("rigel.urlbar.simple", true);
+// Görünüm stüdyosu: {} = varsayılan görünüm.
+pref("rigel.look", "{}");
+pref("rigel.look.packs", "[]");
+pref("rigel.look.undo", "");

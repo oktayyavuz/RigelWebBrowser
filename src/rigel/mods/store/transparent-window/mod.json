@@ -1,0 +1,14 @@
+{
+  "name": "Saydam pencere",
+  "description": "Gerçek pencere saydamlığı: pencerenin arka planı, şeritler ve (isteğe bağlı) sayfa da saydamlaşır, masaüstü arkadan görünür. KDE'de bulanıklık için Bulanıklık efekti açık olmalı ve Rigel penceresine \"Bulanıklığı zorla\" pencere kuralı verilmelidir; olmazsa yarı saydam renkli katman görünür. Mod açılınca Firefox'un saydam pencere tercihlerini ayarlar, kapanınca eski değerlerine döndürür. Gerekirse yeniden başlatmanız istenir. Davranış değiştiren, Rigel ile gelen sınırlı bir betik çalıştırır. Klasik, Ada, Dock ve Komuta'da çalışır.",
+  "author": "Rigel",
+  "version": "1.0.0",
+  "target": "chrome",
+  "license": "MPL-2.0",
+  "script": true,
+  "layouts": ["klasik", "ada", "dock", "komuta"],
+  "prefs": [
+    { "key": "clear", "label": "Arayüz saydamlığı", "type": "range", "min": 0, "max": 85, "step": 1, "unit": "", "default": 45 },
+    { "key": "page", "label": "Sayfa arka planı da saydam olsun", "type": "checkbox", "default": false }
+  ]
+}

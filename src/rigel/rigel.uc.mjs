@@ -25,7 +25,7 @@ const root = document.documentElement;
 const utils = window.windowUtils;
 const Rigel = (window.Rigel ??= {});
 
-for (const sheet of ["theme/tokens.css", "theme/motion.css", "theme/focus.css", "theme/panels.css", "layouts/base.css"]) {
+for (const sheet of ["theme/tokens.css", "theme/motion.css", "theme/focus.css", "theme/panels.css", "layouts/base.css", "theme/look.css"]) {
   utils.loadSheetUsingURIString(BASE + sheet, utils.AUTHOR_SHEET);
 }
 Services.prefs.getDefaultBranch("").setStringPref("rigel.theme", "dark");
@@ -36,6 +36,10 @@ Services.prefs.getDefaultBranch("").setStringPref("rigel.accent", "rigel");
   root.setAttribute("data-rigel-theme", t === "light" ? "light" : t === "system" && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
   root.setAttribute("data-rigel-accent", Services.prefs.getStringPref("rigel.accent", "rigel"));
   import(BASE + "theme/theme.mjs").then(m => m.init(window)).catch(e => dump(`[rigel] tema yüklenemedi: ${e}\n${e.stack}\n`));
+  import(BASE + "theme/look.mjs").then(m => {
+    const reg = m.init(window);
+    whenStartedUp().then(reg);
+  }).catch(e => dump(`[rigel] görünüm yüklenemedi: ${e}\n${e.stack}\n`));
   import(BASE + "theme/panels.mjs").then(m => m.init(window)).catch(e => dump(`[rigel] paneller yüklenemedi: ${e}\n${e.stack}\n`));
 }
 

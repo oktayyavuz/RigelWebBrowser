@@ -60,7 +60,7 @@
   align-items: center;
   gap: 4px;
   padding: 0 8px;
-  border-radius: 16px;
+  border-radius: calc(var(--rigel-radius, 9px) * 16 / 9);
   background: var(--surface);
   border: 1px solid var(--border-2);
   -moz-window-dragging: no-drag;
@@ -76,7 +76,7 @@
   .rigel-dtab {
     height: 38px;
     min-width: 38px;
-    border-radius: 11px;
+    border-radius: calc(var(--rigel-radius, 9px) * 11 / 9);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -168,12 +168,12 @@
     padding: 0 10px 0 11px;
     margin-inline: 2px -3px;
     border-inline-end: none;
-    border-radius: 11px 0 0 11px;
+    border-radius: calc(var(--rigel-radius, 9px) * 11 / 9) 0 0 calc(var(--rigel-radius, 9px) * 11 / 9);
   }
   .rigel-gchip.solo {
     margin-inline-end: 2px;
     border-inline-end: 1.5px solid color-mix(in srgb, var(--rigel-grp) 62%, transparent);
-    border-radius: 11px;
+    border-radius: calc(var(--rigel-radius, 9px) * 11 / 9);
   }
   .rigel-dtab.gm {
     margin-inline-end: -3px;
@@ -189,7 +189,7 @@
   }
   .rigel-dtab.gm.ge {
     margin-inline-end: 2px;
-    border-radius: 0 11px 11px 0;
+    border-radius: 0 calc(var(--rigel-radius, 9px) * 11 / 9) calc(var(--rigel-radius, 9px) * 11 / 9) 0;
     border-inline-end: 1.5px solid color-mix(in srgb, var(--rigel-grp) 62%, transparent);
   }
   .rigel-pinsep {
@@ -210,7 +210,7 @@
     height: 36px;
     width: 250px;
     flex: none;
-    border-radius: 10px;
+    border-radius: calc(var(--rigel-radius, 9px) * 10 / 9);
     background: var(--bg);
     border: 1px solid var(--border);
     display: flex;
@@ -245,6 +245,6 @@
   .rigel-tool {
     width: 34px;
     height: 34px;
-    border-radius: 9px;
+    border-radius: var(--rigel-radius, 9px);
   }
 }

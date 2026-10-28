@@ -1,0 +1,15 @@
+/* Görünüm stüdyosu: düzenden bağımsız chrome kuralları (theme/look.mjs öznitelikleri yazar).
+   Düzene özgü olanlar (arka plan, cam, sekme biçimi) layouts/*.css içinde. */
+:root[rigel-look-font] :is(#navigator-toolbox, #sidebar-container, #urlbar-input, #rigel-urlbar-simple, #PersonalToolbar) {
+  font-family: var(--font) !important;
+}
+:root[rigel-look-fs] :is(#navigator-toolbox, #sidebar-container) {
+  font-size: var(--rigel-font-size) !important;
+}
+:root[rigel-look-fs] #urlbar-input {
+  font-size: var(--rigel-font-size) !important;
+}
+/* Arka plan ya da cam etkinken pencere zemini (düzenler kendi yüzeylerini saydamlaştırır). */
+:root[rigel-look-bg] {
+  background: var(--rigel-bg-image), var(--bg) !important;
+}

@@ -419,6 +419,133 @@
         "mod.json": "focus-mode/mod.json",
         "chrome.mjs": "focus-mode/chrome.mjs"
       }
+    },
+    {
+      "id": "aura",
+      "name": "Aura",
+      "description": "Araç çubukları, seçili sekme ve odaklı adres çubuğu iki renk arasında canlı bir gradyana bürünür; altta ince bir ışık şeridi akar. İstersen renkler otomatik olarak vurgu renginden gelir, istersen iki rengi kendin seçersin. Açı ve yoğunluk kaydırıcıyla ayarlanır. Klasik, Ada, Dock ve Komuta'da çalışır.",
+      "author": "Rigel",
+      "version": "1.0.0",
+      "tags": [
+        "renk",
+        "gradyan",
+        "görünüm"
+      ],
+      "target": "chrome",
+      "preview": "aura/preview.png",
+      "license": "MPL-2.0",
+      "files": {
+        "mod.json": "aura/mod.json",
+        "chrome.css": "aura/chrome.css"
+      },
+      "layouts": [
+        "klasik",
+        "ada",
+        "dock",
+        "komuta"
+      ]
+    },
+    {
+      "id": "tab-hues",
+      "name": "Sekme renkleri",
+      "description": "Her sekme, sitenin ikonundan (olmazsa alan adından) türetilen kendi rengiyle boyanır: sekmenin zemini ve alt çizgisi, Ada'daki yıldızlar ve Dock sekmeleri. Yoğunluk kaydırıcıyla ayarlanır; istersen yalnız etkin sekme renklenir. Davranış değiştiren, Rigel ile gelen sınırlı bir betik çalıştırır.",
+      "author": "Rigel",
+      "version": "1.0.0",
+      "tags": [
+        "renk",
+        "sekme",
+        "davranış"
+      ],
+      "target": "chrome",
+      "preview": "tab-hues/preview.png",
+      "license": "MPL-2.0",
+      "files": {
+        "mod.json": "tab-hues/mod.json",
+        "chrome.css": "tab-hues/chrome.css",
+        "chrome.mjs": "tab-hues/chrome.mjs"
+      }
+    },
+    {
+      "id": "lively-ui",
+      "name": "Canlı arayüz",
+      "description": "Arayüze yay gibi sıçrayan, yumuşak animasyonlar katar: sekmeler büyüyerek açılır ve küçülerek kapanır, düğmeler üzerine gelince kabarır ve basınca çöker, menüler ve paletle yan panel açılırken hafifçe sıçrar, sekme değişince sayfa yumuşakça belirir. Hız ve sıçrama gücü kaydırıcıyla ayarlanır. Yalnız transform ve opacity kullanır; sistem \"hareketi azalt\" dediğinde kapanır. Her düzende çalışır.",
+      "author": "Rigel",
+      "version": "1.0.0",
+      "tags": [
+        "animasyon",
+        "hareket"
+      ],
+      "target": "chrome",
+      "preview": "lively-ui/preview.png",
+      "license": "MPL-2.0",
+      "files": {
+        "mod.json": "lively-ui/mod.json",
+        "chrome.css": "lively-ui/chrome.css"
+      }
+    },
+    {
+      "id": "breathing-accent",
+      "name": "Nefes alan vurgu",
+      "description": "Etkin sekme (Ada'da yıldız, Dock'ta sekme düğmesi), odaklı adres çubuğu ve palet etrafında yavaşça nabız gibi atan bir parıltı olur. Sayfa yüklenen sekmede ışık çizgisi soldan sağa akar. Renk vurgudan gelebilir ya da seçilir; hız ve parıltı kaydırıcıyla ayarlanır. Yalnız filter, transform ve opacity kullanır; \"hareketi azalt\" iken yalnız sabit bir parıltı kalır.",
+      "author": "Rigel",
+      "version": "1.0.0",
+      "tags": [
+        "animasyon",
+        "vurgu",
+        "parıltı"
+      ],
+      "target": "chrome",
+      "preview": "breathing-accent/preview.png",
+      "license": "MPL-2.0",
+      "files": {
+        "mod.json": "breathing-accent/mod.json",
+        "chrome.css": "breathing-accent/chrome.css"
+      }
+    },
+    {
+      "id": "transparent-window",
+      "name": "Saydam pencere",
+      "description": "Gerçek pencere saydamlığı: pencerenin arka planı, şeritler ve (isteğe bağlı) sayfa da saydamlaşır, masaüstü arkadan görünür. KDE'de bulanıklık için Bulanıklık efekti açık olmalı ve Rigel penceresine \"Bulanıklığı zorla\" pencere kuralı verilmelidir; olmazsa yarı saydam renkli katman görünür. Mod açılınca Firefox'un saydam pencere tercihlerini ayarlar, kapanınca eski değerlerine döndürür. Gerekirse yeniden başlatmanız istenir. Davranış değiştiren, Rigel ile gelen sınırlı bir betik çalıştırır. Klasik, Ada, Dock ve Komuta'da çalışır.",
+      "author": "Rigel",
+      "version": "1.0.0",
+      "tags": [
+        "şeffaflık",
+        "pencere",
+        "davranış"
+      ],
+      "target": "chrome",
+      "preview": "transparent-window/preview.png",
+      "license": "MPL-2.0",
+      "files": {
+        "mod.json": "transparent-window/mod.json",
+        "chrome.css": "transparent-window/chrome.css",
+        "chrome.mjs": "transparent-window/chrome.mjs"
+      },
+      "layouts": [
+        "klasik",
+        "ada",
+        "dock",
+        "komuta"
+      ]
+    },
+    {
+      "id": "frosted-panels",
+      "name": "Buzlu paneller",
+      "description": "Komut paleti, çekmeceler, Rigel menüleri, bildirimler, bul çubuğu ve adres önerileri buzlu cama döner: yarı saydam, arkasındaki sayfa bulanık görünür, istediğin ton rengiyle boyanır. Açılır menü ve paneller (ayrı pencere oldukları için) yalnız yarı saydam renk alır. Saydamlık, bulanıklık, ton rengi ve ton gücü ayarlanır. Her düzende çalışır.",
+      "author": "Rigel",
+      "version": "1.0.0",
+      "tags": [
+        "şeffaflık",
+        "cam",
+        "panel"
+      ],
+      "target": "chrome",
+      "preview": "frosted-panels/preview.png",
+      "license": "MPL-2.0",
+      "files": {
+        "mod.json": "frosted-panels/mod.json",
+        "chrome.css": "frosted-panels/chrome.css"
+      }
     }
   ]
 }

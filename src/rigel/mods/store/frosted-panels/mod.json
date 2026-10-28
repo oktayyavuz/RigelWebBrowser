@@ -1,0 +1,14 @@
+{
+  "name": "Buzlu paneller",
+  "description": "Komut paleti, çekmeceler, Rigel menüleri, bildirimler, bul çubuğu ve adres önerileri buzlu cama döner: yarı saydam, arkasındaki sayfa bulanık görünür, istediğin ton rengiyle boyanır. Açılır menü ve paneller (ayrı pencere oldukları için) yalnız yarı saydam renk alır. Saydamlık, bulanıklık, ton rengi ve ton gücü ayarlanır. Her düzende çalışır.",
+  "author": "Rigel",
+  "version": "1.0.0",
+  "target": "chrome",
+  "license": "MPL-2.0",
+  "prefs": [
+    { "key": "opacity", "label": "Doluluk (düşük = daha saydam)", "type": "range", "min": 15, "max": 95, "step": 1, "unit": "", "default": 55 },
+    { "key": "blur", "label": "Bulanıklık", "type": "range", "min": 0, "max": 48, "step": 1, "unit": "px", "default": 24 },
+    { "key": "tint", "label": "Ton rengi", "type": "color", "default": "#5b6bd6" },
+    { "key": "tone", "label": "Ton gücü", "type": "range", "min": 0, "max": 80, "step": 1, "unit": "", "default": 35 }
+  ]
+}

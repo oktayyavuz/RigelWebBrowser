@@ -1,0 +1,58 @@
+/* Canlı arayüz — Rigel modu. Yalnız transform/opacity. Ayarlar: speed (40-250, % hız), bounce (0-100, sıçrama).
+   Sistem "hareketi azalt" derse hiçbir şey eklenmez. */
+@media (prefers-reduced-motion: no-preference) {
+  :root:root:root {
+    --lv-d: calc(260ms * 100 / var(--rigel-mod-lively-ui-speed, 100));
+    --lv-o: calc(var(--rigel-mod-lively-ui-bounce, 55) * 0.0018);
+    --lv-ease: cubic-bezier(0.3, calc(1 + var(--rigel-mod-lively-ui-bounce, 55) * 0.014), 0.5, 1);
+  }
+  @keyframes lv-tab-in {
+    0% { opacity: 0; transform: scale(0.5) translateY(9px); }
+    55% { opacity: 1; transform: scale(calc(1.02 + var(--lv-o) * 1.3)) translateY(-1px); }
+    100% { opacity: 1; transform: none; }
+  }
+  @keyframes lv-tab-out { to { opacity: 0; transform: scale(0.6) translateY(8px); } }
+  @keyframes lv-pop {
+    0% { opacity: 0; transform: translateY(-10px) scale(0.92); }
+    55% { opacity: 1; transform: translateY(1px) scale(calc(1.01 + var(--lv-o) * 0.9)); }
+    100% { opacity: 1; transform: none; }
+  }
+  @keyframes lv-page-in {
+    0% { opacity: 0.0; transform: translateY(12px) scale(0.985); }
+    60% { opacity: 1; transform: translateY(calc(var(--lv-o) * -8px)) scale(1); }
+    100% { opacity: 1; transform: none; }
+  }
+
+  /* Sekmeler: açılış ve kapanış */
+  :root:root:root .tabbrowser-tab:not([pinned]) > .tab-stack { animation: lv-tab-in calc(var(--lv-d) * 1.5) var(--lv-ease) !important; }
+  :root:root:root .tabbrowser-tab[closing] > .tab-stack { animation: lv-tab-out calc(var(--lv-d) * 0.7) ease-in forwards !important; }
+
+  /* Düğmeler: hover'da kabarır, basınca çöker (yaylı geçiş) */
+  :root:root:root :is(toolbarbutton.toolbarbutton-1, .tabs-newtab-button, .tab-close-button, .rigel-star, .rigel-dtab, .rigel-island, .rigel-identity, .rigel-ibtn, #rigel-spaces .rigel-space) {
+    transition: transform var(--lv-d) var(--lv-ease), background-color 120ms ease !important;
+  }
+  :root:root:root :is(toolbarbutton.toolbarbutton-1, .tabs-newtab-button, .tab-close-button, .rigel-star, .rigel-dtab, .rigel-ibtn):hover:not([disabled]) {
+    transform: scale(calc(1.1 + var(--lv-o))) !important;
+  }
+  :root:root:root :is(.rigel-island, .rigel-identity, #rigel-spaces .rigel-space):hover { transform: scale(calc(1.03 + var(--lv-o) * 0.4)) !important; }
+  :root:root:root :is(toolbarbutton.toolbarbutton-1, .tabs-newtab-button, .tab-close-button, .rigel-star, .rigel-dtab, .rigel-island, .rigel-identity, .rigel-ibtn):active:not([disabled]) {
+    transform: scale(0.86) !important;
+    transition-duration: 80ms !important;
+  }
+  :root:root:root .tabbrowser-tab:not([pinned]) { transition: transform var(--lv-d) var(--lv-ease) !important; }
+  :root:root:root .tabbrowser-tab:not([selected], [pinned]):hover > .tab-stack { transform: translateY(-1px) scale(calc(1.015 + var(--lv-o) * 0.2)); }
+  :root:root:root .tabbrowser-tab > .tab-stack { transition: transform var(--lv-d) var(--lv-ease); }
+
+  /* Menü ve paneller (açılır pencereler) */
+  :root:root:root :is(menupopup, panel)::part(content) { animation: lv-pop var(--lv-d) var(--lv-ease) !important; transform-origin: top center; }
+  :root:root:root .panel-arrowcontent { animation: lv-pop var(--lv-d) var(--lv-ease) !important; transform-origin: top center; }
+  /* Rigel palet, menü, çekmece, bildirim */
+  :root:root:root #rigel-palette:not([hidden]) > .rgl-pal-card { animation: lv-pop calc(var(--lv-d) * 1.2) var(--lv-ease) !important; transition: none !important; }
+  :root:root:root .rgl-menu { animation: lv-pop var(--lv-d) var(--lv-ease) !important; transform-origin: top left; }
+  :root:root:root #rigel-toast > * { animation: lv-pop var(--lv-d) var(--lv-ease) !important; }
+  :root:root:root #rigel-drawer > .rgl-drawer { transition: transform calc(var(--lv-d) * 1.6) var(--lv-ease) !important; }
+  :root:root:root findbar:not([hidden]) { animation: lv-pop var(--lv-d) var(--lv-ease) !important; }
+
+  /* Sekme değişince içerik yumuşakça belirir */
+  :root:root:root:not([inDOMFullscreen]) #tabbrowser-tabpanels .browserContainer { animation: lv-page-in calc(var(--lv-d) * 1.4) var(--lv-ease) !important; }
+}
