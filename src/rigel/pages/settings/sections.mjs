@@ -28,6 +28,21 @@ function gorunum() {
         control: toggle("rigel.compact") }),
       row({ id: "glance", label: "Göz at (Glance)", desc: "Bir bağlantıyı basılı tutup açılan küçük önizleme penceresi.", keywords: "glance göz at önizleme bağlantı peek",
         control: toggle("rigel.glance.enabled") })),
+    card("Araç çubukları",
+      row({ id: "bookmarksBar", label: "Yer imi çubuğu", desc: "Şeridin altında ince satır; Yan Panel'de sayfanın üstünde. Ctrl Shift B ile aç/kapat.", keywords: "yer imi çubuğu bookmarks toolbar sık kullanılanlar favoriler",
+        control: seg([["always", "Her zaman"], ["newtab", "Yalnız yeni sekmede"], ["never", "Hiç"]], {
+          get: () => getPref("browser.toolbars.bookmarks.visibility", "newtab"),
+          set: v => setPref("browser.toolbars.bookmarks.visibility", v),
+          names: ["browser.toolbars.bookmarks.visibility"],
+        }), stack: true }),
+      row({ id: "urlSimple", label: "Sade adres", desc: "Adres çubuğunda yalnız sitenin adı ortada görünür; tıklayınca tam adres açılır.", keywords: "adres çubuğu sade alan adı host url basit ortala urlbar",
+        control: toggle("rigel.urlbar.simple", { get: () => getPref("rigel.urlbar.simple", true) }) }),
+      row({ id: "spaceSwitcher", label: "Alan seçici", desc: "Otomatik: tek alan varken gizli, birden çoksa yalnız simge. Gizliyken de Ctrl Alt 1…9 ve palet çalışır.", keywords: "alan workspace seçici space kişisel simge zen",
+        control: seg([["auto", "Otomatik"], ["icon", "Simge"], ["full", "Simge ve ad"], ["hidden", "Gizli"]], {
+          get: () => getPref("rigel.spaces.switcher", "auto"),
+          set: v => setPref("rigel.spaces.switcher", v),
+          names: ["rigel.spaces.switcher"],
+        }), stack: true })),
   ];
 }
 

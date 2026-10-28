@@ -147,9 +147,9 @@
     {
       "id": "bookmark-bar",
       "name": "Yer imi çubuğu",
-      "description": "Rigel'in gizlediği yer imi çubuğunu Klasik ve Yan Panel'de geri getirir (çubuğu Ctrl+Shift+B ile aç/kapat): hap biçimli düğmeler, ortalama, yalnız simge ya da yalnız ad, ve yer kaplamadan üstüne gelince açılma.",
+      "description": "Rigel'in yer imi çubuğunu (Ctrl+Shift+B ile aç/kapat) biçimlendirir: hap biçimli düğmeler, ortalama, yalnız simge ya da yalnız ad, ve yer kaplamadan üstüne gelince açılma.",
       "author": "n7itro",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "tags": [
         "yer imleri",
         "zen"
@@ -187,10 +187,10 @@
     },
     {
       "id": "zen-content",
-      "name": "Yüzen sayfa kartı",
-      "description": "Web sayfası kenarlardan boşluklu, yuvarlak köşeli ve gölgeli bir kart olarak yüzer; arkası arayüz rengiyle dolar. Klasik'te araç çubuğuyla bütünleşir. İsteğe bağlı: arkada vurgu renginde ışıltı.",
+      "name": "Yüzen sayfa",
+      "description": "Web sayfası kenarlardan boşluklu, yuvarlak köşeli, gölgeli bir kart olarak yüzer (Zen/Arc hissi); arkası arayüz renginde dolar. Köşe yarıçapı, kenar boşluğu ve gölge gücü kaydırıcıyla, çerçeve rengi renk seçiciyle ayarlanır. Bütün düzenlerde çalışır.",
       "author": "Rigel",
-      "version": "2.0.0",
+      "version": "3.0.0",
       "tags": [
         "görünüm",
         "içerik"
@@ -376,6 +376,49 @@
         "chrome.css": "one-liner/chrome.css"
       },
       "license": "MPL-2.0"
+    },
+    {
+      "id": "glass-window",
+      "name": "Cam pencere",
+      "description": "Sekme şeridi ve araç çubuğu buzlu cama döner: renk tonlu, yarı saydam, üstte ışık parıltısı. \"Sayfa çubukların arkasından aksın\" açılırsa şeritler sayfanın üstüne biner ve sayfa camın ardında bulanık görünür. Ton yoğunluğu, bulanıklık ve ton rengi kaydırıcı ve renk seçiciyle ayarlanır. Klasik, Ada, Dock ve Komuta'da çalışır.",
+      "author": "Rigel",
+      "version": "1.0.1",
+      "tags": [
+        "görünüm",
+        "cam"
+      ],
+      "target": "chrome",
+      "preview": "glass-window/preview.png",
+      "license": "MPL-2.0",
+      "files": {
+        "mod.json": "glass-window/mod.json",
+        "chrome.css": "glass-window/chrome.css"
+      },
+      "layouts": [
+        "klasik",
+        "ada",
+        "dock",
+        "komuta"
+      ]
+    },
+    {
+      "id": "focus-mode",
+      "name": "Odak modu",
+      "description": "Bir kısayolla (varsayılan Ctrl+Alt+F), araç çubuğu, sekmeler, Dock ve yan panel dahil bütün arayüz gizlenir; sayfa pencereyi doldurur. İmleci ekranın üst (Dock'ta alt, Yan Panel'de sol) kenarına götürünce arayüz geçici görünür. Komut paletinde ve araç çubuğunda da düğmesi var. Davranış değiştiren, Rigel ile gelen sınırlı bir betik çalıştırır.",
+      "author": "Rigel",
+      "version": "1.0.0",
+      "tags": [
+        "davranış",
+        "odak",
+        "kısayol"
+      ],
+      "target": "chrome",
+      "preview": "focus-mode/preview.png",
+      "license": "MPL-2.0",
+      "files": {
+        "mod.json": "focus-mode/mod.json",
+        "chrome.mjs": "focus-mode/chrome.mjs"
+      }
     }
   ]
 }

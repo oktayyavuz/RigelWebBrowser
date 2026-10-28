@@ -1,0 +1,40 @@
+/* Cam pencere — Rigel modu */
+/* Şeritler yarı saydam + bulanık (backdrop-filter). "overlap" açıkken araç kutusunun yüksekliği 0 olur ve sayfa pencerenin
+   üst kenarından başlar: şeritler sayfanın üstüne biner, sayfa camın arkasında bulanık görünür.
+   Ayarlar: opacity (0-100, ton yoğunluğu), blur (px), tint (renk), overlap. `!important` Rigel'in kurallarını user katmanından yener. */
+:root:root:root[data-rigel-layout]:not([inDOMFullscreen]) {
+  --glass-tint: color-mix(in srgb, var(--rigel-mod-glass-window-tint, #4a62b8) calc(var(--rigel-mod-glass-window-opacity, 55) * 1%), transparent);
+  --glass-sheen: linear-gradient(180deg, color-mix(in srgb, white 16%, transparent), color-mix(in srgb, white 2%, transparent) 70%);
+  --glass-edge: color-mix(in srgb, white 14%, transparent);
+}
+:root:root:root[data-rigel-layout]:not([inDOMFullscreen]) :is(#TabsToolbar, #nav-bar, #PersonalToolbar, #rigel-ada, #rigel-docktop, #rigel-komuta, #rigel-dock),
+:root:root:root[data-rigel-layout]:not([inDOMFullscreen]) #navigator-toolbox {
+  background: var(--glass-sheen), var(--glass-tint) !important;
+  -webkit-backdrop-filter: blur(var(--rigel-mod-glass-window-blur, 18px)) saturate(1.6) !important;
+  backdrop-filter: blur(var(--rigel-mod-glass-window-blur, 18px)) saturate(1.6) !important;
+}
+/* İç öğeler cama karışsın: kendi dolguları kalkar */
+:root:root:root[data-rigel-layout]:not([inDOMFullscreen]) :is(#nav-bar, #TabsToolbar, #rigel-ada, #rigel-docktop, #rigel-komuta) > * { background-color: transparent !important; }
+:root:root:root[data-rigel-layout]:not([inDOMFullscreen]) #navigator-toolbox { border-bottom: 1px solid var(--glass-edge) !important; box-shadow: 0 6px 26px rgba(0, 0, 0, 0.28) !important; }
+:root:root:root[data-rigel-layout]:not([inDOMFullscreen]) :is(#nav-bar, #TabsToolbar, #rigel-ada, #rigel-docktop, #rigel-komuta) { border-color: var(--glass-edge) !important; }
+/* Sekme ve adres çubuğu da cam: seçili sekme biraz daha belirgin */
+:root:root:root[data-rigel-layout]:not([inDOMFullscreen]) #urlbar-background,
+:root:root:root[data-rigel-layout]:not([inDOMFullscreen]) #urlbar:not([focused]) .urlbar-background {
+  background: color-mix(in srgb, white 14%, transparent) !important;
+  border: 1px solid var(--glass-edge) !important;
+  box-shadow: none !important;
+}
+:root:root:root[data-rigel-layout]:not([inDOMFullscreen]) .tabbrowser-tab:is([selected], [multiselected]) .tab-background {
+  background: color-mix(in srgb, white 22%, transparent) !important;
+  border: 1px solid var(--glass-edge) !important;
+}
+:root:root:root[data-rigel-layout]:not([inDOMFullscreen]) .tabbrowser-tab:not([selected]):hover .tab-background { background: color-mix(in srgb, white 10%, transparent) !important; }
+:root:root:root[data-rigel-layout]:not([inDOMFullscreen]) :is(.rigel-island, .rigel-star, .rigel-identity) { background: color-mix(in srgb, white 13%, transparent) !important; border-color: var(--glass-edge) !important; }
+/* Sayfayı camın arkasına al: araç kutusu akıştan çıkıp sayfanın üstüne biner */
+:root:root:root[data-rigel-layout][rigel-mod-glass-window-overlap]:not([inDOMFullscreen]) #navigator-toolbox {
+  position: absolute !important;
+  top: 0 !important;
+  inset-inline: 0 !important;
+  z-index: 5 !important;
+}
+:root:root:root[data-rigel-layout][rigel-mod-glass-window-overlap]:not([inDOMFullscreen]) #browser { margin-top: 0 !important; }

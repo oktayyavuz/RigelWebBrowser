@@ -53,7 +53,7 @@ pref("sidebar.position_start", true);
 pref("sidebar.animation.enabled", false);
 pref("sidebar.verticalTabs.dragToPinPromo.dismissed", true);
 pref("sidebar.new-sidebar.has-used", true);
-pref("browser.toolbars.bookmarks.visibility", "never");
+pref("browser.toolbars.bookmarks.visibility", "newtab");
 // Çerçevesiz pencere: sistem başlık çubuğu yok, pencere düğmelerini Rigel çizer
 pref("browser.tabs.inTitlebar", 1);
 pref("browser.tabs.hoverPreview.enabled", false);
@@ -121,3 +121,6 @@ pref("media.videocontrols.picture-in-picture.enable-when-switching-tabs.enabled"
 // Sekme grupları (K2): etiketler ve "sekme seçince diğer grupları daralt"
 pref("rigel.groups.showLabels", true);
 pref("rigel.groups.collapseOnSwitch", false);
+// Arayüz: alan seçici (auto|icon|full|hidden) ve sade adres görünümü
+pref("rigel.spaces.switcher", "auto");
+pref("rigel.urlbar.simple", true);

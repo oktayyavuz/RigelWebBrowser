@@ -1,12 +1,13 @@
 /* Yüzen sayfa kartı — Rigel modu */
 /* Web sayfası kenarlardan boşluklu, yuvarlak köşeli, gölgeli bir kart olarak yüzer; arkası arayüz rengiyle dolar.
    Bütün düzenlerde çalışır. Klasik'te çerçeve araç çubuğunun rengini alır, araya çizgi girmez.
-   Ayarlar: radius, gap, shadow, glow (arkada vurgu ışıltısı). */
+   Ayarlar: radius, gap (px kaydırıcı), shadow (0-100 gölge gücü), frame + custom-frame (çerçeve rengi), glow (arkada vurgu ışıltısı). */
 :root:root:root[data-rigel-layout] {
-  --zc-gap: var(--rigel-mod-zen-content-gap, 10px);
+  --zc-gap: var(--rigel-mod-zen-content-gap, 12px);
   --zc-frame: var(--bar);
 }
 :root:root:root[data-rigel-layout="klasik"] { --zc-frame: var(--surface); }
+:root:root:root[data-rigel-layout][rigel-mod-zen-content-custom-frame] { --zc-frame: var(--rigel-mod-zen-content-frame, #1c2030); }
 :root:root:root[data-rigel-layout="klasik"] #nav-bar { border-bottom-color: transparent !important; }
 :root:root:root[data-rigel-layout] #browser,
 :root:root:root[data-rigel-layout] #tabbrowser-tabbox,
@@ -32,12 +33,13 @@
 :root:root:root[data-rigel-layout][rigel-mod-zen-content-glow] #tabbrowser-tabpanels { background: transparent !important; }
 :root:root:root[data-rigel-layout] #tabbrowser-tabpanels .browserContainer,
 :root:root:root[data-rigel-layout] #tabbrowser-tabpanels .browserStack {
-  border-radius: var(--rigel-mod-zen-content-radius, 14px) !important;
+  border-radius: var(--rigel-mod-zen-content-radius, 16px) !important;
   overflow: hidden !important;
 }
 :root:root:root[data-rigel-layout] #tabbrowser-tabpanels .browserStack { background: var(--bg) !important; }
-:root:root:root[data-rigel-layout][rigel-mod-zen-content-shadow] #tabbrowser-tabpanels .browserContainer {
-  box-shadow: 0 0 0 1px var(--border-2), 0 10px 32px rgba(0, 0, 0, 0.38) !important;
+:root:root:root[data-rigel-layout] #tabbrowser-tabpanels .browserContainer {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--border-2) calc(var(--rigel-mod-zen-content-shadow, 60) * 1%), transparent),
+    0 calc(var(--rigel-mod-zen-content-shadow, 60) * 0.18px) calc(var(--rigel-mod-zen-content-shadow, 60) * 0.55px) rgba(0, 0, 0, calc(var(--rigel-mod-zen-content-shadow, 60) / 100 * 0.62)) !important;
 }
 :root:root:root[data-rigel-layout][inDOMFullscreen] #tabbrowser-tabbox { padding: 0 !important; }
 :root:root:root[data-rigel-layout][inDOMFullscreen] #tabbrowser-tabpanels :is(.browserContainer, .browserStack) {

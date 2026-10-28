@@ -1,9 +1,10 @@
 // Mod mağazası: katalog (yerleşik + uzak), arama, etiket süzgeçleri, kart ızgarası, ayrıntı paneli,
 // kur / güncelle / kaldır ve "bağlantıdan kur". Yönetici: mods/manager.sys.mjs, katalog: mods/store.sys.mjs.
 import { h, icon, logo, watch, onDispose, toggle, notify, chromeWin } from "../settings/ui.mjs";
-import { prefControl } from "../settings/mods.mjs";
+import { prefControl, modToggle, layoutBadges, LAYOUT_LABELS } from "../settings/mods.mjs";
 
 const { Mods } = ChromeUtils.importESModule("chrome://userscripts/content/mods/manager.sys.mjs");
+const { confirmScript } = ChromeUtils.importESModule("chrome://userscripts/content/mods/consent.sys.mjs");
 const Store = ChromeUtils.importESModule("chrome://userscripts/content/mods/store.sys.mjs");
 
 const TARGETS = { chrome: "Arayüz", content: "Web sayfaları", both: "Arayüz + Web" };
@@ -51,7 +52,10 @@ async function install(e) {
   state.busy.add(e.id);
   render();
   try {
-    const r = await Mods.installFromCatalog(e);
+    // Uzak/bağlantıdan gelen betik: önce "kod çalıştırır" onayı. Paketle gelen katalog güvenilirdir.
+    const needsOk = e.script && e.origin !== "bundled";
+    if (needsOk && !(await confirmScript(chromeWin(), e))) throw new Error("Kod çalıştırma izni verilmedi.");
+    const r = await Mods.installFromCatalog(e, { allowScript: needsOk });
     notify(r.updated ? `"${e.name}" güncellendi` : `"${e.name}" kuruldu ve açıldı`);
     if (r.notes?.length) notify(r.notes[0], true);
   } catch (err) {
@@ -84,6 +88,8 @@ function preview(e, cls = "pv") {
   return box;
 }
 const targetBadge = e => h("span", { class: "tbadge " + e.target, text: TARGETS[e.target] });
+// Çalıştığı düzenler ve "Kod çalıştırır" rozeti (betikli modlar).
+
 // Uyarlanan modların kaynağı: "Kaynak: Zen mod mağazası — yazar (lisans)".
 function sourceName(url) {
   if (!url) return "";
@@ -128,7 +134,7 @@ function card(e) {
     h("div", { class: "body", onclick: open },
       h("h3", { text: e.name }), h("span", { class: "by", text: by }), sourceLine(e), h("p", { text: e.description })),
     h("div", { class: "foot" },
-      h("span", { class: "badges" }, targetBadge(e), e.origin === "remote" && h("span", { class: "tbadge dim", text: "Uzak" })),
+      h("span", { class: "badges" }, targetBadge(e), layoutBadges(e), e.origin === "remote" && h("span", { class: "tbadge dim", text: "Uzak" })),
       actionButton(e)));
   return c;
 }
@@ -216,11 +222,14 @@ function renderDetail() {
         e.upstream && e.upstream !== e.homepage && h("a", { href: e.upstream, onclick: ev => { ev.preventDefault(); chromeWin()?.openTrustedLinkIn?.(e.upstream, "tab"); } }, "Özgün mod")),
       sourceLine(e, "src big")),
     h("p", { class: "desc", text: e.description }),
+    e.layouts?.length ? h("p", { class: "layoutnote", text: "Yalnız şu düzenlerde çalışır: " + e.layouts.map(l => LAYOUT_LABELS[l] ?? l).join(", ") + "." }) : null,
+    e.script && e.origin !== "bundled" ? h("div", { class: "codewarn", role: "alert" }, h("b", { text: "Bu mod kod çalıştırır." }), " Betiği tarayıcının tam yetkileriyle çalışır. Kurarken onayını isteriz; yalnız yazarına güveniyorsan kur.") : null,
+    e.script && e.origin === "bundled" ? h("p", { class: "layoutnote", text: "Bu mod Rigel ile gelen, sınırlı bir betik çalıştırır (davranış değiştirir)." }) : null,
     e.tags.length && h("div", { class: "badges" }, e.tags.map(t => h("span", { class: "tbadge dim", text: t }))),
     h("div", { class: "acts" }, actionButton(e, { sm: false })),
   ];
   if (st === "installed" || st === "update") {
-    const sw = toggle(null, { get: () => Mods.isEnabled(e.id), set: on => Mods.setEnabled(e.id, on), names: ["rigel.mods.enabled"] });
+    const sw = modToggle(meta);
     sw.setAttribute("aria-label", "Etkin");
     kids.push(h("h4", { text: "Ayarlar" }),
       h("div", { class: "prefs" },

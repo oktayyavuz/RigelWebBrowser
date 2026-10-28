@@ -4,10 +4,11 @@
 // ==/UserScript==
 
 // Yönetici: mods/manager.sys.mjs (tek örnek). Bu dosya her pencerede onu bağlar ve palet komutlarını kaydeder.
-// API: Rigel.mods.list(), .setEnabled(id, bool), .toggle(id), .reload(). Ayrıntı için manager.sys.mjs başlığı.
+// API: Rigel.mods.list(), .setEnabled(id, bool), .toggle(id) (betikli modda onay ister), .reload(). Ayrıntı için manager.sys.mjs başlığı.
 // Tercihler: rigel.mods.enabled, rigel.mods.values, rigel.mods.seeded.
 
 const Rigel = (window.Rigel ??= {});
+const { enableWithConsent } = ChromeUtils.importESModule("chrome://userscripts/content/mods/consent.sys.mjs");
 const { Mods } = ChromeUtils.importESModule("chrome://userscripts/content/mods/manager.sys.mjs");
 
 const STORE_URL = "chrome://rigel/content/store/store.html";
@@ -63,7 +64,7 @@ Rigel.mods = {
   STORE_URL,
   list: () => Mods.list(),
   setEnabled: (id, on) => Mods.setEnabled(id, on),
-  toggle: id => Mods.setEnabled(id, !Mods.isEnabled(id)),
+  toggle: id => enableWithConsent(window, Mods, id, !Mods.isEnabled(id)),
   reload: () => Mods.reload(),
   manager: Mods,
 };
@@ -89,10 +90,9 @@ function syncCommands() {
       label: () => `Mod: ${Mods.get(m.id)?.meta.name ?? m.name} ${Mods.isEnabled(m.id) ? "kapat" : "aç"}`,
       sub: () => (Mods.isEnabled(m.id) ? "açık" : "kapalı"),
       icon: "bolt",
-      run: () => {
+      run: async () => {
         const on = !Mods.isEnabled(m.id);
-        Mods.setEnabled(m.id, on);
-        toast(`${Mods.get(m.id)?.meta.name ?? m.name}: ${on ? "açık" : "kapalı"}`);
+        if (await enableWithConsent(window, Mods, m.id, on)) toast(`${Mods.get(m.id)?.meta.name ?? m.name}: ${on ? "açık" : "kapalı"}`);
       },
     });
   }
@@ -109,6 +109,8 @@ Services.obs.addObserver(listObs, "rigel-mods-list");
 window.addEventListener("unload", () => Services.obs.removeObserver(listObs, "rigel-mods-list"), { once: true });
 
 Mods.attachWindow(window);
+// Davranış modları (chrome.mjs): pencere başına çalışma zamanı. Hata yalıtımlı; bkz. mods/runtime.mjs.
+import("chrome://userscripts/content/mods/runtime.mjs").then(m => m.init(window)).catch(e => console.error("[rigel] mod çalışma zamanı yüklenemedi", e));
 syncCommands();
 window.addEventListener("rigel:components-ready", syncCommands);
 Mods.init().then(syncCommands);

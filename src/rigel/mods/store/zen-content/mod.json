@@ -1,55 +1,51 @@
 {
-  "name": "Yüzen sayfa kartı",
-  "description": "Web sayfası kenarlardan boşluklu, yuvarlak köşeli ve gölgeli bir kart olarak yüzer; arkası arayüz rengiyle dolar. Klasik'te araç çubuğuyla bütünleşir. İsteğe bağlı: arkada vurgu renginde ışıltı.",
+  "name": "Yüzen sayfa",
+  "description": "Web sayfası kenarlardan boşluklu, yuvarlak köşeli, gölgeli bir kart olarak yüzer (Zen/Arc hissi); arkası arayüz renginde dolar. Köşe yarıçapı, kenar boşluğu ve gölge gücü kaydırıcıyla, çerçeve rengi renk seçiciyle ayarlanır. Bütün düzenlerde çalışır.",
   "author": "Rigel",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "target": "chrome",
   "prefs": [
     {
       "key": "radius",
-      "label": "Köşe",
-      "type": "dropdown",
-      "default": "14px",
-      "options": [
-        {
-          "value": "8px",
-          "label": "Hafif"
-        },
-        {
-          "value": "14px",
-          "label": "Orta"
-        },
-        {
-          "value": "20px",
-          "label": "Yuvarlak"
-        }
-      ]
+      "label": "Köşe yarıçapı",
+      "type": "range",
+      "min": 0,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 16
     },
     {
       "key": "gap",
       "label": "Kenar boşluğu",
-      "type": "dropdown",
-      "default": "10px",
-      "options": [
-        {
-          "value": "6px",
-          "label": "Dar"
-        },
-        {
-          "value": "10px",
-          "label": "Orta"
-        },
-        {
-          "value": "16px",
-          "label": "Geniş"
-        }
-      ]
+      "type": "range",
+      "min": 0,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 12
     },
     {
       "key": "shadow",
-      "label": "Gölge",
+      "label": "Gölge gücü",
+      "type": "range",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "",
+      "default": 60
+    },
+    {
+      "key": "frame",
+      "label": "Çerçeve rengi",
+      "type": "color",
+      "default": "#1c2030"
+    },
+    {
+      "key": "custom-frame",
+      "label": "Özel çerçeve rengini kullan",
       "type": "checkbox",
-      "default": true
+      "default": false
     },
     {
       "key": "glow",

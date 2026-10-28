@@ -1,18 +1,20 @@
-/* Chrome'daki tüm köşe yuvarlamalarını kaldırır. :root:root, Rigel'in kendi !important kurallarını geçsin diye. */
+/* Köşe yarıçapı: Chrome'daki tüm köşe yuvarlamalarını tek değere çeker (0 = keskin). Ayar: radius (px), keep-avatars.
+   Mod CSS'i iki katmanda yüklenir; `!important` Rigel'in `#id` + `!important` kurallarını da ezer. */
 :root:root {
-  --tab-border-radius: 0px;
-  --toolbarbutton-border-radius: 0px;
-  --urlbar-border-radius: 0px;
-  --arrowpanel-border-radius: 0px;
-  --rigel-row-radius: 0px;
-  --button-border-radius: 0px;
+  --rg-radius: var(--rigel-mod-rounded-off-radius, 0px);
+  --tab-border-radius: var(--rg-radius) !important;
+  --toolbarbutton-border-radius: var(--rg-radius) !important;
+  --urlbar-border-radius: var(--rg-radius) !important;
+  --arrowpanel-border-radius: var(--rg-radius) !important;
+  --rigel-row-radius: var(--rg-radius) !important;
+  --button-border-radius: var(--rg-radius) !important;
 }
 :root:root *,
 :root:root *::before,
 :root:root *::after {
-  border-radius: 0 !important;
+  border-radius: var(--rigel-mod-rounded-off-radius, 0px) !important;
 }
 /* Onay "true" ise küçük yuvarlak simgeler (favicon noktası, rozet) yuvarlak kalır. */
-:root:root[rigel-mod-rounded-off-keep-avatars] :is(.rgl-dot, .rgl-avatar, .tab-throbber, .tab-icon-image, .rgl-spin, .rgl-fav) {
+:root:root[rigel-mod-rounded-off-keep-avatars] :is(.rgl-dot, .rgl-avatar, .tab-throbber, .tab-icon-image, .rgl-spin, .rgl-fav, .rigel-star, .rigel-badge) {
   border-radius: 50% !important;
 }

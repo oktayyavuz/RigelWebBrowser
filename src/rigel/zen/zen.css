@@ -452,3 +452,22 @@ tab-group[hidden] {
     background-color: color-mix(in srgb, var(--tab-group-color) 70%, transparent) !important;
   }
 }
+
+/* --- Alan seçici görünümü (rigel.spaces.switcher) ------------------------------ */
+#rigel-spaces[hidden],
+.rigel-spacechip[hidden],
+.rigel-spacedots[hidden],
+.rigel-spacesep[hidden] {
+  display: none !important;
+}
+:root[data-rigel-layout="yanpanel"] #rigel-spaces[data-mode="icon"] .rigel-space-list {
+  max-width: 100%;
+}
+/* Yalnız simge: çerçevesiz, araç düğmesi gibi */
+.rigel-spacechip:not([data-kind="ada"], :has(.name)) {
+  justify-content: center;
+  width: var(--rigel-tool-size, 28px);
+  padding: 0;
+  border-color: transparent;
+  border-radius: var(--rigel-radius-sm, 7px);
+}

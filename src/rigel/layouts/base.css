@@ -60,7 +60,6 @@
 
 /* --- Firefox izleri: hiçbir düzende görünmesin ---------------------------------- */
 :root[data-rigel-layout] {
-  #PersonalToolbar,
   #firefox-view-button,
   #alltabs-button,
   #fxa-toolbar-menu-button,
@@ -366,6 +365,137 @@
 .drop-link {
   outline: 2px dashed var(--accent);
   outline-offset: -2px;
+}
+
+/* --- Yer imi çubuğu: Firefox'un #PersonalToolbar'ı, görünürlüğü `collapsed` ile Firefox'ta --------
+   Klasik/Ada/Dock/Komuta: #navigator-toolbox'ta şeridin altında ince satır. Yan Panel: sayfa kartının üstü
+   (shell/bookmarks.mjs taşır). Ölçüler Görünüm stüdyosu için değişkenli. */
+:root[data-rigel-layout] #PersonalToolbar {
+  --rigel-bm-h: var(--rigel-bookmarks-height, 32px);
+  background: var(--bar) !important;
+  color: var(--text) !important;
+  border: none !important;
+  padding: 0 var(--rigel-bookmarks-pad, 10px) !important;
+  font: 12px/1.3 var(--font);
+  --toolbarbutton-border-radius: var(--rigel-pill-radius, 999px);
+  --toolbarbutton-icon-fill: var(--text-dim);
+
+  &:not([collapsed]) {
+    min-height: var(--rigel-bm-h) !important;
+    max-height: var(--rigel-bm-h) !important;
+    border-bottom: 1px solid var(--border) !important;
+  }
+  #PlacesToolbarItems {
+    align-items: center;
+    gap: var(--rigel-bookmarks-gap, 2px);
+  }
+  toolbarbutton.bookmark-item:not(.subviewbutton) {
+    margin: 0 !important;
+    padding: 3px 10px 3px 8px !important;
+    min-height: 24px;
+    border-radius: var(--rigel-pill-radius, 999px) !important;
+    background: transparent !important;
+    color: var(--text-dim) !important;
+    outline: none !important;
+    max-width: 14em;
+    transition: background-color 0.12s, color 0.12s;
+
+    &:hover {
+      background: var(--hover) !important;
+      color: var(--text) !important;
+    }
+    &:hover:active,
+    &[open] {
+      background: var(--active) !important;
+      color: var(--text) !important;
+    }
+    &:focus-visible {
+      outline: 2px solid var(--accent) !important;
+      outline-offset: -2px !important;
+    }
+    > .toolbarbutton-icon {
+      width: 14px !important;
+      height: 14px !important;
+      margin-inline-end: 6px !important;
+    }
+    &[container] > .toolbarbutton-icon {
+      -moz-context-properties: fill;
+      fill: var(--accent) !important;
+    }
+    > .toolbarbutton-text {
+      font: inherit !important;
+    }
+  }
+  /* Taşma » düğmesi ve diğer düğmeler */
+  :is(#PlacesChevron, .toolbarbutton-1) {
+    margin-block: 0 !important;
+    --toolbarbutton-inner-padding: 5px;
+    > :is(.toolbarbutton-icon, .toolbarbutton-badge-stack) {
+      border-radius: var(--rigel-radius-sm, 7px) !important;
+    }
+  }
+  toolbarseparator {
+    padding: 0 6px !important;
+    color: var(--border-2);
+  }
+  #personal-toolbar-empty-description {
+    color: var(--text-faint) !important;
+    margin: 0 4px !important;
+  }
+  #import-button {
+    display: none !important;
+  }
+}
+/* Üst şeridin alt çizgisi çubuğa geçer (çift çizgi olmasın) */
+:root[data-rigel-layout]:has(#navigator-toolbox > #PersonalToolbar:not([collapsed])) {
+  #rigel-ada,
+  #rigel-komuta {
+    border-bottom-color: transparent !important;
+  }
+}
+:root[data-rigel-layout="klasik"] #PersonalToolbar {
+  background: var(--surface) !important;
+}
+:root[data-rigel-layout="klasik"]:has(#PersonalToolbar:not([collapsed])) #nav-bar {
+  border-bottom-color: transparent !important;
+}
+/* Yan Panel: sayfa kartının üst satırı */
+:root[data-rigel-layout="yanpanel"] #tabbrowser-tabbox > #PersonalToolbar {
+  flex: none;
+  background: color-mix(in srgb, var(--surface) 60%, var(--bg)) !important;
+  padding: 0 var(--rigel-bookmarks-pad, 8px) !important;
+}
+/* Sihirbaz (odak modu) ve tam ekranda gizli */
+:root:is([data-rigel-focus], [inDOMFullscreen]) #PersonalToolbar {
+  display: none !important;
+}
+
+/* --- Sade adres görünümü (shell/urlsimple.mjs) ------------------------------------
+   Odak yokken ve sayfanın adresi gösterilirken input görünmez, ortada yalnız alan adı. */
+#rigel-urlbar-simple {
+  display: none;
+}
+:root[data-rigel-layout]:not([data-rigel-urlbar="hidden"]) #urlbar[rigel-simple][pageproxystate="valid"]:not([focused], [usertyping]) {
+  #urlbar-input,
+  .urlbar-input {
+    opacity: 0 !important;
+  }
+  #rigel-urlbar-simple {
+    display: block;
+    position: absolute;
+    inset-block: 0;
+    inset-inline: var(--rigel-urlbar-simple-inset, 44px);
+    align-content: center;
+    text-align: center;
+    z-index: 1;
+    pointer-events: none;
+    color: var(--text);
+    font: 500 13px/1 var(--font);
+    letter-spacing: 0.1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 /* Tam ekran video: Rigel şeritleri gizlenir */

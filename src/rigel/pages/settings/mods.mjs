@@ -3,6 +3,33 @@
 import { h, icon, watch, onDispose, toggle, select, notify, chromeWin, openInTab, getPref, setPref } from "./ui.mjs";
 
 const { Mods } = ChromeUtils.importESModule("chrome://userscripts/content/mods/manager.sys.mjs");
+const { enableWithConsent } = ChromeUtils.importESModule("chrome://userscripts/content/mods/consent.sys.mjs");
+
+export const LAYOUT_LABELS = { ada: "Ada", dock: "Dock", komuta: "Komuta", yanpanel: "Yan Panel", klasik: "Klasik" };
+
+// Kaydırıcı ve renk seçici için küçük stil (settings.css bu dosyanın sahibine ait değil; sayfa başına bir kez eklenir).
+if (!document.getElementById("rigel-modctl-style")) {
+  document.head.append(h("style", { id: "rigel-modctl-style", text: `
+    .modrange-w { display: inline-flex; align-items: center; gap: 10px; min-width: 200px; }
+    .modrange { flex: 1; min-width: 120px; accent-color: var(--accent, #7c9cff); cursor: pointer; }
+    .modrange-v { min-width: 54px; text-align: right; font: 12px var(--mono, monospace); color: var(--text-dim, #aaa); }
+    .modcolor-w { display: inline-flex; align-items: center; gap: 8px; }
+    .modcolor { width: 38px; height: 28px; padding: 0; border: 1px solid var(--border-2, #555); border-radius: 8px; background: none; cursor: pointer; }
+    .modcolor-hex { width: 84px; font: 12px var(--mono, monospace); }
+    .tbadge.layout { background: color-mix(in srgb, var(--accent, #7c9cff) 16%, transparent); }
+    .tbadge.script { background: color-mix(in srgb, var(--danger, #e5484d) 22%, transparent); color: var(--text, #eee); }
+    .moderr { color: var(--danger, #e5484d); font-size: 12px; }
+  ` }));
+}
+
+/** Her çağrıda en fazla her `ms` bir kez (sondaki çağrı kaybolmaz). */
+function throttle(fn, ms = 45) {
+  let t = null; let last = 0; let pending;
+  const run = () => { t = null; last = Date.now(); fn(pending); };
+  const f = v => { pending = v; if (t) return; const wait = ms - (Date.now() - last); if (wait <= 0) run(); else t = setTimeout(run, wait); };
+  f.flush = v => { clearTimeout(t); t = null; last = Date.now(); fn(v); };
+  return f;
+}
 
 const TARGETS = { chrome: "Arayüz", content: "Web sayfaları", both: "Arayüz + Web" };
 const btn = (text, onclick, cls = "soft", ic) => h("button", { type: "button", class: "btn " + cls, onclick }, ic && icon(ic, 14), text);
@@ -21,12 +48,39 @@ function pickPath(mode, title, cssFilter) {
   });
 }
 
-/** Mod başına ayar denetimi (checkbox | dropdown | string). Değerler rigel.mods.values içinde. */
+/** Mod başına ayar denetimi (checkbox | dropdown | string | range | color). Değerler rigel.mods.values içinde. */
 export function prefControl(mod, p) {
   const get = () => Mods.getValue(mod.id, p);
   const set = v => Mods.setValue(mod.id, p.key, v);
   const names = ["rigel.mods.values"];
   if (p.type === "checkbox") return toggle(null, { get, set, names });
+  if (p.type === "range") {
+    const fmt = v => `${v}${p.unit ?? ""}`;
+    const input = h("input", { type: "range", class: "modrange", min: String(p.min), max: String(p.max), step: String(p.step), "aria-label": p.label });
+    const out = h("output", { class: "modrange-v" });
+    const apply = throttle(v => set(Number(v)));
+    const refresh = () => { input.value = String(get()); out.textContent = fmt(get()); };
+    input.addEventListener("input", () => { out.textContent = fmt(input.value); apply(input.value); });
+    input.addEventListener("change", () => apply.flush(input.value));
+    refresh();
+    watch(names, () => { if (document.activeElement !== input) refresh(); });
+    return h("span", { class: "modrange-w" }, input, out);
+  }
+  if (p.type === "color") {
+    const input = h("input", { type: "color", class: "modcolor", "aria-label": p.label });
+    const hex = h("input", { type: "text", class: "modstr modcolor-hex", spellcheck: "false", maxlength: "7", "aria-label": p.label + " (onaltılı)" });
+    const apply = throttle(v => set(v));
+    const refresh = () => { input.value = String(get()); hex.value = String(get()); };
+    input.addEventListener("input", () => { hex.value = input.value; apply(input.value); });
+    input.addEventListener("change", () => apply.flush(input.value));
+    hex.addEventListener("change", () => {
+      const v = hex.value.trim().replace(/^#?/, "#").toLowerCase();
+      if (/^#[0-9a-f]{6}$/.test(v)) set(v); else hex.value = String(get());
+    });
+    refresh();
+    watch(names, () => { if (document.activeElement !== hex) refresh(); });
+    return h("span", { class: "modcolor-w" }, input, hex);
+  }
   if (p.type === "dropdown") return select((p.options ?? []).map(o => [o.value, o.label]), { get, set, names });
   const input = h("input", { type: "text", class: "modstr", spellcheck: "false", value: String(get()) });
   let t;
@@ -36,9 +90,26 @@ export function prefControl(mod, p) {
   return input;
 }
 
+/** Açma/kapama anahtarı; betikli modda önce "kod çalıştırır" onayı ister. */
+export function modToggle(mod) {
+  const sw = toggle(null, {
+    get: () => Mods.isEnabled(mod.id),
+    set: on => enableWithConsent(chromeWin(), Mods, mod.id, on).then(ok => { if (!ok) sw.checked = Mods.isEnabled(mod.id); }),
+    names: ["rigel.mods.enabled"],
+  });
+  return sw;
+}
+
+/** Modun hangi düzenlerde çalıştığı + kod rozeti. */
+export const layoutBadges = mod => [
+  mod.layouts?.length ? mod.layouts.map(l => h("span", { class: "tbadge layout", title: "Yalnız bu düzende çalışır", text: LAYOUT_LABELS[l] ?? l })) : null,
+  mod.script && h("span", { class: "tbadge script", title: "Bu mod kod çalıştırır", text: "Kod çalıştırır" }),
+];
+
 function badges(mod) {
   return [
     h("span", { class: "tbadge " + mod.target, text: TARGETS[mod.target] }),
+    layoutBadges(mod),
     mod.builtin && h("span", { class: "tbadge builtin", text: "Yerleşik" }),
     mod.store && h("span", { class: "tbadge builtin", text: "Mağaza" }),
   ];
@@ -59,8 +130,15 @@ export function modlar() {
     }
     listBox.replaceChildren(...mods.map(modItem));
   }
+  function errLine(id) {
+    const e = h("small", { class: "moderr" });
+    const sync = () => { const t = Mods.errors.get(id); e.textContent = t ? `Betik hatası: ${t}` : ""; };
+    sync();
+    watch("topic:rigel-mods-state", sync);
+    return e;
+  }
   function modItem(mod) {
-    const sw = toggle(null, { get: () => Mods.isEnabled(mod.id), set: on => Mods.setEnabled(mod.id, on), names: ["rigel.mods.enabled"] });
+    const sw = modToggle(mod);
     sw.setAttribute("aria-label", mod.name + " aç/kapat");
     const del = h("button", { type: "button", class: "iconbtn", title: "Sil", "aria-label": "Sil" }, icon("trash", 16));
     del.addEventListener("click", async () => {
@@ -81,7 +159,8 @@ export function modlar() {
       h("span", { class: "txt" },
         h("b", {}, mod.name, badges(mod)),
         mod.description && h("small", { text: mod.description }),
-        h("small", { class: "modmeta", text: meta })),
+        h("small", { class: "modmeta", text: meta }),
+        mod.script && errLine(mod.id)),
       h("span", { class: "modact" },
         h("button", { type: "button", class: "iconbtn", title: "Düzenle", "aria-label": "Düzenle", onclick: () => openEditor(mod.id) }, icon("edit", 16)),
         del, sw));

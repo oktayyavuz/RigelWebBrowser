@@ -1,0 +1,48 @@
+{
+  "name": "Cam pencere",
+  "description": "Sekme şeridi ve araç çubuğu buzlu cama döner: renk tonlu, yarı saydam, üstte ışık parıltısı. \"Sayfa çubukların arkasından aksın\" açılırsa şeritler sayfanın üstüne biner ve sayfa camın ardında bulanık görünür. Ton yoğunluğu, bulanıklık ve ton rengi kaydırıcı ve renk seçiciyle ayarlanır. Klasik, Ada, Dock ve Komuta'da çalışır.",
+  "author": "Rigel",
+  "version": "1.0.1",
+  "target": "chrome",
+  "license": "MPL-2.0",
+  "layouts": [
+    "klasik",
+    "ada",
+    "dock",
+    "komuta"
+  ],
+  "prefs": [
+    {
+      "key": "opacity",
+      "label": "Ton yoğunluğu",
+      "type": "range",
+      "min": 5,
+      "max": 95,
+      "step": 1,
+      "unit": "",
+      "default": 55
+    },
+    {
+      "key": "blur",
+      "label": "Bulanıklık",
+      "type": "range",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "key": "tint",
+      "label": "Ton rengi",
+      "type": "color",
+      "default": "#4a62b8"
+    },
+    {
+      "key": "overlap",
+      "label": "Sayfa çubukların arkasından aksın (bulanık cam)",
+      "type": "checkbox",
+      "default": false
+    }
+  ]
+}

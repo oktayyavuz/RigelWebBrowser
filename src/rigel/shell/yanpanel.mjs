@@ -81,6 +81,12 @@ export function init(win) {
   container.insertBefore(top, sidebarMain);
   // nav-bar bir <toolbar> olarak kalır: urlbar açılır listesi (popover) buna bağlı.
   d.add(moveNode(navBar, container, sidebarMain));
+  // Yer imi çubuğu sayfa kartının üstünde (shell/bookmarks.mjs, layouts/base.css). nav-bar'dan SONRA taşınır:
+  // geri alma ters sırada çalışır, çubuk yerine dönmeden nav-bar dönerse sıraları karışır.
+  const bookmarksBar = doc.getElementById("PersonalToolbar");
+  const tabbox = doc.getElementById("tabbrowser-tabbox");
+  const panels = doc.getElementById("tabbrowser-tabpanels");
+  if (bookmarksBar && tabbox && panels?.parentNode === tabbox) d.add(moveNode(bookmarksBar, tabbox, panels));
   container.append(bottom);
   d.add(() => {
     top.remove();

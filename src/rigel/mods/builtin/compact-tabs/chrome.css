@@ -16,7 +16,7 @@
   height: 18px !important;
   padding: 3px !important;
 }
-:root:root:root:root #tabbrowser-tabs .tabbrowser-tab:not([pinned]) { margin-block: 0 !important; }
+:root:root:root:root #tabbrowser-tabs .tabbrowser-tab:not([pinned]) { margin-block: calc(var(--rigel-mod-compact-tabs-gap, 0px) / 2) !important; }
 /* Sekme paneli (Ctrl+Shift+A) */
 :root:root:root:root .rgl-tabs .rgl-row {
   min-height: var(--rigel-mod-compact-tabs-density, 26px) !important;

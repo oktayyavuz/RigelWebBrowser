@@ -3,7 +3,10 @@
 // (yalnız profildeki katalog önbelleğine).
 //
 // Güvenlik ilkeleri:
-//  - Yalnız .json ve .css indirilir; hiçbir betik (JS) dosyası alınmaz ya da çalıştırılmaz.
+//  - İndirilen dosyalar: .json, .css ve (yalnız mod.json'da `script: true` ise) tek bir `chrome.mjs`. Betik tam yetkili
+//    tarayıcı kodudur: paketle gelen (bundled) katalogdan doğrudan, uzak/bağlantı kaynaklarından yalnız çağıran
+//    `allowScript: true` verirse (kullanıcı "Bu mod kod çalıştırır" uyarısını onayladıktan sonra) indirilir.
+//    Aksi halde fetchEntryFiles `code = "script-consent"` hatası fırlatır.
 //  - Uzak adresler yalnız http/https; yönlendirmeler dahil. Zaman aşımı + boyut sınırı.
 //  - CSS'te uzak kaynak (url(http…), @import, yazı tipi vb.), kaçış dizileri, -moz-binding ve dengesiz
 //    küme parantezi (kapsayıcı @-moz-document'ten çıkma) reddedilir; @import satırları ayıklanır.
@@ -13,8 +16,10 @@ import { setTimeout, clearTimeout } from "resource://gre/modules/Timer.sys.mjs";
 
 export const BUNDLED_INDEX = "chrome://userscripts/content/mods/store/index.json";
 export const PREF_STORE_URL = "rigel.mods.storeUrl";
-export const LIMITS = { index: 768 * 1024, modJson: 32 * 1024, prefs: 32 * 1024, css: 256 * 1024, entries: 400, timeout: 9000 };
-const FILE_KEYS = ["mod.json", "chrome.css", "content.css", "preferences.json"];
+export const LIMITS = { index: 768 * 1024, modJson: 32 * 1024, prefs: 32 * 1024, css: 256 * 1024, script: 128 * 1024, entries: 400, timeout: 9000 };
+export const LAYOUTS = ["ada", "dock", "komuta", "yanpanel", "klasik"];
+const LAYOUT_CSS = LAYOUTS.map(l => `chrome.${l}.css`);
+const FILE_KEYS = ["mod.json", "chrome.css", "content.css", "preferences.json", "chrome.mjs", ...LAYOUT_CSS];
 const TARGETS = ["chrome", "content", "both"];
 const ID_RE = /^[a-z0-9][a-z0-9-]{0,47}$/;
 const CACHE_DIR = () => PathUtils.join(PathUtils.profileDir, "rigel-mods-cache");
@@ -190,7 +195,8 @@ export function sanitizeCss(raw, label = "css") {
 }
 
 // ---- mod.json / giriş doğrulama ----
-const PREF_TYPES = ["checkbox", "string", "dropdown"];
+const PREF_TYPES = ["checkbox", "string", "dropdown", "range", "color"];
+const fnum = (v, d) => { const n = parseFloat(v); return Number.isFinite(n) ? n : d; };
 export function validatePrefs(list) {
   if (!Array.isArray(list)) return [];
   const seen = new Set();
@@ -203,6 +209,12 @@ export function validatePrefs(list) {
     const o = { key, label: str(p.label, 80) || key, type: p.type };
     const def = p.default ?? p.defaultValue;
     if (p.type === "checkbox") o.default = !!def;
+    else if (p.type === "range") {
+      o.min = fnum(p.min, 0); o.max = fnum(p.max, 100); if (o.max <= o.min) o.max = o.min + 1;
+      o.step = fnum(p.step, 1) > 0 ? fnum(p.step, 1) : 1;
+      o.unit = String(p.unit ?? "").replace(/[^a-z%]/gi, "").slice(0, 6);
+      o.default = Math.min(o.max, Math.max(o.min, fnum(def, o.min)));
+    } else if (p.type === "color") o.default = /^#[0-9a-f]{6}$/i.test(String(def)) ? String(def).toLowerCase() : "#7c9cff";
     else o.default = str(String(def ?? ""), 120);
     if (p.type === "dropdown") {
       o.options = (Array.isArray(p.options) ? p.options : []).slice(0, 24).map(x => (typeof x === "string"
@@ -231,7 +243,8 @@ export function normalizeEntry(raw, base, origin) {
     files[k] = url;
   }
   if (!files["mod.json"]) return null;
-  if (target !== "content" && !files["chrome.css"]) return null;
+  const hasLayoutCss = LAYOUT_CSS.some(k => files[k]);
+  if (target !== "content" && !files["chrome.css"] && !hasLayoutCss && !files["chrome.mjs"]) return null;
   if (target !== "chrome" && !files["content.css"]) return null;
   let preview = "";
   if (typeof raw.preview === "string" && raw.preview) {
@@ -248,6 +261,8 @@ export function normalizeEntry(raw, base, origin) {
   return {
     id, name: str(raw.name, 60) || id, description: str(raw.description, 400), author: str(raw.author, 60),
     version: str(raw.version, 20) || "1.0.0", tags, target, homepage, preview, files, origin, license, upstream,
+    layouts: (Array.isArray(raw.layouts) ? raw.layouts : []).filter(l => LAYOUTS.includes(l)),
+    script: !!files["chrome.mjs"],
   };
 }
 
@@ -329,7 +344,7 @@ export function invalidateCatalog() { cache = null; }
  * Bir mod dosyalarını indirir ve doğrular. Döndürür: { meta (mod.json, ham), chrome, content, notes }.
  * meta.prefs, mod.json ile preferences.json'ın birleşimidir.
  */
-export async function fetchEntryFiles(entry) {
+export async function fetchEntryFiles(entry, { allowScript = false } = {}) {
   const f = entry.files;
   const meta = await fetchJSON(f["mod.json"], LIMITS.modJson);
   if (!meta || typeof meta !== "object" || Array.isArray(meta)) throw new Error("mod.json geçersiz.");
@@ -344,26 +359,48 @@ export async function fetchEntryFiles(entry) {
   const notes = [];
   let chrome = "";
   let content = "";
+  const layoutCss = {};
+  let script = "";
+  if (f["chrome.mjs"] && target !== "content") {
+    if (!allowScript) {
+      const err = new Error("Bu mod kod çalıştırır; kurmak için onay gerekir.");
+      err.code = "script-consent";
+      throw err;
+    }
+    script = await fetchText(f["chrome.mjs"], LIMITS.script);
+    if (!script.trim()) script = "";
+  }
   if (target !== "content") {
-    const t = await fetchText(f["chrome.css"], LIMITS.css);
-    const r = sanitizeCss(t, "chrome.css");
-    chrome = r.css; notes.push(...r.notes);
+    if (f["chrome.css"]) {
+      const t = await fetchText(f["chrome.css"], LIMITS.css, { allowMissing: true });
+      if (t != null) { const r = sanitizeCss(t, "chrome.css"); chrome = r.css; notes.push(...r.notes); }
+    }
+    for (const l of LAYOUTS) {
+      if (!f[`chrome.${l}.css`]) continue;
+      const t = await fetchText(f[`chrome.${l}.css`], LIMITS.css, { allowMissing: true });
+      if (t == null) continue;
+      const r = sanitizeCss(t, `chrome.${l}.css`);
+      if (r.css.trim()) layoutCss[l] = r.css;
+      notes.push(...r.notes);
+    }
   }
   if (target !== "chrome") {
     const t = await fetchText(f["content.css"], LIMITS.css);
     const r = sanitizeCss(t, "content.css");
     content = r.css; notes.push(...r.notes);
   }
-  if (!chrome.trim() && !content.trim()) throw new Error("Mod CSS'i boş.");
+  if (!chrome.trim() && !content.trim() && !script && !Object.keys(layoutCss).length) throw new Error("Mod CSS'i boş.");
   return {
     meta: {
       name: str(meta.name, 60) || entry.name, description: str(meta.description, 400) || entry.description,
       author: str(meta.author, 60) || entry.author, version: str(meta.version, 20) || entry.version, target, prefs,
+      layouts: (Array.isArray(meta.layouts) ? meta.layouts : entry.layouts ?? []).filter(l => LAYOUTS.includes(l)),
+      priority: meta.priority === "normal" ? "normal" : "override",
       homepage: isRemote(str(meta.homepage, 300)) ? str(meta.homepage, 300) : entry.homepage || "",
       license: str(meta.license, 40) || entry.license || "",
       source: isRemote(str(meta.source, 300)) ? str(meta.source, 300) : entry.upstream || "",
     },
-    chrome, content, notes,
+    chrome, content, layoutCss, script, notes,
   };
 }
 
@@ -399,6 +436,8 @@ export async function resolveUrl(input) {
   if (target !== "content") files["chrome.css"] = base + "chrome.css";
   if (target !== "chrome") files["content.css"] = base + "content.css";
   files["preferences.json"] = base + "preferences.json";
+  if (meta.script) files["chrome.mjs"] = base + "chrome.mjs";
+  for (const l of Array.isArray(meta.layouts) ? meta.layouts : []) if (LAYOUTS.includes(l) && target !== "content") files[`chrome.${l}.css`] = base + `chrome.${l}.css`;
   const e = normalizeEntry({ ...meta, id, files, preview: meta.preview ? meta.preview : undefined }, base, "remote");
   if (!e) throw new Error("Geçerli bir mod kimliği çıkarılamadı.");
   return [{ ...e, origin: "url", source: base }];

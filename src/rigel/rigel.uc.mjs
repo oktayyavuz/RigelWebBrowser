@@ -208,6 +208,18 @@ window.addEventListener("unload", () => {
 
 enqueue(Rigel.layout.current(), { early: true });
 
+// Düzenden bağımsız kabuk parçaları: yer imi çubuğu ve sade adres görünümü.
+whenStartedUp().then(() => {
+  for (const name of ["bookmarks", "urlsimple"]) {
+    import(`${BASE}shell/${name}.mjs`)
+      .then(m => {
+        const off = m.init(window);
+        window.addEventListener("unload", () => off?.(), { once: true });
+      })
+      .catch(e => dump(`[rigel] ${name} yüklenemedi: ${e}\n${e.stack}\n`));
+  }
+});
+
 // Firefox, fareyle sekme kapatınca yatay şeritte sekme genişliklerini fare şeritten çıkana kadar
 // kilitler; "+" düğmesi eski yerine dönmez. Rigel'de sekmeler hemen yeniden boyutlanır
 // (rigel.tabs.lockSizing = true ile Firefox davranışı geri gelir).

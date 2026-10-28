@@ -1,10 +1,25 @@
 {
-  "name": "Yuvarlak köşeleri kapat",
-  "description": "Sekmelerin, düğmelerin, adres çubuğunun ve panellerin köşelerini keskinleştirir.",
+  "name": "Köşe yarıçapı",
+  "description": "Sekmelerin, düğmelerin, adres çubuğunun ve panellerin köşelerini tek kaydırıcıyla ayarlar: 0 = bütün köşeler keskin, yukarısı = hepsi aynı yumuşaklıkta. Rigel'in kendi kurallarını da ezer.",
   "author": "Rigel",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "target": "chrome",
   "prefs": [
-    { "key": "keep-avatars", "label": "Yuvarlak simgeleri (nokta, avatar) koru", "type": "checkbox", "default": true }
+    {
+      "key": "radius",
+      "label": "Köşe yarıçapı",
+      "type": "range",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "key": "keep-avatars",
+      "label": "Yuvarlak simgeleri (nokta, avatar) koru",
+      "type": "checkbox",
+      "default": true
+    }
   ]
 }

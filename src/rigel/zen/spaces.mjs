@@ -15,11 +15,15 @@
 // - Alanın varsayılan kapsayıcısı (container, isteğe bağlı): rigel.spaces içindeki "container"
 //   (userContextId). Yeni sekme (Ctrl+T, + düğmeleri) o alanda bu kapsayıcıda açılır.
 // - Seçici: Yan Panel'in altında satır; Ada, Dock, Komuta ve Klasik'te düzenin şeridinde küçük düğme.
+//   Görünümü rigel.spaces.switcher (auto|icon|full|hidden): auto = tek alanda gizli, birden çoksa yalnız
+//   simge; icon = yalnız simge (ad ipucunda); full = simge + ad; hidden = hiç. Gizliyken de komutlar ve
+//   Ctrl+Alt+1..9 çalışır.
 
 import { Disposer, el, toast } from "./util.mjs";
 import { getDialog } from "../shell/dialog.mjs";
 
 const PREF = "rigel.spaces";
+const SWITCHER_PREF = "rigel.spaces.switcher";
 const TAB_KEY = "rigelSpace";
 const WIN_KEY = "rigelSpace";
 const HIDE_SOURCE = "rigel-space";
@@ -50,6 +54,14 @@ export function init(win) {
   const { gBrowser, SessionStore } = win;
   const d = new Disposer();
   const isPrivate = win.PrivateBrowsingUtils?.isWindowPrivate(win) ?? false;
+
+  Services.prefs.getDefaultBranch("").setStringPref(SWITCHER_PREF, "auto");
+  /** Seçicinin etkin görünümü: "hidden" | "icon" | "full". */
+  const switcherMode = () => {
+    const m = Services.prefs.getStringPref(SWITCHER_PREF, "auto");
+    if (m === "icon" || m === "full" || m === "hidden") return m;
+    return spaces.length > 1 ? "icon" : "hidden";
+  };
 
   let spaces = readSpaces();
   let active = spaces[0].id;
@@ -353,6 +365,7 @@ export function init(win) {
     root.setAttribute("data-rigel-space", active);
   }
 
+  d.pref(SWITCHER_PREF, () => render());
   d.pref(PREF, () => {
     spaces = readSpaces();
     if (!exists(active)) {
@@ -404,8 +417,11 @@ export function init(win) {
     });
     const cur = spaceById(active);
     for (const chip of chips) renderChip(chip);
+    const mode = switcherMode();
+    bar.hidden = mode === "hidden";
+    bar.setAttribute("data-mode", mode);
     bar.replaceChildren(
-      el(doc, "span", { class: "rigel-space-name", text: cur ? cur.name : "" }),
+      ...(mode === "full" ? [el(doc, "span", { class: "rigel-space-name", text: cur ? cur.name : "" })] : []),
       el(doc, "div", { class: "rigel-space-list" }, ...kids,
         el(doc, "button", { class: "rigel-space add", title: "Yeni alan", onclick: () => promptNew() }, "+")));
   }
@@ -454,6 +470,10 @@ export function init(win) {
   }
   function renderChip({ node, kind }) {
     const cur = spaceById(active);
+    const mode = switcherMode();
+    node.hidden = mode === "hidden";
+    const sep = node.nextSibling;
+    if (sep?.classList?.contains("rigel-spacesep")) sep.hidden = node.hidden;
     if (kind === "dock") {
       node.replaceChildren(...spaces.map((s, i) => el(doc, "button", {
         class: "rigel-spacedot" + (s.id === active ? " on" : ""), role: "tab", "aria-selected": String(s.id === active),
@@ -468,7 +488,7 @@ export function init(win) {
       return;
     }
     const kids = [el(doc, "span", { class: "ico", text: cur?.icon ?? "" })];
-    if (kind === "komuta" || kind === "klasik") kids.push(el(doc, "span", { class: "name", text: cur?.name ?? "" }));
+    if (mode === "full" && kind !== "ada") kids.push(el(doc, "span", { class: "name", text: cur?.name ?? "" }));
     node.replaceChildren(...kids);
     node.title = `Alan: ${cur?.name ?? ""} (Ctrl+Alt+1…9)`;
   }

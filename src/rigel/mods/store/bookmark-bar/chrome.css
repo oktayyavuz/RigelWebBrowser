@@ -19,19 +19,8 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
  * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-/* Rigel yer imi çubuğunu bütün düzenlerde gizler. Bu mod, çubuk açıksa (Ctrl+Shift+B) onu Klasik ve Yan Panel'de geri getirir ve biçimler:
+/* Rigel yer imi çubuğunu artık kendisi gösterir (Ctrl+Shift+B ya da Ayarlar). Bu mod yalnızca biçimlendirir:
    hap düğmeler, ortalama, yalnız simge/yalnız ad, üstüne gelince açılma. Ayarlar: center, show (both|icons|names), autohide. */
-:root:root:root:is([data-rigel-layout="klasik"], [data-rigel-layout="yanpanel"]) #navigator-toolbox > #PersonalToolbar:not([collapsed="true"]) {
-  display: flex !important;
-  visibility: visible !important;
-  height: 32px !important;
-  min-height: 32px !important;
-  padding: 0 8px !important;
-  background: var(--surface) !important;
-  border-bottom: 1px solid var(--border) !important;
-  color: var(--text) !important;
-}
-:root:root:root[data-rigel-layout="klasik"] #nav-bar { border-bottom-color: transparent !important; }
 :root:root:root #PersonalToolbar #PlacesToolbarItems { gap: 4px; align-items: center; }
 :root:root:root #PersonalToolbar toolbarbutton.bookmark-item {
   margin: 0 !important;
@@ -60,7 +49,7 @@
 :root:root:root[rigel-mod-bookmark-bar-autohide] #navigator-toolbox > #PersonalToolbar:not([collapsed="true"]) {
   position: relative;
   z-index: 3;
-  margin-bottom: -32px !important;
+  margin-bottom: calc(-1 * var(--rigel-bookmarks-height, 32px)) !important;
   transform: rotateX(90deg);
   transform-origin: top;
   transition: transform 0.16s ease !important;
