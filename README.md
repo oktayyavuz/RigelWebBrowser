@@ -72,6 +72,50 @@ powershell -ExecutionPolicy Bypass -File packaging\windows\install.ps1
 
 Mozilla'nın Firefox yükleyicisini indirir, SHA256'sını doğrular, `%LOCALAPPDATA%\Rigel\app` altına sessizce kurar (kısayol, bakım hizmeti ve varsayılan tarayıcı aracısı olmadan), Rigel dosyalarını ve profili yerleştirir, Başlat menüsü ve masaüstü kısayolu oluşturur. `chrome\JS` ve `chrome\utils` için dizin bağlantısı (junction) kullanılır; olmazsa kopyalanır. Bilinen sınırlama: görev çubuğu simgesi Firefox simgesi olarak görünebilir.
 
+## Derleme
+
+Rigel'de Firefox derlenmez; "derleme", Mozilla'nın resmî Firefox ikililerini Rigel dosyalarıyla paketlemektir. Tek komut:
+
+```bash
+scripts/build.sh [linux|windows|all]     # varsayılan: all; çıktılar dist/ altına (git'e girmez)
+```
+
+| Çıktı (`dist/`) | İçerik |
+|---|---|
+| `rigel-<sürüm>-linux-x86_64.tar.xz` | Kendi içinde tam klasör: Firefox + fx-autoconfig + Rigel, `bin/rigel` başlatıcısı, `rigel.desktop`, ikonlar, `install.sh`, `uninstall.sh` |
+| `rigel-<sürüm>-x86_64.AppImage` | İsteğe bağlı; `appimagetool` varsa ya da `RIGEL_APPIMAGE=1` ile (aşağıya bakın) |
+| `rigel-<sürüm>-windows-x64.zip` | Taşınabilir Windows sürümü (`Rigel.cmd` ile başlar) |
+| `rigel-<sürüm>-windows-x64-setup.exe` | Windows kurulum programı (Inno Setup; kullanıcı başına, yönetici gerekmez, Başlat menüsü + kaldırıcı, Türkçe/İngilizce) |
+| `SHA256SUMS` | Yukarıdakilerin özetleri |
+
+**Gereksinimler:** `bash`, `curl`/`wget`, `tar`, `xz`, `sha256sum`, `python3`. Windows için ek olarak `7z` (p7zip) ve kurulum programı ile Firefox simgesi için `wine` (yoksa yalnız zip üretilir). Betik hiçbir sistem paketi kurmaz.
+
+**Nasıl çalışır:**
+- Firefox sürümü `FIREFOX_VERSION` dosyasından gelir; Linux için `linux-x86_64/tr/firefox-<sürüm>.tar.xz`, Windows için `win64/tr/Firefox Setup <sürüm>.exe` `archive.mozilla.org`'dan indirilir ve **Mozilla'nın `SHA256SUMS` dosyasıyla doğrulanır** (uyuşmazsa durur). İndirmeler `~/.cache/rigel-build/` altında önbelleğe alınır (`RIGEL_BUILD_CACHE` ile değişir); geçici çalışma klasörü de orada açılır (`/tmp` RAM'de olabilir).
+- Windows ikilisi `7z` ile açılır (uygulama `core/` içindedir). Windows'ta sembolik bağlantı olmadığı için her şey **kopyalanır**: kurulum programı arayüz dosyalarını doğrudan profile (`%LOCALAPPDATA%\Rigel\profile\chrome\{JS,utils}`) yazar; zip'teki `Rigel.cmd` ise sürüm damgası değişince bunları profile kopyalayıp Firefox'u `--profile` ile açar.
+- Kurulum programı, resmî Inno Setup 6.7.4'ün (SHA256 sabitli) ayrı bir `WINEPREFIX` içinde (`~/.cache/rigel-build/wine`) wine ile çalıştırılmasıyla derlenir; kullanıcının kendi `~/.wine` öneki kullanılmaz. Görev çubuğu/pencere simgesi için `firefox.exe` içindeki simge, `rcedit` (v2.0.0, SHA256 sabitli) ile Rigel simgesiyle değiştirilir; bu, `firefox.exe`'nin Mozilla imzasını düşürür (`RIGEL_WINDOWS_ICON=0` ile kapatılır).
+- Tekrarlanabilirlik: arşivler sıralı, sahipsiz ve `SOURCE_DATE_EPOCH` (varsayılan: HEAD işleminin zamanı) damgalıdır; aynı girdilerle Linux `tar.xz` ve Windows `zip` bit bit aynı çıkar. Windows `setup.exe` (Inno Setup derleme zamanını gömer) ve AppImage aynı olmayabilir.
+
+| Ortam değişkeni | Etki |
+|---|---|
+| `RIGEL_BUILD_CACHE` | Önbellek ve geçici klasör (varsayılan `~/.cache/rigel-build`) |
+| `RIGEL_DIST` | Çıktı klasörü (varsayılan `dist/`) |
+| `RIGEL_APPIMAGE=0\|1` | `0`: AppImage'ı atla; `1`: `appimagetool` yoksa 1.9.1'i (SHA256 sabitli) indir. Varsayılan: araç varsa kullan, yoksa atla. `mksquashfs` gerekir |
+| `RIGEL_WINDOWS_INSTALLER=0` | Yalnız Windows zip'i |
+| `RIGEL_WINDOWS_ICON=0` | `firefox.exe` simgesine dokunma |
+| `RIGEL_XZ_LEVEL`, `RIGEL_XZ_THREADS` | `xz` düzeyi (varsayılan 6) ve iş parçacığı |
+| `SOURCE_DATE_EPOCH` | Arşiv zaman damgası |
+
+**Kullanıcı olarak kurmak:**
+- *Linux tar.xz:* `tar -xf rigel-<sürüm>-linux-x86_64.tar.xz && cd rigel-<sürüm>-linux-x86_64 && ./install.sh` (internet gerekmez; `~/.local/share/rigel`, `~/.local/bin/rigel`, uygulama menüsü girdisi). Kurmadan denemek için `./bin/rigel`. Kaldırmak: `./uninstall.sh [--profil-de]`. Profil her iki durumda da `~/.local/share/rigel/profile` olur (`RIGEL_PROFILE` ile değişir).
+- *AppImage:* `chmod +x rigel-<sürüm>-x86_64.AppImage && ./rigel-<sürüm>-x86_64.AppImage` (FUSE yoksa `--appimage-extract-and-run`). Profil yine `~/.local/share/rigel/profile`.
+- *Windows setup.exe:* çift tıklayın (imzasız olduğu için SmartScreen uyarısı çıkabilir). `%LOCALAPPDATA%\Programs\Rigel` altına kurar, profil `%LOCALAPPDATA%\Rigel\profile`; "Varsayılan uygulamalar" listesine Rigel'i ekler (varsayılanı kendiliğinden değiştirmez). Kaldırırken profilin silinip silinmeyeceği sorulur (varsayılan: korunur).
+- *Windows zip:* herhangi bir klasöre açıp `Rigel.cmd`'yi çalıştırın; profil `%LOCALAPPDATA%\Rigel\profile`.
+
+**Sürüm yayımlamak:** `VERSION`'ı güncelleyip `v<sürüm>` etiketi itilince `.github/workflows/release.yml` aynı betiği çalıştırıp `dist/*`'ı GitHub Sürümü olarak yükler (henüz hiç çalıştırılmadı).
+
+**Sınırlar:** Windows paketleri Windows'ta çalıştırılarak denenmedi; yalnız wine altında (derleme, sessiz kurulum, Firefox'un başsız açılışında Rigel'in yüklenmesi) doğrulandı. Paketler imzasızdır. Firefox otomatik güncellenmez (`DisableAppUpdate`); yeni Firefox için `FIREFOX_VERSION` değiştirip yeniden derleyin.
+
 ## Güncelleme
 
 ```bash

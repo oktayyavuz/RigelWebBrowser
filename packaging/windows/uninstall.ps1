@@ -52,12 +52,13 @@ if (Test-Path $helper) {
   Start-Process -FilePath $helper -ArgumentList '/S' -Wait | Out-Null
 }
 
-# Profildeki baglantilari ONCE kaldir; boylece recursive silme hedef dosyalara gitmez
+# Profildeki chrome\JS ve chrome\utils (kopya ya da eski surumden kalan junction) silinir; junction ise hedefe dokunulmaz
 Remove-Link (Join-Path $Profile 'chrome\JS')
 Remove-Link (Join-Path $Profile 'chrome\utils')
+Remove-Item (Join-Path $Profile '.rigel-surum') -Force -ErrorAction SilentlyContinue
 
 foreach ($d in 'app','rigel','utils') { if (Test-Path (Join-Path $RigelHome $d)) { Remove-Item (Join-Path $RigelHome $d) -Recurse -Force } }
-foreach ($f in 'VERSION','rigel.cmd','rigel.ico') { Remove-Item (Join-Path $RigelHome $f) -Force -ErrorAction SilentlyContinue }
+foreach ($f in 'VERSION','Rigel.cmd','rigel.ico') { Remove-Item (Join-Path $RigelHome $f) -Force -ErrorAction SilentlyContinue }
 Remove-Item (Join-Path $env:APPDATA 'Microsoft\Windows\Start Menu\Programs\Rigel.lnk') -Force -ErrorAction SilentlyContinue
 Remove-Item (Join-Path ([Environment]::GetFolderPath('Desktop')) 'Rigel.lnk') -Force -ErrorAction SilentlyContinue
 Remove-Item (Join-Path $env:LOCALAPPDATA 'Rigel-cache') -Recurse -Force -ErrorAction SilentlyContinue

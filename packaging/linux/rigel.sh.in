@@ -28,8 +28,12 @@ link() { # $1 = hedef, $2 = bağlantı yolu
   if [[ -L $2 ]]; then rm -f "$2"; elif [[ -e $2 ]]; then mv "$2" "$2.yedek-$(date +%s)"; fi
   ln -s "$1" "$2"
 }
-link "$RIGEL_HOME/utils" "$PROFILE/chrome/utils"
-link "$RIGEL_HOME/rigel" "$PROFILE/chrome/JS"
+# Rigel zaten açıksa bağlantılara dokunulmaz (AppImage'da her açılış farklı bir bağlama noktası kullanır;
+# açık pencerenin kullandığı bağlantıyı değiştirmek yeni pencerelerin Rigel arayüzünü yüklemesini bozardı).
+if [[ $running -eq 0 || ! -e $PROFILE/chrome/utils/boot.sys.mjs || ! -e $PROFILE/chrome/JS/rigel.uc.mjs ]]; then
+  link "$RIGEL_HOME/utils" "$PROFILE/chrome/utils"
+  link "$RIGEL_HOME/rigel" "$PROFILE/chrome/JS"
+fi
 
 args=()
 if [[ $running -eq 0 ]]; then

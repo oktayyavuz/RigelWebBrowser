@@ -68,15 +68,10 @@ function Remove-Link([string]$Path) {
   else { Remove-Item -LiteralPath $Path -Recurse -Force }
 }
 
-# Junction dener, olmazsa kopyalar.
-function Link-Or-Copy([string]$Link, [string]$Target) {
+# Dizini kopyalar (Windows'ta sembolik baglanti yok). Onceki surumden kalan junction varsa yalniz baglanti silinir.
+function Copy-Fresh([string]$Link, [string]$Target) {
   Remove-Link $Link
-  try {
-    New-Item -ItemType Junction -Path $Link -Target $Target | Out-Null
-  } catch {
-    Uyari "Junction olusturulamadi ($Link); kopyalaniyor (guncellemede install.ps1 yeniden calistirilmali)."
-    Copy-Item -LiteralPath $Target -Destination $Link -Recurse -Force
-  }
+  Copy-Item -LiteralPath $Target -Destination $Link -Recurse -Force
 }
 
 function Get-InstalledFirefoxVersion {
@@ -160,6 +155,7 @@ Copy-Item (Join-Path $Root 'distribution\policies.json') (Join-Path $App 'distri
 New-Item -ItemType Directory -Force -Path (Join-Path $App 'browser\defaults\preferences') | Out-Null
 Remove-Item (Join-Path $App 'defaults\pref\rigel.js') -Force -ErrorAction SilentlyContinue
 Copy-Item (Join-Path $Root 'prefs\rigel.js') (Join-Path $App 'browser\defaults\preferences\rigel.js') -Force
+Copy-Item (Join-Path $Root 'packaging\windows\rigel-windows.js') (Join-Path $App 'browser\defaults\preferences\rigel-windows.js') -Force
 Tamam 'Rigel katmani hazir'
 
 # ---- 3. Rigel dosyalari ----
@@ -210,8 +206,8 @@ if ($ProfilTasi) {
 }
 
 New-Item -ItemType Directory -Force -Path (Join-Path $Profile 'chrome\CSS'), (Join-Path $Profile 'chrome\resources') | Out-Null
-Link-Or-Copy (Join-Path $Profile 'chrome\utils') (Join-Path $RigelHome 'utils')
-Link-Or-Copy (Join-Path $Profile 'chrome\JS')    (Join-Path $RigelHome 'rigel')
+Copy-Fresh (Join-Path $Profile 'chrome\utils') (Join-Path $RigelHome 'utils')
+Copy-Fresh (Join-Path $Profile 'chrome\JS')    (Join-Path $RigelHome 'rigel')
 $eski = ''
 $stampFile = Join-Path $Profile '.rigel-surum'
 if (Test-Path $stampFile) { $eski = (Get-Content $stampFile -Raw).Trim() }
@@ -225,12 +221,8 @@ if ((Test-Path $uj) -and (Select-String -Path $uj -Pattern 'Rigel varsay.lan ter
 
 # ---- 5. Baslatici ve kisayollar ----
 Bilgi 'Baslatici ve kisayollar'
-$cmd = @'
-@echo off
-rem Rigel baslaticisi (install.ps1 uretti). Ornek: rigel https://example.com
-start "" "%~dp0app\firefox.exe" --profile "%~dp0profile" %*
-'@
-Set-Content -Path (Join-Path $RigelHome 'rigel.cmd') -Value $cmd -Encoding ASCII
+# Paylasilan baslatici (portable zip ile ayni dosya): surum damgasi degisince rigel\ ve utils\ klasorlerini profile yeniden kopyalar
+Copy-Item (Join-Path $Root 'packaging\windows\Rigel.cmd') (Join-Path $RigelHome 'Rigel.cmd') -Force
 
 function New-Kisayol([string]$Yol) {
   $sh = New-Object -ComObject WScript.Shell
@@ -249,7 +241,7 @@ Tamam 'Baslat menusu (ve masaustu) kisayolu olusturuldu'
 
 Write-Host ''
 Write-Host 'Rigel kuruldu (deneysel).' -ForegroundColor Green
-Write-Host "  Baslat:    Baslat menusu > Rigel   ya da   $RigelHome\rigel.cmd"
+Write-Host "  Baslat:    Baslat menusu > Rigel   ya da   $RigelHome\Rigel.cmd"
 Write-Host "  Profil:    $Profile"
 Write-Host '  Not:       Varsayilan tarayici degistirilmedi. Gorev cubugu simgesi Firefox olarak gorunebilir (Windows, simgeyi firefox.exe dosyasindan alir).'
 Write-Host '  Guncelle:  git pull; packaging\windows\install.ps1'

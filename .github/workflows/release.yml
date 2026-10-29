@@ -1,0 +1,43 @@
+name: Sürüm
+
+# v* etiketi itilince Linux ve Windows paketlerini derler, GitHub Sürümü olarak yükler.
+# (Henüz hiç çalıştırılmadı: yerelde `scripts/build.sh all` ile aynı adımlar.)
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  derle:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Etiket VERSION ile uyuşuyor mu?
+        run: |
+          v="$(tr -d '[:space:]' < VERSION)"
+          if [ "${GITHUB_REF_NAME}" != "v$v" ]; then
+            echo "Etiket (${GITHUB_REF_NAME}) VERSION dosyasıyla (v$v) uyuşmuyor." >&2
+            exit 1
+          fi
+
+      - name: Araçlar (7z, wine, squashfs, librsvg)
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends p7zip-full wine wine64 squashfs-tools librsvg2-bin xz-utils python3
+
+      - name: Derle (Linux + Windows)
+        env:
+          RIGEL_APPIMAGE: '1'
+        run: scripts/build.sh all
+
+      - name: Sürümü yayımla
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" dist/* \
+            --title "Rigel ${GITHUB_REF_NAME#v}" \
+            --notes "Firefox $(tr -d '[:space:]' < FIREFOX_VERSION) (tr) üzerine kurulu Rigel. Özetler: SHA256SUMS."
