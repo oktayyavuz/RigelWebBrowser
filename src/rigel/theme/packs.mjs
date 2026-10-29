@@ -30,12 +30,12 @@ export const PACKS = [
     look: { density: "sıkı", fontSize: 12, radius: 6, tabStyle: "düz", tabWidth: 180 } },
   { id: "ferah", name: "Ferah", desc: "Geniş, yuvarlak, havadar",
     look: { density: "ferah", fontSize: 14, radius: 14, shadow: 2, tabStyle: "hap", tabWidth: 240 } },
-  { id: "neon", name: "Neon", desc: "Koyu zemin, aura ve nefes alan vurgu",
-    look: { radius: 12, tabStyle: "hap", shadow: 2, glass: 30, bg: { type: "gradient", from: "#1a0b3d", to: "#040309", angle: 165 }, accentCustom: "#ff3ec8" },
-    theme: "dark", mods: ["aura", "breathing-accent"] },
-  { id: "buzul", name: "Buzul", desc: "Cam görünüm, buzlu paneller, cam pencere",
-    look: { radius: 14, glass: 65, shadow: 2, tabStyle: "hap", bg: { type: "gradient", from: "#4d86a8", to: "#0b1824", angle: 175 }, accentCustom: "#7fd3f0" },
-    theme: "dark", mods: ["frosted-panels", "glass-window"] },
+  { id: "murekkep", name: "Mürekkep", desc: "Gece mavisi, yumuşak ve sakin",
+    look: { radius: 12, glass: 62, shadow: 2, tabStyle: "hap", bg: { type: "gradient", from: "#394775", to: "#0e111d", angle: 160 }, accentCustom: "#93a7f0" },
+    theme: "dark" },
+  { id: "camsisi", name: "Çam Sisi", desc: "Gri-yeşil tonlar, sade kartlar",
+    look: { radius: 10, glass: 58, shadow: 1, tabStyle: "kart", bg: { type: "gradient", from: "#3a594a", to: "#0d1411", angle: 170 }, accentCustom: "#9bcdb0" },
+    theme: "dark" },
 ];
 
 function parse(name, def) {

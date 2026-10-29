@@ -2,7 +2,7 @@
   "name": "Hızlı erişim ızgarası",
   "description": "Adres çubuğuna tıklayınca açılan en çok ziyaret edilenler listesi büyük simgeli bir karo ızgarasına dönüşür; açıkken sayfa arkada bulanıklaşır. Ada, Dock ve Komuta'da adres paleti boşken açık sekmeler karo olur. İstersen Klasik'te araç çubuğu da incelir. (Zen \"Super Sleek UI\" modundan.)",
   "author": "lingais",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "target": "chrome",
   "homepage": "https://github.com/lingais/Zen-Browser-Super-Sleek-UI-Theme",
   "license": "MIT",

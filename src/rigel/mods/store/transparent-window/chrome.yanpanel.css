@@ -1,5 +1,0 @@
-/* Masaüstü saydamlığı — Yan Panel: sol sütun ve kartın çevresi yarı saydam katman, sayfa kartı olduğu gibi */
-:root:root:root[rigel-tw][data-rigel-layout="yanpanel"]:not([inDOMFullscreen]) #browser {
-  background: var(--tw-bar) !important;
-}
-:root:root:root[rigel-tw][data-rigel-layout="yanpanel"]:not([inDOMFullscreen]) #sidebar-container #urlbar > .urlbar-background { background: var(--tw-surf) !important; }

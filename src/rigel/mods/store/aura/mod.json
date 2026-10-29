@@ -48,8 +48,6 @@
   "category": "renk",
   "summary": "Şeritler ve seçili sekme iki renkli canlı gradyan olur",
   "conflicts": [
-    "glass-window",
-    "transparent-window",
-    "accent-chrome"
+    "glass-window"
   ]
 }

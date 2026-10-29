@@ -20,7 +20,7 @@ export function registerBuiltins(win, registry) {
   // Gizli (yalnız tuş) girişler
   C("palette", "Komut paleti", "search", () => R().palette.toggle(), { hidden: true });
   C("address", "Adres çubuğu", "search", () => {
-    if (doc.documentElement.getAttribute("data-rigel-urlbar") === "hidden") R().palette.open();
+    if (doc.documentElement.getAttribute("data-rigel-urlbar") === "hidden") R().palette.open({ fromAddress: true });
     else doCmd("Browser:OpenLocation");
   }, { hidden: true, keys: ["Ctrl+L", "Alt+D"] });
 

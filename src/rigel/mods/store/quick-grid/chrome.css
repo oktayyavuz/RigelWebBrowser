@@ -60,20 +60,38 @@
   background: color-mix(in srgb, var(--accent) 16%, var(--surface));
 }
 :root:root:root[rigel-mod-quick-grid-grid] #urlbar:not([usertyping]) .urlbarView-title { font-size: 12.5px; text-align: center; }
-:root:root:root[rigel-mod-quick-grid-grid] #urlbar:not([usertyping]) :is(.urlbarView-url, .urlbarView-title-separator, .urlbarView-type-icon, .urlbarView-action, .urlbarView-row-body-description, .urlbarView-row-body-bottom) {
+/* Başlığın altında küçük, soluk alan adı */
+:root:root:root[rigel-mod-quick-grid-grid] #urlbar:not([usertyping]) .urlbarView-row-body-top {
+  flex-direction: column !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 1px;
+}
+:root:root:root[rigel-mod-quick-grid-grid] #urlbar:not([usertyping]) .urlbarView-url {
+  display: block !important;
+  max-width: 100% !important;
+  font-size: 11px !important;
+  text-align: center;
+  color: var(--text-faint) !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+:root:root:root[rigel-mod-quick-grid-grid] #urlbar:not([usertyping]) :is(.urlbarView-title-separator, .urlbarView-type-icon, .urlbarView-action, .urlbarView-row-body-description, .urlbarView-row-body-bottom) {
   display: none !important;
 }
 /* Ada, Dock ve Komuta: adres paleti boşken açık sekmeler büyük simgeli karolar olur (adres çubuğunun yerine palet açılır) */
-:root:root:root[rigel-mod-quick-grid-grid]:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette:has(input:placeholder-shown) .rgl-pal-inner {
+:root:root:root[rigel-mod-quick-grid-grid]:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette:is([data-idle], :has(input:placeholder-shown)) .rgl-pal-inner {
   display: grid !important;
   grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)) !important;
   gap: 8px !important;
   padding: 2px 4px 6px !important;
 }
-:root:root:root[rigel-mod-quick-grid-grid]:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette:has(input:placeholder-shown) .rgl-pal-inner > :not(.rgl-pal-row[data-key^="t-"]) {
+:root:root:root[rigel-mod-quick-grid-grid]:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette:is([data-idle], :has(input:placeholder-shown)) .rgl-pal-inner > :not(.rgl-pal-row[data-key^="t-"]) {
   grid-column: 1 / -1;
 }
-:root:root:root[rigel-mod-quick-grid-grid]:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette:has(input:placeholder-shown) .rgl-pal-row[data-key^="t-"] {
+:root:root:root[rigel-mod-quick-grid-grid]:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette:is([data-idle], :has(input:placeholder-shown)) .rgl-pal-row[data-key^="t-"] {
+  display: flex !important;
   flex-direction: column !important;
   justify-content: center !important;
   gap: 8px !important;
@@ -83,10 +101,10 @@
   border-radius: 14px !important;
   background: color-mix(in srgb, var(--text) 4%, transparent);
 }
-:root:root:root[rigel-mod-quick-grid-grid]:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette:has(input:placeholder-shown) .rgl-pal-row[data-key^="t-"].sel {
+:root:root:root[rigel-mod-quick-grid-grid]:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette:is([data-idle], :has(input:placeholder-shown)) .rgl-pal-row[data-key^="t-"].sel {
   background: color-mix(in srgb, var(--accent) 22%, transparent) !important;
 }
-:root:root:root[rigel-mod-quick-grid-grid]:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette:has(input:placeholder-shown) .rgl-pal-row[data-key^="t-"] .ico {
+:root:root:root[rigel-mod-quick-grid-grid]:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette:is([data-idle], :has(input:placeholder-shown)) .rgl-pal-row[data-key^="t-"] .ico {
   width: 32px !important;
   height: 32px !important;
   padding: 6px;
@@ -94,17 +112,30 @@
   border-radius: 12px;
   background: color-mix(in srgb, var(--accent) 16%, var(--surface));
 }
-:root:root:root[rigel-mod-quick-grid-grid]:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette:has(input:placeholder-shown) .rgl-pal-row[data-key^="t-"] .ico > :is(img, svg, span) {
+:root:root:root[rigel-mod-quick-grid-grid]:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette:is([data-idle], :has(input:placeholder-shown)) .rgl-pal-row[data-key^="t-"] .ico > :is(img, svg, span) {
   width: 32px !important;
   height: 32px !important;
 }
-:root:root:root[rigel-mod-quick-grid-grid]:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette:has(input:placeholder-shown) .rgl-pal-row[data-key^="t-"] .t {
+:root:root:root[rigel-mod-quick-grid-grid]:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette:is([data-idle], :has(input:placeholder-shown)) .rgl-pal-row[data-key^="t-"] .t {
   flex: none !important;
   max-width: 100%;
   font-size: 12.5px;
   text-align: center;
 }
-:root:root:root[rigel-mod-quick-grid-grid]:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette:has(input:placeholder-shown) .rgl-pal-row[data-key^="t-"] :is(.sub, kbd) { display: none !important; }
+:root:root:root[rigel-mod-quick-grid-grid]:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette:is([data-idle], :has(input:placeholder-shown)) .rgl-pal-row[data-key^="t-"] kbd { display: none !important; }
+:root:root:root[rigel-mod-quick-grid-grid]:is([data-rigel-layout="ada"], [data-rigel-layout="dock"], [data-rigel-layout="komuta"]) #rigel-palette:is([data-idle], :has(input:placeholder-shown)) .rgl-pal-row[data-key^="t-"] .sub {
+  display: block !important;
+  grid-area: auto !important;
+  max-width: 100% !important;
+  margin-top: -5px;
+  font-size: 11px;
+  line-height: 1.3;
+  text-align: center;
+  color: var(--text-faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 /* Açıkken sayfa arkada bulanık */
 :root:root:root[rigel-mod-quick-grid-dim] #tabbrowser-tabbox::after {
   content: "";

@@ -6,6 +6,15 @@ import { allBangs, bangSettings, resolveTyped, searchEngine, refreshEngine } fro
 
 const GROUPS = { go: "", bang: "ARAMA KISAYOLLARI", tab: "SEKMELER", mark: "YER İMLERİ", hist: "GEÇMİŞ", cmd: "KOMUTLAR" };
 const fold = (s) => String(s ?? "").toLocaleLowerCase("tr").replace(/ı/g, "i");
+// Adres çubuğuna tıklayınca mevcut adres yazılmaz: yeni sekme/giriş sayfaları.
+const NO_PREFILL = /^(about:(newtab|home|blank|privatebrowsing)\b|chrome:\/\/rigel\/content\/(newtab|welcome)\/)/;
+/** İkinci satırda gösterilecek kısa adres: şema ve www. atılır, sondaki "/" düşer (geçmiş/yer imi). */
+const shortUrl = (url) => {
+  const s = String(url ?? "").replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
+  return s.length > 90 ? s.slice(0, 90) + "…" : s;
+};
+/** Sekme için ikinci satır: alan adı, web dışı sayfalarda şemalı kısa ad. */
+const tabHost = (url) => hostOf(url) || (/^chrome:\/\/rigel\//.test(url) ? "Rigel" : shortUrl(url)) || "sekme";
 const bangSite = (bang) => {
   try {
     const u = new URL(bang.url.replaceAll("%s", ""));
@@ -23,6 +32,8 @@ export function createPalette(win, registry) {
   let sugg = { query: null, rows: [] };
   let suggTimer = 0;
   let prevFocus = null;
+  let prefill = ""; // adres tıklamasıyla yazılan adres: kullanıcı dokunana (yazana/gezene) kadar sorgu sayılmaz
+  let navigated = false;
 
   refreshEngine();
   const engineObs = () => refreshEngine();
@@ -32,7 +43,7 @@ export function createPalette(win, registry) {
   function build() {
     input = el(doc, "input", {
       type: "text", spellcheck: "false", autocomplete: "off", placeholder: "Ara, adres yaz ya da komut seç…",
-      oninput: () => { selKey = null; update(); }, onkeydown: onKey,
+      oninput: () => { selKey = null; prefill = ""; update(); }, onkeydown: onKey,
     });
     inner = el(doc, "div", { class: "rgl-pal-inner" });
     list = el(doc, "div", { class: "rgl-pal-list" }, inner);
@@ -60,7 +71,13 @@ export function createPalette(win, registry) {
     root.hidden = false;
     root.setAttribute("mode", opts.mode);
     win.Rigel?.drawers?.close?.();
+    prefill = "";
+    navigated = false;
     input.value = o.query ?? "";
+    if (opts.fromAddress && !o.query && opts.mode === "all") {
+      const spec = gBrowser.selectedBrowser?.currentURI?.spec ?? "";
+      if (spec && !NO_PREFILL.test(spec)) input.value = prefill = spec;
+    }
     input.placeholder = opts.mode === "tabs" ? "Sekmelerde ara…" : opts.mode === "commands" ? "Komut ara…" : "Ara, adres yaz ya da komut seç…";
     selKey = null;
     update();
@@ -102,7 +119,7 @@ export function createPalette(win, registry) {
   }
 
   function compute() {
-    const raw = input.value.trim();
+    const raw = prefill && input.value === prefill ? "" : input.value.trim();
     let mode = opts.mode;
     let qRaw = raw;
     if (mode === "all" && raw.startsWith(">")) {
@@ -115,7 +132,7 @@ export function createPalette(win, registry) {
     const hit = mode === "all" && bangs.length ? parseBang(raw, bangSettings().customBangs) : null;
 
     // Yazılmakta olan sözcük "!" ile başlıyorsa bang öner (seçilince tamamlanır).
-    const typing = /(?:^|\s)!(\S*)$/.exec(input.value)?.[1];
+    const typing = raw ? /(?:^|\s)!(\S*)$/.exec(input.value)?.[1] : undefined;
     const suggested = [];
     if (bangs.length && typing !== undefined) {
       for (const { bang, alias } of suggestBangs(typing, bangs)) {
@@ -159,7 +176,7 @@ export function createPalette(win, registry) {
           if (!q && mode === "all" && t === gBrowser.selectedTab) continue;
           out.push({
             key: `t-${w === win ? "" : "w"}${t.linkedPanel || label}-${n}`, group: "tab", title: label,
-            sub: (hostOf(url) || "sekme") + (t.hasAttribute("pending") ? " · uyuyor" : ""),
+            sub: tabHost(url) + (t.hasAttribute("pending") ? " · uyuyor" : ""), tip: url,
             fav: { url, image: t.getAttribute("image") }, run: () => switchTo(t),
           });
           if (++n >= max) break outer;
@@ -176,7 +193,7 @@ export function createPalette(win, registry) {
         if (row.bm ? b++ >= 4 : h++ >= 6) continue;
         out.push({
           key: `${row.bm ? "b" : "h"}-${row.url}`, group: row.bm ? "mark" : "hist", title: row.title || hostOf(row.url) || row.url,
-          sub: hostOf(row.url) || row.url, fav: { url: row.url }, run: (o = {}) => navigate(row.url, o.newTab), nav: true,
+          sub: shortUrl(row.url), tip: row.url, fav: { url: row.url }, run: (o = {}) => navigate(row.url, o.newTab), nav: true,
         });
       }
     }
@@ -200,7 +217,7 @@ export function createPalette(win, registry) {
   function requestSuggestions() {
     const raw = input.value.trim();
     win.clearTimeout(suggTimer);
-    if (opts.mode !== "all" || !raw || raw.startsWith(">") || splitBang(raw)) return;
+    if (opts.mode !== "all" || !raw || (prefill && input.value === prefill) || raw.startsWith(">") || splitBang(raw)) return;
     if (sugg.query === raw) return;
     suggTimer = win.setTimeout(async () => {
       const rows = await queryPlaces(raw).catch((e) => (dump(`[rigel] öneriler: ${e}\n`), []));
@@ -212,6 +229,7 @@ export function createPalette(win, registry) {
 
   function update({ keepSuggest = false } = {}) {
     items = compute();
+    root.toggleAttribute("data-idle", !(prefill && input.value === prefill ? "" : input.value.trim()));
     if (!items.some((i) => i.key === selKey)) selKey = items[0]?.key ?? null;
     render();
     if (!keepSuggest) requestSuggestions();
@@ -227,8 +245,9 @@ export function createPalette(win, registry) {
       if (it.fav) ico = favicon(doc, it.fav, 18);
       else if (it.img) ico = el(doc, "img", { src: it.img, width: 18, height: 18, alt: "" });
       else ico = icon(doc, it.icon || "bolt", 16);
+      const two = !!it.sub && !it.kbd && (it.group === "tab" || it.group === "mark" || it.group === "hist");
       const row = el(doc, "div", {
-        class: "rgl-pal-row" + (it.key === selKey ? " sel" : ""), role: "option", "data-key": it.key,
+        class: "rgl-pal-row" + (two ? " two" : "") + (it.key === selKey ? " sel" : ""), role: "option", "data-key": it.key, ...(it.tip ? { title: it.tip } : {}),
         onmousemove: () => select(it.key), onclick: (e) => activate(it, { newTab: e.shiftKey || e.button === 1 }),
       },
       el(doc, "span", { class: "ico" }, ico),
@@ -251,6 +270,7 @@ export function createPalette(win, registry) {
   }
   function move(d) {
     if (!items.length) return;
+    navigated = true;
     const i = items.findIndex((x) => x.key === selKey);
     select(items[(i + d + items.length) % items.length].key);
     scrollSel();
@@ -273,6 +293,7 @@ export function createPalette(win, registry) {
       e.preventDefault(); e.stopPropagation(); close();
     } else if (e.key === "Enter") {
       e.preventDefault();
+      if (prefill && input.value === prefill && !navigated) return close(); // adrese dokunulmadı: Enter yalnız kapatır
       const raw = input.value.trim();
       if (e.ctrlKey && raw && opts.mode === "all" && !/[\s./:]/.test(raw)) {
         const r = resolveTyped(raw, { ctrl: true });

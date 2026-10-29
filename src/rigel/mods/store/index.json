@@ -151,7 +151,7 @@
       "name": "Hızlı erişim ızgarası",
       "description": "Adres çubuğuna tıklayınca açılan en çok ziyaret edilenler listesi büyük simgeli bir karo ızgarasına dönüşür; açıkken sayfa arkada bulanıklaşır. Ada, Dock ve Komuta'da adres paleti boşken açık sekmeler karo olur. İstersen Klasik'te araç çubuğu da incelir. (Zen \"Super Sleek UI\" modundan.)",
       "author": "lingais",
-      "version": "1.1.0",
+      "version": "1.1.2",
       "tags": [
         "adres çubuğu",
         "zen"
@@ -268,7 +268,7 @@
     {
       "id": "workspace-tint",
       "name": "Alana göre renk",
-      "description": "Arayüzün rengini etkin alana bağlar: Kişisel alan bir renk, diğer alanlar başka bir renk alır (şeritler, araç çubuğu, menüler, alan çipi); şeridin altında alan renginde çizgi. Alan değiştirince (Ctrl+Alt+1..9) renk de değişir. Vurgu tonu ile aynı renkleri değiştirdiğinden birlikte açma. Bütün düzenlerde.",
+      "description": "Arayüzün rengini etkin alana bağlar: Kişisel alan bir renk, diğer alanlar başka bir renk alır (şeritler, araç çubuğu, menüler, alan çipi); şeridin altında alan renginde çizgi. Alan değiştirince (Ctrl+Alt+1..9) renk de değişir. Bütün düzenlerde.",
       "author": "Rigel",
       "version": "2.0.1",
       "tags": [
@@ -284,31 +284,7 @@
       },
       "license": "MPL-2.0",
       "category": "renk",
-      "summary": "Arayüz rengi etkin alana (Ctrl+Alt+1..9) göre değişir",
-      "conflicts": [
-        "accent-chrome"
-      ]
-    },
-    {
-      "id": "essential-toolbar",
-      "name": "Gizlenen düğmeler",
-      "description": "Az kullanılan düğmeleri gizler, bulundukları çubuğun üstüne gelince yumuşakça geri getirir: eklenti düğmeleri, kullanılmayan (soluk) geri/ileri, adres çubuğundaki simgeler (okuma modu, yıldız, izinler) ve isteğe bağlı pencere düğmeleri. Ada adası, Dock ve Komuta şeritleri ile Yan Panel'in üstündeki pencere düğmeleri dahil.",
-      "author": "Rigel",
-      "version": "2.1.0",
-      "tags": [
-        "araç çubuğu",
-        "sade"
-      ],
-      "target": "chrome",
-      "homepage": "",
-      "preview": "essential-toolbar/preview.png",
-      "files": {
-        "mod.json": "essential-toolbar/mod.json",
-        "chrome.css": "essential-toolbar/chrome.css"
-      },
-      "license": "MPL-2.0",
-      "category": "arac",
-      "summary": "Eklenti, geri/ileri, pencere düğmeleri üstüne gelince çıkar"
+      "summary": "Arayüz rengi etkin alana (Ctrl+Alt+1..9) göre değişir"
     },
     {
       "id": "reader-content",
@@ -333,31 +309,6 @@
       "summary": "Web yazılarına okuma yazı tipi, ferah satır, ince bağlantı"
     },
     {
-      "id": "accent-chrome",
-      "name": "Vurgu tonu",
-      "description": "Bütün arayüzü vurgu renginin hafif tonuna boyar: şeritler, araç çubuğu, paneller ve menüler. Vurgu rengini değiştirince ton da değişir. İsteğe bağlı: şeritte degrade ve vurgu renkli ayırıcı çizgiler. Alana göre renk ile aynı renkleri değiştirir; birlikte açma. Bütün düzenlerde.",
-      "author": "Rigel",
-      "version": "1.0.1",
-      "tags": [
-        "renk",
-        "görünüm"
-      ],
-      "target": "chrome",
-      "homepage": "",
-      "preview": "accent-chrome/preview.png",
-      "files": {
-        "mod.json": "accent-chrome/mod.json",
-        "chrome.css": "accent-chrome/chrome.css"
-      },
-      "license": "MPL-2.0",
-      "category": "renk",
-      "summary": "Bütün arayüz seçili vurgu renginin tonuna boyanır",
-      "conflicts": [
-        "workspace-tint",
-        "aura"
-      ]
-    },
-    {
       "id": "tab-numbers",
       "name": "Sekme numaraları",
       "description": "Her sekmenin önünde sıra numarası: Ctrl+1 … Ctrl+8 kısayolunun hangi sekmeye gittiğini gösterir. Klasik ve Yan Panel'de rozet, sade sayı ya da köşe etiketi; Ada yıldızlarında ve Dock sekmelerinde simgenin köşesinde küçük sayı; sekme panelinde (Komuta'da sekmelerin yeri) arama boşken her satırda.",
@@ -377,27 +328,6 @@
       "license": "MPL-2.0",
       "category": "sekme",
       "summary": "Sekmelerde Ctrl+1…8 kısayolunun sıra numarası rozeti"
-    },
-    {
-      "id": "lively-toolbar",
-      "name": "Zıplayan düğmeler",
-      "description": "Yalnız üzerine gelince çalışan küçük düğme hareketleri: düğmeler yükselip vurgu rengiyle parlar, basınca içe çöker; yeni sekme \"+\" döner, yenile bir tur atar, adres alanı vurgu halkası alır, sekmeler (Ada yıldızları, Dock sekmeleri dahil) kalkar. Ada, Dock, Komuta ve Yan Panel'in kendi düğmelerinde de. \"Hareketi azalt\" açıksa durur.",
-      "author": "Rigel",
-      "version": "1.1.0",
-      "tags": [
-        "animasyon",
-        "araç çubuğu"
-      ],
-      "target": "chrome",
-      "homepage": "",
-      "preview": "lively-toolbar/preview.png",
-      "files": {
-        "mod.json": "lively-toolbar/mod.json",
-        "chrome.css": "lively-toolbar/chrome.css"
-      },
-      "license": "MPL-2.0",
-      "category": "animasyon",
-      "summary": "Düğmeler üstüne gelince yükselip vurgu rengiyle parlar"
     },
     {
       "id": "tab-loadbar",
@@ -469,8 +399,7 @@
       "category": "cam",
       "summary": "Sekme şeridi ve araç çubuğu renk tonlu buzlu cam olur",
       "conflicts": [
-        "aura",
-        "transparent-window"
+        "aura"
       ]
     },
     {
@@ -516,9 +445,7 @@
       "category": "renk",
       "summary": "Şeritler ve seçili sekme iki renkli canlı gradyan olur",
       "conflicts": [
-        "glass-window",
-        "transparent-window",
-        "accent-chrome"
+        "glass-window"
       ]
     },
     {
@@ -566,54 +493,6 @@
       },
       "category": "animasyon",
       "summary": "Sekme açılışı, menü, palet ve sayfa geçişi yaylı sıçrar"
-    },
-    {
-      "id": "breathing-accent",
-      "name": "Nabız parıltısı",
-      "description": "Etkin sekmenin (Ada'da yıldız, Dock'ta sekme düğmesi, Komuta'da adres kırıntısı), odaklı adres çubuğunun ve paletin çevresinde yavaşça nabız gibi atan bir parıltı; yüklenen sekmede ışık çizgisi soldan sağa akar. Renk vurgudan gelebilir ya da seçilir; hız ve parıltı ayarlanır. Yalnız filter, transform ve opacity; \"hareketi azalt\" iken yalnız sabit parıltı. Bütün düzenlerde.",
-      "author": "Rigel",
-      "version": "1.0.1",
-      "tags": [
-        "animasyon",
-        "vurgu",
-        "parıltı"
-      ],
-      "target": "chrome",
-      "preview": "breathing-accent/preview.png",
-      "license": "MPL-2.0",
-      "files": {
-        "mod.json": "breathing-accent/mod.json",
-        "chrome.css": "breathing-accent/chrome.css"
-      },
-      "category": "animasyon",
-      "summary": "Etkin sekme, adres ve palet çevresinde nabız gibi atan ışık"
-    },
-    {
-      "id": "transparent-window",
-      "name": "Masaüstü saydamlığı",
-      "description": "Gerçek pencere saydamlığı: pencerenin arka planı, şeritler (Yan Panel'de sol sütun) ve istersen sayfa da saydamlaşır, masaüstü arkadan görünür. KDE'de bulanıklık için Bulanıklık efekti açık olmalı ve Rigel penceresine \"Bulanıklığı zorla\" pencere kuralı verilmelidir. Mod Firefox'un saydam pencere tercihlerini ayarlar, kapanınca eski değerlerine döndürür; gerekirse yeniden başlatma ister. Rigel ile gelen sınırlı bir betik çalıştırır.",
-      "author": "Rigel",
-      "version": "1.1.0",
-      "tags": [
-        "şeffaflık",
-        "pencere",
-        "davranış"
-      ],
-      "target": "chrome",
-      "preview": "transparent-window/preview.png",
-      "license": "MPL-2.0",
-      "files": {
-        "mod.json": "transparent-window/mod.json",
-        "chrome.css": "transparent-window/chrome.css",
-        "chrome.mjs": "transparent-window/chrome.mjs",
-        "chrome.yanpanel.css": "transparent-window/chrome.yanpanel.css"
-      },
-      "category": "cam",
-      "summary": "Pencere yarı saydam olur, arkadaki masaüstü görünür",
-      "conflicts": [
-        "glass-window",
-        "aura"
-      ]
     },
     {
       "id": "frosted-panels",

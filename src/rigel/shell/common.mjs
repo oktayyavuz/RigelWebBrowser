@@ -378,7 +378,7 @@ export function bindTab(win, node, tab) {
 export function openAddress(win, opts) {
   const pal = win.Rigel?.palette;
   if (pal?.open) {
-    pal.open(opts);
+    pal.open({ fromAddress: true, ...opts });
     return;
   }
   revealUrlbar(win);

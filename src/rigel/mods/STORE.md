@@ -2,7 +2,7 @@
 
 Mod = birkaç JSON ve CSS dosyası, isteğe bağlı olarak sınırlı bir JS betiği (`chrome.mjs`). Mağaza, bu dosyaların bir listesini (`index.json`) okur ve seçtiğin modu profildeki `rigel-mods/<id>/` klasörüne kurar. Betik yalnız Rigel ile gelen yerleşik katalogdan doğrudan çalışır; uzak ya da bağlantıdan gelen betik, kullanıcı "Bu mod kod çalıştırır" uyarısını onaylamadan indirilmez ve etkinleşmez (aşağıda "Betik (davranış modları)").
 
-Esinlenme: Zen theme-store (`themes.json`, `theme.json`, `chrome.css`, `preferences.json`). Yerleşik mağazadaki 21 moddan 9'u Zen mağazasındaki MIT lisanslı modların Rigel uyarlamasıdır (aşağıda "Zen modlarını Rigel'e uyarlama").
+Esinlenme: Zen theme-store (`themes.json`, `theme.json`, `chrome.css`, `preferences.json`). Yerleşik mağazadaki 22 moddan 9'u Zen mağazasındaki MIT lisanslı modların Rigel uyarlamasıdır (aşağıda "Zen modlarını Rigel'e uyarlama").
 
 ## Katalog kaynakları
 | Kaynak | Nerede | Not |

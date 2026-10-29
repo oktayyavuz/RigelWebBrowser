@@ -42,7 +42,6 @@
   "category": "cam",
   "summary": "Sekme şeridi ve araç çubuğu renk tonlu buzlu cam olur",
   "conflicts": [
-    "aura",
-    "transparent-window"
+    "aura"
   ]
 }
