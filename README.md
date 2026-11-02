@@ -22,11 +22,6 @@ Ayrıntılı durum ve bilinen eksikler: [docs/DURUM.md](docs/DURUM.md). Plan: [d
 
 ## Ekran görüntüleri
 
-<p align="center">
-  <img src="docs/ekran/ada.png" alt="Ada düzeni" width="900"><br>
-  <sub><b>Ada</b> Tek üst şerit: sekmeler küçük ikonlar olarak durur, adres ortadaki adada yer alır; sayfa ekranı doldurur.</sub>
-</p>
-
 <table>
   <tr>
     <td width="50%" valign="top">
@@ -186,7 +181,7 @@ scripts/build.sh [linux|windows|all]     # varsayılan: all; çıktılar dist/ a
 - *Windows setup.exe:* çift tıklayın (imzasız olduğu için SmartScreen uyarısı çıkabilir). `%LOCALAPPDATA%\Programs\Rigel` altına kurar, profil `%LOCALAPPDATA%\Rigel\profile`; "Varsayılan uygulamalar" listesine Rigel'i ekler (varsayılanı kendiliğinden değiştirmez). Kaldırırken profilin silinip silinmeyeceği sorulur (varsayılan: korunur).
 - *Windows zip:* herhangi bir klasöre açıp `Rigel.cmd`'yi çalıştırın; profil `%LOCALAPPDATA%\Rigel\profile`.
 
-**Sürüm yayımlamak:** `VERSION`'ı güncelleyip `v<sürüm>` etiketi itilince `.github/workflows/release.yml` aynı betiği çalıştırıp `dist/*`'ı GitHub Sürümü olarak yükler (henüz hiç çalıştırılmadı).
+**Sürüm yayımlamak:** `VERSION`'ı güncelleyip `scripts/build.sh all` ile derleyin, `dist/*`'ı `gh release create v<sürüm>` ile yükleyin. `.github/workflows/release.yml` aynı adımları GitHub'da elle (Actions › Sürüm › Run workflow) çalıştırır; henüz denenmedi.
 
 **Sınırlar:** Windows paketleri Windows'ta çalıştırılarak denenmedi; yalnız wine altında (derleme, sessiz kurulum, Firefox'un başsız açılışında Rigel'in yüklenmesi) doğrulandı. Paketler imzasızdır. Firefox otomatik güncellenmez (`DisableAppUpdate`); yeni Firefox için `FIREFOX_VERSION` değiştirip yeniden derleyin.
 
