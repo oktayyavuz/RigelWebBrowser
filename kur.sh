@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # Rigel hızlı kurulum ve güncelleme (Linux x86_64). Yazar: Oktay Yavuz
 #
-#   curl -fsSL https://raw.githubusercontent.com/oktayyavuz/rigeldesktop/main/kur.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/oktayyavuz/RigelWebBrowser/main/kur.sh | bash
 #
 # GitHub'daki son sürümü indirir, SHA256SUMS ile doğrular ve arşivin kendi install.sh'ını çalıştırır.
 # Root gerekmez; her şey ~/.local/share/rigel altına kurulur, profil korunur. Tekrar çalıştırmak = güncelleme.
 set -euo pipefail
 
-REPO="oktayyavuz/rigeldesktop"
+REPO="oktayyavuz/RigelWebBrowser"
 BASE="https://github.com/$REPO/releases/latest/download"
 
 hata() { printf '\033[31m✗ Hata:\033[0m %s\n' "$*" >&2; exit 1; }

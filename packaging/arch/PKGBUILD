@@ -3,7 +3,7 @@
 # Rigel: Firefox tabanlı, Zen'den esinli kişisel tarayıcı.
 # Bu PKGBUILD depodan çalıştırılır (kaynak dosyalar ../.. altındadır):
 #
-#   gh repo clone oktayyavuz/rigeldesktop && cd rigeldesktop/packaging/arch
+#   gh repo clone oktayyavuz/RigelWebBrowser && cd RigelWebBrowser/packaging/arch
 #   makepkg -si
 #
 # Firefox, Mozilla'nın resmî Türkçe x86_64 arşivinden indirilir (sha256 aşağıda sabitlenmiştir) ve
@@ -18,7 +18,7 @@ pkgrel=1
 _ffver=158.0.1
 pkgdesc='Rigel: Firefox tabanlı, Zen tarzı kişisel web tarayıcısı (Mozilla Firefox ikilisi + Rigel arayüzü)'
 arch=('x86_64')
-url='https://github.com/oktayyavuz/rigeldesktop'
+url='https://github.com/oktayyavuz/RigelWebBrowser'
 license=('MPL-2.0')
 depends=(
   'alsa-lib'

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Rigel kurulumu (Linux, x86_64). Root gerekmez; her şey kullanıcı dizinine kurulur.
 #
-#   gh repo clone oktayyavuz/rigeldesktop && cd rigeldesktop && ./install.sh
+#   gh repo clone oktayyavuz/RigelWebBrowser && cd RigelWebBrowser && ./install.sh
 #
 # Ne yapar:
 #   1. Mozilla'dan sabitlenmiş Firefox sürümünü (FIREFOX_VERSION, Türkçe) indirir, SHA256'sını SHA256SUMS ile doğrular.

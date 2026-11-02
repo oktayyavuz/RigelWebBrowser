@@ -10,7 +10,7 @@ pkgrel=1
 _ffver=158.0.1
 pkgdesc='Firefox tabanlı, Zen tarzı web tarayıcısı (Türkçe arayüz)'
 arch=('x86_64')
-url='https://github.com/oktayyavuz/rigeldesktop'
+url='https://github.com/oktayyavuz/RigelWebBrowser'
 license=('MPL-2.0' 'MIT')
 provides=('rigel-browser')
 conflicts=('rigel-browser')
@@ -25,12 +25,12 @@ optdepends=(
   'hunspell-tr: Türkçe yazım denetimi'
 )
 options=('!strip' '!debug')
-source=("rigeldesktop-${pkgver}.tar.gz::https://github.com/oktayyavuz/rigeldesktop/archive/refs/tags/v${pkgver}.tar.gz"
+source=("RigelWebBrowser-${pkgver}.tar.gz::https://github.com/oktayyavuz/RigelWebBrowser/archive/refs/tags/v${pkgver}.tar.gz"
         "firefox-${_ffver}.tar.xz::https://archive.mozilla.org/pub/firefox/releases/${_ffver}/linux-x86_64/tr/firefox-${_ffver}.tar.xz")
-sha256sums=('eee8c38797c4533b6ec0258232b01675d0a6218a121807ae5a17010d26a616bf'
+sha256sums=('1fa040e47085be77c38af88fe356413c12ef597f590f5b89be6572d2337f425a'
             '3de87bf6ad8b2b12371f79a61301eb7cc1a14072de96eff787c1fd01f220d305')
 
-_src="rigeldesktop-${pkgver}"
+_src="RigelWebBrowser-${pkgver}"
 
 prepare() {
   local v; v="$(tr -d '[:space:]' < "$_src/FIREFOX_VERSION")"

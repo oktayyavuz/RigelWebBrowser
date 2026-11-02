@@ -1,6 +1,6 @@
 # Rigel hızlı kurulum ve güncelleme (Windows x64). Yazar: Oktay Yavuz
 #
-#   irm https://raw.githubusercontent.com/oktayyavuz/rigeldesktop/main/kur.ps1 | iex
+#   irm https://raw.githubusercontent.com/oktayyavuz/RigelWebBrowser/main/kur.ps1 | iex
 #
 # GitHub'daki son sürümün kurulum programını indirir, SHA256SUMS ile doğrular ve çalıştırır.
 # Yönetici izni gerekmez (kullanıcı başına kurulum). Tekrar çalıştırmak = güncelleme; profil korunur.
@@ -8,7 +8,7 @@ $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
-$base = 'https://github.com/oktayyavuz/rigeldesktop/releases/latest/download'
+$base = 'https://github.com/oktayyavuz/RigelWebBrowser/releases/latest/download'
 $tmp = Join-Path $env:TEMP ('rigel-' + [guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $tmp | Out-Null
 try {

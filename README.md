@@ -73,22 +73,22 @@ Everything Firefox does (codecs, extensions, Picture-in-Picture) keeps working a
 **Linux (x86_64):** downloads the latest release, checks its SHA256 and installs it. Run it again to update.
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/oktayyavuz/rigeldesktop/main/kur.sh | bash
+curl -fsSL https://raw.githubusercontent.com/oktayyavuz/RigelWebBrowser/main/kur.sh | bash
 ```
 
 **Windows (x64, PowerShell):** downloads, verifies and runs the latest installer. No admin rights needed.
 
 ```powershell
-irm https://raw.githubusercontent.com/oktayyavuz/rigeldesktop/main/kur.ps1 | iex
+irm https://raw.githubusercontent.com/oktayyavuz/RigelWebBrowser/main/kur.ps1 | iex
 ```
 
 **Arch Linux:** the AUR package isn't published yet. Until then you can build it from the PKGBUILD in this repo:
 
 ```bash
-git clone https://github.com/oktayyavuz/rigeldesktop && cd rigeldesktop/packaging/aur && makepkg -si
+git clone https://github.com/oktayyavuz/RigelWebBrowser && cd RigelWebBrowser/packaging/aur && makepkg -si
 ```
 
-Ready-made files (tar.xz, AppImage, Windows installer and zip) are on the [Releases](https://github.com/oktayyavuz/rigeldesktop/releases/latest) page.
+Ready-made files (tar.xz, AppImage, Windows installer and zip) are on the [Releases](https://github.com/oktayyavuz/RigelWebBrowser/releases/latest) page.
 
 | File | How to use |
 |---|---|
@@ -102,8 +102,8 @@ The profile lives in `~/.local/share/rigel/profile` on Linux and `%LOCALAPPDATA%
 ### From source (Linux)
 
 ```bash
-git clone https://github.com/oktayyavuz/rigeldesktop
-cd rigeldesktop
+git clone https://github.com/oktayyavuz/RigelWebBrowser
+cd RigelWebBrowser
 ./install.sh
 ```
 

@@ -8,7 +8,7 @@
   Yonetici hakki gerektirmez. Varsayilan tarayiciyi DEGISTIRMEZ.
 
   Depo klonundan calistirin:
-    gh repo clone oktayyavuz/rigeldesktop; cd rigeldesktop
+    gh repo clone oktayyavuz/RigelWebBrowser; cd RigelWebBrowser
     powershell -ExecutionPolicy Bypass -File packaging\windows\install.ps1
 
 .PARAMETER RigelHome

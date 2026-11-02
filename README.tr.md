@@ -73,22 +73,22 @@ Firefox'un yaptığı her şey (kodekler, eklentiler, resim içinde resim) oldu�
 **Linux (x86_64):** son sürümü indirir, SHA256 ile doğrular ve kurar. Tekrar çalıştırmak günceller.
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/oktayyavuz/rigeldesktop/main/kur.sh | bash
+curl -fsSL https://raw.githubusercontent.com/oktayyavuz/RigelWebBrowser/main/kur.sh | bash
 ```
 
 **Windows (x64, PowerShell):** son kurulum programını indirir, doğrular ve çalıştırır. Yönetici izni gerekmez.
 
 ```powershell
-irm https://raw.githubusercontent.com/oktayyavuz/rigeldesktop/main/kur.ps1 | iex
+irm https://raw.githubusercontent.com/oktayyavuz/RigelWebBrowser/main/kur.ps1 | iex
 ```
 
 **Arch Linux:** AUR paketi henüz yayımlanmadı. O zamana kadar depodaki PKGBUILD ile derleyebilirsin:
 
 ```bash
-git clone https://github.com/oktayyavuz/rigeldesktop && cd rigeldesktop/packaging/aur && makepkg -si
+git clone https://github.com/oktayyavuz/RigelWebBrowser && cd RigelWebBrowser/packaging/aur && makepkg -si
 ```
 
-Hazır dosyalar (tar.xz, AppImage, Windows kurulum programı ve zip) [Sürümler](https://github.com/oktayyavuz/rigeldesktop/releases/latest) sayfasında.
+Hazır dosyalar (tar.xz, AppImage, Windows kurulum programı ve zip) [Sürümler](https://github.com/oktayyavuz/RigelWebBrowser/releases/latest) sayfasında.
 
 | Dosya | Kullanım |
 |---|---|
@@ -102,8 +102,8 @@ Profil Linux'ta `~/.local/share/rigel/profile`, Windows'ta `%LOCALAPPDATA%\Rigel
 ### Kaynaktan kurulum (Linux)
 
 ```bash
-git clone https://github.com/oktayyavuz/rigeldesktop
-cd rigeldesktop
+git clone https://github.com/oktayyavuz/RigelWebBrowser
+cd RigelWebBrowser
 ./install.sh
 ```
 
