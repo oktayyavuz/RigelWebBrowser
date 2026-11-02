@@ -7,6 +7,7 @@ import {
 import { BUILTIN_BANGS, normalizeTrigger, normalizeCustomBangs } from "chrome://userscripts/content/search/bangs.mjs";
 import { modlar } from "./mods.mjs";
 import { studio } from "./studio.mjs";
+import { yeniSekme } from "./newtab.mjs";
 import { ACTIONS } from "chrome://userscripts/content/search/keymap.mjs";
 
 const P = Services.prefs;
@@ -23,7 +24,12 @@ function gorunum() {
       row({ id: "layout", label: "Düzen", desc: "Seçtiğin düzen hemen uygulanır. Ctrl Shift L ile de değiştirebilirsin.", keywords: "düzen ada dock komuta yan panel klasik layout", control: layoutPicker(), stack: true })),
     card("Renkler",
       row({ id: "theme", label: "Tema", desc: "Sistem, işletim sisteminin açık/koyu ayarını izler.", keywords: "koyu açık karanlık dark light sistem tema", control: themeSeg() }),
-      row({ id: "accent", label: "Vurgu rengi", keywords: "renk accent mavi mor yeşil turuncu pembe", control: accentPicker() })),
+      row({ id: "accent", label: "Vurgu rengi", keywords: "renk accent mavi mor yeşil turuncu pembe", control: accentPicker() }),
+      row({ id: "appColors", label: "Uygulama renkleri", desc: "Arka plan, çubuklar, yüzeyler, yazı ve soluk yazı renklerini kendin seç; temaya göre saklanır, canlı önizlenir.", keywords: "renk özel arka plan çubuk yüzey yazı kontrast uygulama renkleri color picker",
+        control: btn("Renkleri özelleştir", () => { location.hash = "studyo/renkler"; }, "soft", "brush") })),
+    card("Yeni sekme",
+      row({ id: "newtabLink", label: "Yeni sekme sayfası", desc: "Düzeni, parçaları, kısayolları ve arka plan fotoğrafını değiştir.", keywords: "yeni sekme ana sayfa düzenle arka plan fotoğraf kısayol",
+        control: btn("Yeni sekmeyi özelleştir", () => { location.hash = "yenisekme"; }, "soft", "arrow") })),
     card("Kabuk",
       row({ id: "compact", label: "Kompakt mod", desc: "Üst şerit ve kenar çubuğu imleç kenara gelince açılır; sayfa tüm alanı kullanır.", keywords: "kompakt gizle otomatik zen compact",
         control: toggle("rigel.compact") }),
@@ -484,6 +490,7 @@ export const GROUPS = {
 export const SECTIONS = [
   { id: "gorunum", group: "kisisel", title: "Görünüm", icon: "layout", description: "Düzen, tema ve vurgu rengiyle Rigel'i kendine göre ayarla.", build: gorunum },
   { id: "studyo", group: "kisisel", title: "Görünüm stüdyosu", icon: "edit", description: "Köşeler, yoğunluk, yazı, sekme biçimi, arka plan ve hazır tema paketleri. Her değişiklik anında uygulanır.", build: studio },
+  { id: "yenisekme", group: "kisisel", title: "Yeni sekme", icon: "home", description: "Yeni sekme sayfasının düzeni, parçaları, kısayolları ve arka planı. Sayfadaki Düzenle düğmesiyle de değişir.", build: yeniSekme },
   { id: "modlar", group: "kisisel", title: "Modlar", icon: "brush", description: "CSS modlarıyla arayüzü ve web sayfalarını kendine göre biçimlendir.", build: modlar },
   { id: "kisayollar", group: "kisisel", title: "Kısayollar", icon: "keyboard", description: "Klavye kısayollarını değiştir, kapat ya da sıfırla.", build: kisayollar },
   { id: "arama", group: "genel", title: "Arama", icon: "search", description: "Adres çubuğundan yapılan aramaların gideceği motor ve !kısayollar.", build: arama },

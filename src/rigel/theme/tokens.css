@@ -87,3 +87,24 @@
 :root[rigel-look-shadow="3"] { --shadow: 0 30px 90px rgba(0, 0, 0, 0.75); --shadow-sm: 0 12px 36px rgba(0, 0, 0, 0.55); }
 :root[data-rigel-theme="light"][rigel-look-shadow="2"] { --shadow: 0 22px 64px rgba(20, 30, 50, 0.24); --shadow-sm: 0 8px 26px rgba(20, 30, 50, 0.2); }
 :root[data-rigel-theme="light"][rigel-look-shadow="3"] { --shadow: 0 30px 90px rgba(20, 30, 50, 0.32); --shadow-sm: 0 12px 36px rgba(20, 30, 50, 0.28); }
+
+/* ---- Brütal: sayfalarda kalın çizgi / sert gölge (theme/look.mjs öznitelikleri yazar; yalnız sayfalar: initPage data-rigel-page koyar, tokens.css pencereye de yüklenir) ------------------ */
+:root[data-rigel-page][rigel-look-border] :is(.card, .btn, .pbtn, .search, .seg, .pack, .mcard, .lcard, .toast, .dlg, .site a, .chip, .bcard, .notice, .cprev, .mock,
+  .bitem, .krow, .bang, .pv, textarea, select, input:is([type="text"], [type="search"], [type="url"], [type="time"], :not([type]))) {
+  border: var(--rigel-bw) solid var(--rigel-ink);
+  border-radius: var(--rigel-radius, 0);
+}
+:root[data-rigel-page][rigel-look-border] .search input { border: 0; }
+:root[data-rigel-page][rigel-look-border] :is(.ic, .tool, .letter, .quick a, .editbtn, .sbadge, .sugg, .sugg button, .stepper, .stepper button, .ptext, .seg button) { border-radius: var(--rigel-radius, 0); }
+:root[data-rigel-page][rigel-look-border] :is(.quick a svg, .letter) { color: var(--text); }
+:root[data-rigel-page][rigel-look-border] .panel { border-left: var(--rigel-bw) solid var(--rigel-ink); }
+:root[data-rigel-page][rigel-look-border] :is(.btn, .pbtn):not(.ghost):not(.soft) { color: var(--accent-ink); }
+:root[data-rigel-page][rigel-look-border] :is(.btn, .pbtn):hover { transform: translate(-1px, -1px); }
+:root[data-rigel-page][rigel-look-border] :is(.btn, .pbtn):active { transform: translate(2px, 2px); box-shadow: none; }
+:root[data-rigel-page][rigel-look-hard] :is(.card, .btn, .pbtn, .search, .seg, .pack, .mcard, .lcard, .dlg, .site a, .chip, .bcard, .mock, .cprev) { box-shadow: var(--rigel-hard-sm, none); }
+:root[data-rigel-page][rigel-look-hard] .site a:hover { transform: translate(-2px, -2px); }
+:root[data-rigel-page][rigel-look-border] :is(.seg button.on, .swatch.on, .chip.on, .nav a.on, .links a.on) { background: var(--accent) !important; color: var(--accent-ink) !important; }
+:root[data-rigel-page][rigel-look-bold] :is(h1, h2, h3, b, strong, .time, .chead h2, .phead h2) { font-weight: 800; }
+:root[data-rigel-page][rigel-look-bold] body { letter-spacing: -0.005em; }
+:root[data-rigel-page][rigel-look-border] :is(.lgroup.hot, .links a svg, .nav a svg) { color: var(--text); }
+:root[data-rigel-page][rigel-look-border] :is(.links a.on, .nav a.on) :is(svg, span, b) { color: var(--accent-ink); }

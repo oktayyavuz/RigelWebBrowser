@@ -1,7 +1,8 @@
 // Ayarlar › Görünüm stüdyosu. Her denetim `rigel.look`'a yazar (kaydırıcılar ~60 ms
 // birleştirilir); pencereler ve bu sayfa theme/look.mjs ile tercihi canlı izler. Üstte gerçek ölçülerle
 // çizilen şerit maketi, altında hazır/kullanıcı paketleri ve tek tek ayarlar.
-import { h, icon, getPref, setPref, watch, seg, select, row, card, notify, range, colorInput, debounce } from "./ui.mjs";
+import { h, icon, getPref, setPref, watch, toggle, seg, select, row, card, notify, range, colorInput, debounce, accentPicker, themeSeg } from "./ui.mjs";
+import * as NewtabCfg from "../newtab/config.mjs";
 import * as Look from "chrome://userscripts/content/theme/look.mjs";
 import * as Packs from "chrome://userscripts/content/theme/packs.mjs";
 import * as Bg from "chrome://userscripts/content/theme/bg.mjs";
@@ -22,12 +23,13 @@ const val = k => cur()[k] ?? D[k];
 const bgOf = () => ({ ...D.bg, ...(cur().bg ?? {}) });
 const putBg = changes => put("bg", { ...bgOf(), ...changes });
 
+const resolvedTheme = () => (document.documentElement.getAttribute("data-rigel-theme") === "light" ? "light" : "dark");
 const ACCENT_HEX = { rigel: "#5fa9dd", violet: "#9b8cf0", green: "#4fbf8f", orange: "#f2a06b", pink: "#e879b0", teal: "#3cc4c0", indigo: "#8191f7", red: "#ef6461", amber: "#e9b44c", lime: "#9ccf55", slate: "#a3adbf" };
 const TS_ASCII = { "kart": "kart", "hap": "hap", "çizgi": "cizgi", "düz": "duz" };
 // Önizleme kartında sayfa kökünden miras alınmaması için tüm stüdyo değişkenleri açıkça yazılır.
 const ALL_VARS = ["--rigel-radius", "--rigel-radius-sm", "--rigel-pill-radius", "--rigel-space", "--rigel-tabbar-h", "--rigel-tab-h", "--rigel-navbar-h",
   "--rigel-urlbar-h", "--rigel-row-h", "--rigel-bookmarks-height", "--rigel-font-size", "--rigel-bg-image", "--rigel-glass", "--rigel-strip-bg",
-  "--rigel-surface-bg", "--rigel-glass-filter", "--rigel-tab-width", "--accent", "--accent-2", "--accent-ink", "--font"];
+  "--rigel-surface-bg", "--rigel-glass-filter", "--rigel-tab-width", "--rigel-bw", "--rigel-ink", "--rigel-hard-sm", "--accent", "--accent-2", "--accent-ink", "--font"];
 
 /** Şerit maketi: gerçek pencerenin kullandığı değişkenlerle çizilir. */
 function mock(mini = false) {
@@ -43,10 +45,15 @@ function mock(mini = false) {
 function packPreview(pack) {
   const el = mock(true);
   const full = { radius: D.radius, density: D.density, fontSize: D.fontSize, tabWidth: D.tabWidth, ...pack.look };
-  const { vars } = Look.compute(full);
+  const theme = resolvedTheme();
+  const { vars } = Look.compute(full, theme);
   for (const name of ALL_VARS) el.style.setProperty(name, name in vars ? vars[name] : "initial");
+  // Renk belirteçleri sayfa kökünden (kullanıcının özel renklerinden) yalıtılır: paketin rengi ya da temanın varsayılanı.
+  for (const [name, def] of Object.entries(Look.TOKEN_DEFAULTS[theme])) el.style.setProperty(name, vars[name] ?? def);
+  if (vars["color-scheme"]) el.style.setProperty("color-scheme", vars["color-scheme"]);
+  el.style.setProperty("--shadow-sm", vars["--shadow-sm"] ?? "none");
   if (!pack.look.font || pack.look.font === "system") el.style.setProperty("--font", Look.FONTS.system[1]);
-  if (!pack.look.accentCustom) {
+  if (!vars["--accent"]) {
     const a = ACCENT_HEX[pack.accent ?? getPref("rigel.accent", "rigel")] ?? ACCENT_HEX.rigel;
     el.style.setProperty("--accent", a);
   }
@@ -168,10 +175,8 @@ function studio() {
       if (b.blur) await Bg.ensureBlur(document, file, b.blur);
       putBg({ type: "image", file });
       notify("Görsel arka plan uygulandı.");
-      // Eski görseller: şu an, geri al yedeği ve kullanıcı paketlerinde kullanılanlar dışındakiler silinir.
-      const keep = [file, ...Packs.userPacks().map(p => p.look.bg?.file)];
-      try { keep.push(JSON.parse(getPref(Look.UNDO_PREF, "{}"))?.look?.bg?.file); } catch {}
-      setTimeout(() => Bg.prune(keep).catch(() => {}), 500);
+      // Eski görseller: şu an, geri al yedeği, kullanıcı paketleri ve yeni sekmede kullanılanlar dışındakiler silinir.
+      NewtabCfg.pruneLater();
     } catch (e) {
       notify("Görsel eklenemedi: " + e.message, false);
     }
@@ -205,18 +210,12 @@ function studio() {
   syncBg();
   watch(names, syncBg);
 
-  const accOn = h("input", { type: "checkbox", class: "switch", role: "switch" });
-  const accColor = colorInput({ get: () => val("accentCustom") || ACCENT_HEX[getPref("rigel.accent", "rigel")], set: v => put("accentCustom", v), names: [...names, "rigel.accent"] });
-  const syncAcc = () => { accOn.checked = !!val("accentCustom"); accColor.hidden = !accOn.checked; };
-  accOn.addEventListener("change", () => { put("accentCustom", accOn.checked ? accColor.value : undefined); accColor.hidden = !accOn.checked; });
-  syncAcc();
-  watch(names, syncAcc);
-
   return [
     h("div", { class: "mockwrap" }, m,
       h("div", { class: "mockbar" }, h("small", { text: "Değişiklikler tüm pencerelere anında uygulanır." }),
         btn("Varsayılana dön", () => { pending = {}; Look.write({}); notify("Görünüm varsayılana döndü."); }, "soft", "undo"))),
     packsCard(),
+    colorsCard(),
     card("Biçim",
       row({ id: "radius", label: "Köşe yarıçapı", desc: "Sekmeler, düğmeler, adres çubuğu ve sayfa kartı birlikte ölçeklenir.", keywords: "köşe yarıçap yuvarlak radius keskin",
         control: range({ min: 0, max: 20, unit: " px", get: () => val("radius"), set: v => put("radius", v), names }) }),
@@ -226,6 +225,12 @@ function studio() {
         control: seg([["kart", "Kart"], ["hap", "Hap"], ["çizgi", "Çizgi"], ["düz", "Düz"]], { get: () => val("tabStyle"), set: v => put("tabStyle", v), names }) }),
       row({ id: "tabWidth", label: "En geniş sekme", desc: "Klasik düzende bir sekmenin alabileceği en büyük genişlik.", keywords: "sekme genişlik geniş dar width",
         control: range({ min: 120, max: 320, step: 10, unit: " px", get: () => val("tabWidth"), set: v => put("tabWidth", v), names }) }),
+      row({ id: "border", label: "Çizgi kalınlığı", desc: "0: ince, yumuşak çizgiler. 1–3: düz, yazı renginde kalın çizgiler (sekme, kart, palet, menü, düğme).", keywords: "çizgi kalın kenarlık border brütal brutalist çerçeve",
+        control: range({ min: 0, max: 3, format: v => (v ? `${v} px` : "İnce"), get: () => val("border"), set: v => put("border", v), names }) }),
+      row({ id: "shadowStyle", label: "Gölge biçimi", desc: "Yumuşak: bulanık gölge. Sert: bulanıksız, ofsetli (Brütal); boyutu \"Gölge\" belirler.", keywords: "gölge sert yumuşak brütal ofset hard soft",
+        control: seg([["soft", "Yumuşak"], ["hard", "Sert"]], { get: () => val("shadowStyle"), set: v => put("shadowStyle", v), names }) }),
+      row({ id: "heavy", label: "Kalın yazı", desc: "Sekme adları, adres ve başlıklar kalın yazılır.", keywords: "kalın yazı bold ağır brütal başlık",
+        control: toggle("rigel.look", { get: () => !!val("heavy"), set: v => put("heavy", v || undefined), names }) }),
       row({ id: "shadow", label: "Gölge", desc: "Paneller, menüler ve yüzen öğelerin gölge gücü.", keywords: "gölge shadow derinlik",
         control: range({ min: 0, max: 3, format: v => ["Yok", "Hafif", "Orta", "Derin"][v], get: () => val("shadow"), set: v => put("shadow", v), names }) })),
     card("Yazı",
@@ -233,13 +238,12 @@ function studio() {
         control: h("div", { class: "toolrow" }, fontName, fontSel) }),
       row({ id: "fontSize", label: "Yazı boyutu", keywords: "yazı boyutu büyük küçük font size",
         control: range({ min: 11, max: 15, unit: " px", get: () => val("fontSize"), set: v => put("fontSize", v), names }) })),
-    card("Arka plan ve renk",
+    card("Arka plan",
       row({ id: "bg", label: "Pencere arka planı", desc: "Şeridin ve kenar çubuğunun arkasında görünür; sayfa içeriği etkilenmez.", keywords: "arka plan zemin gradyan renk background wallpaper", control: bgType }),
       solidRow, gradRow, angleRow, imgRow, fitRow, blurRow, dimRow,
       row({ id: "glass", label: "Cam etkisi", desc: "Şerit ve araç çubuğu saydamlaşır, arkası bulanıklaşır. Arka plan seçmeden de vurgu tonlu hafif bir parıltı verir.", keywords: "cam saydam şeffaf bulanık glass blur transparan",
         control: range({ min: 0, max: 100, step: 5, unit: "%", get: () => val("glass"), set: v => put("glass", v), names }) }),
-      row({ id: "accentCustom", label: "Özel vurgu rengi", desc: "Hazır vurgu renklerinden birini seçince kapanır.", keywords: "vurgu renk özel accent seçici",
-        control: h("div", { class: "toolrow" }, accColor, accOn) })),
+    ),
     buttonsCard(),
     autoCard(),
   ];
@@ -349,6 +353,165 @@ function autoCard() {
       control: h("div", { class: "toolrow" }, now, on) }),
     row({ id: "autoDay", label: "Gündüz paketi", sub: true, keywords: "gündüz paket", control: h("div", { class: "toolrow" }, sel("day"), time("dayAt")) }),
     row({ id: "autoNight", label: "Gece paketi", sub: true, keywords: "gece paket", control: h("div", { class: "toolrow" }, sel("night"), time("nightAt")) }));
+}
+
+/** Renkler: ana belirteçler (zemin, çubuklar, yüzeyler, yazı, soluk yazı) ve vurgu. Değerler `rigel.look.colors[tema]`;
+ *  yalnız değiştirilen renk saklanır, "varsayılana dön" anahtarı siler. Düzenlenen tema (koyu/açık) seçilebilir. */
+function colorsCard() {
+  const names = [Look.PREF, "rigel.theme", "rigel.accent"];
+  const C = Look.COLOR_DEFAULTS;
+  let edit = resolvedTheme();
+  let manual = false;
+  const syncs = [];
+  const eff = t => ({ ...C[t], ...(cur().colors?.[t] ?? {}) });
+  const isSet = (t, k) => !!cur().colors?.[t]?.[k];
+  const writeColors = colors => {
+    for (const t of Object.keys(colors)) if (!Object.keys(colors[t]).length) delete colors[t];
+    put("colors", Object.keys(colors).length ? colors : undefined);
+  };
+  const clone = () => JSON.parse(JSON.stringify(cur().colors ?? {}));
+  const setColor = (k, v) => {
+    const colors = clone();
+    const c = (colors[edit] ??= {});
+    if (v.toLowerCase() === C[edit][k]) delete c[k];
+    else c[k] = v.toLowerCase();
+    writeColors(colors);
+  };
+  const resetColor = k => { const colors = clone(); if (colors[edit]) delete colors[edit][k]; writeColors(colors); };
+  const presetHex = () => ACCENT_HEX[getPref("rigel.accent", "rigel")] || ACCENT_HEX.rigel;
+  const accentHex = () => cur().colors?.[edit]?.accent || cur().accentCustom || presetHex();
+  const setAccent = v => {
+    const colors = clone();
+    (colors[edit] ??= {}).accent = v.toLowerCase();
+    writeColors(colors);
+  };
+  const resetAccent = () => {
+    const colors = clone();
+    if (colors[edit]) delete colors[edit].accent;
+    writeColors(colors);
+    put("accentCustom", undefined);
+  };
+
+  const colorControl = ({ get, isSet: custom, set, reset, label }) => {
+    const pick = h("input", { type: "color", class: "clr", title: label, "aria-label": label });
+    const hexIn = h("input", { type: "text", class: "hexin", maxlength: "7", spellcheck: "false", "aria-label": `${label} (#rrggbb)` });
+    const rst = h("button", { type: "button", class: "iconbtn", title: "Varsayılana dön", "aria-label": `${label}: varsayılana dön`, onclick: reset }, icon("undo", 14));
+    pick.addEventListener("input", () => set(pick.value));
+    hexIn.addEventListener("change", () => {
+      let v = hexIn.value.trim();
+      if (v && v[0] !== "#") v = "#" + v;
+      if (/^#[0-9a-f]{6}$/i.test(v)) set(v);
+      else sync();
+    });
+    const sync = () => {
+      const v = get();
+      pick.value = v;
+      if (document.activeElement !== hexIn) hexIn.value = v;
+      rst.disabled = !custom();
+    };
+    syncs.push(sync);
+    sync();
+    return h("div", { class: "toolrow colorctl" }, pick, hexIn, rst);
+  };
+  const colorRow = (key, label, desc) => row({
+    id: "col-" + key, label, desc, keywords: `renk ${label} zemin çubuk yüzey yazı soluk kontrast color`,
+    control: colorControl({ label, get: () => eff(edit)[key], isSet: () => isSet(edit, key), set: v => setColor(key, v), reset: () => resetColor(key) }),
+  });
+
+  // Düzenlenen tema
+  const themeSel = seg([["dark", "Koyu"], ["light", "Açık"]], { get: () => edit, set: v => { edit = v; manual = true; syncAll(); }, names: [] });
+  const themeNote = h("small", { class: "hint" });
+  syncs.push(() => {
+    themeSel.refresh?.();
+    const now = resolvedTheme();
+    themeNote.textContent = edit === now ? "Şu an kullanılan tema; değişiklikler pencerelere anında uygulanır." : `Şu an ${now === "dark" ? "koyu" : "açık"} tema kullanılıyor; bu temanın renkleri ona geçince devreye girer (önizleme aşağıda).`;
+  });
+
+  // Canlı önizleme: düzenlenen temanın renkleriyle, sayfa kökünden yalıtılmış.
+  const prev = h("div", { class: "cprev", "aria-hidden": "true" },
+    h("div", { class: "cp-bar" }, h("i"), h("i"), h("i"), h("span", { class: "cp-url", text: "rigel.app" }), h("em", { class: "cp-acc" })),
+    h("div", { class: "cp-body" },
+      h("div", { class: "cp-card" }, h("b", { text: "Kart başlığı" }), h("span", { text: "Soluk açıklama yazısı" }), h("u", { text: "Vurgu" })),
+      h("div", { class: "cp-text" }, h("b", { text: "Ana yazı örneği" }), h("small", { text: "Soluk yazı örneği" }))));
+  syncs.push(() => {
+    const t = edit;
+    const { vars } = Look.compute({ colors: { [t]: cur().colors?.[t] ?? {} }, ...(cur().accentCustom ? { accentCustom: cur().accentCustom } : {}) }, t);
+    for (const [name, def] of Object.entries(Look.TOKEN_DEFAULTS[t])) prev.style.setProperty(name, vars[name] ?? def);
+    prev.style.setProperty("color-scheme", vars["color-scheme"] ?? t);
+    prev.style.setProperty("--accent", vars["--accent"] ?? presetHex());
+    prev.style.setProperty("--accent-ink", vars["--accent-ink"] ?? (t === "light" ? "#ffffff" : "#08101c"));
+  });
+
+  // Kontrast: WCAG oranı; < 3 kötü, < 4,5 sınırda.
+  const chips = h("div", { class: "cchips", role: "list" });
+  const warn = h("p", { class: "cwarn", role: "status" });
+  syncs.push(() => {
+    const e = eff(edit);
+    const pairs = [["Yazı / zemin", e.text, e.bg], ["Yazı / yüzey", e.text, e.surface], ["Soluk yazı / zemin", e.textDim, e.bg], ["Yazı / çubuk", e.text, e.bar]];
+    const levels = pairs.map(([label, a, b]) => {
+      const r = Look.contrast(a, b);
+      return { label, r, lvl: r >= 4.5 ? "ok" : r >= 3 ? "warn" : "bad" };
+    });
+    chips.replaceChildren(...levels.map(({ label, r, lvl }) => h("span", { class: "cchip " + lvl, role: "listitem", title: lvl === "ok" ? "Okunaklı" : lvl === "warn" ? "Sınırda" : "Okunması zor" },
+      h("b", { text: r.toFixed(1) + ":1" }), h("small", { text: label }))));
+    const worst = levels.reduce((a, b) => (b.r < a.r ? b : a));
+    warn.hidden = worst.lvl === "ok";
+    warn.className = "cwarn " + worst.lvl;
+    warn.textContent = worst.lvl === "ok" ? "" : `${worst.label} kontrastı ${worst.lvl === "bad" ? "çok düşük" : "düşük"} (${worst.r.toFixed(1)}:1); yazılar okunmayabilir. Daha açık ya da daha koyu bir ton dene.`;
+  });
+
+  // Vurgu: hazır renkler + özel
+  const accentRow = colorControl({
+    label: "Özel vurgu rengi", get: accentHex, isSet: () => !!(cur().colors?.[edit]?.accent || cur().accentCustom),
+    set: setAccent, reset: resetAccent,
+  });
+  // Brütal vurgu blokları: tek tıkla temaya özel vurgu
+  const accSw = h("div", { class: "swatches bsw", role: "radiogroup", "aria-label": "Canlı vurgu renkleri" }, ...Look.BRUTAL_ACCENTS.map(([hex, name]) => {
+    const b = h("button", { type: "button", class: "swatch sq", title: name, "aria-label": name, onclick: () => setAccent(hex) });
+    b.style.setProperty("--c", hex);
+    b.dataset.v = hex;
+    return b;
+  }));
+  syncs.push(() => { const cur_ = (cur().colors?.[edit]?.accent || cur().accentCustom || "").toLowerCase(); for (const b of accSw.children) b.classList.toggle("on", b.dataset.v === cur_); });
+
+  const resetAll = () => {
+    const colors = clone();
+    delete colors[edit];
+    writeColors(colors);
+    put("accentCustom", undefined);
+    notify(`${edit === "dark" ? "Koyu" : "Açık"} temanın renkleri varsayılana döndü.`);
+  };
+  const resetBtn = btn("Tüm renkleri sıfırla", resetAll, "soft", "undo");
+  syncs.push(() => { resetBtn.disabled = !(cur().colors?.[edit] && Object.keys(cur().colors[edit]).length) && !cur().accentCustom; });
+
+  const syncAll = () => syncs.forEach(f => f());
+  watch(names, () => {
+    if (!manual) edit = resolvedTheme();
+    syncAll();
+  });
+  // Tema değişince sayfa özniteliği biraz sonra güncellenir.
+  watch(["rigel.theme"], () => setTimeout(() => { if (!manual) edit = resolvedTheme(); syncAll(); }, 80));
+  syncAll();
+
+  const c = card("Renkler",
+    h("p", { class: "hint", text: "Uygulamanın ana renkleri: tarayıcı şeritleri, yan paneller ve Rigel sayfaları (ayarlar, yeni sekme, kitaplık) birlikte değişir. Renkler temaya göre saklanır; değiştirmediğin renk temanın varsayılanıdır." }),
+    row({ id: "colTheme", label: "Düzenlenen tema", keywords: "renk tema koyu açık dark light", control: h("div", { class: "toolrow" }, themeSel), desc: undefined }),
+    themeNote,
+    h("div", { class: "cpwrap" }, prev, chips),
+    warn,
+    colorRow("bg", "Arka plan", "Pencere ve sayfa zemini."),
+    colorRow("bar", "Çubuklar", "Sekme şeridi, araç çubuğu ve kenar çubuğu."),
+    colorRow("surface", "Yüzeyler", "Kartlar, menüler, paneller ve adres alanı."),
+    colorRow("text", "Yazı", "Ana metin rengi; çizgiler ve üstüne gelme tonu da ondan türer."),
+    colorRow("textDim", "Soluk yazı", "İkincil metin ve simgeler."),
+    colorRow("danger", "Uyarı rengi", "Silme, hata ve basılı düğme durumları."),
+    row({ id: "col-accent", label: "Vurgu rengi", desc: "Hazır tonlardan seç ya da aşağıdan özel bir renk ver.", keywords: "vurgu accent renk hazır mavi mor yeşil", control: accentPicker(), stack: true }),
+    row({ id: "col-accentBold", label: "Canlı vurgular", sub: true, desc: "Düz, parlak bloklar; üstündeki yazı kontrasta göre siyah ya da beyaz olur. Düzenlenen temaya özeldir.", keywords: "vurgu canlı brütal sarı mavi pembe yeşil turuncu mor swatch", control: accSw, stack: true }),
+    row({ id: "col-accentCustom", label: "Özel vurgu rengi", sub: true, desc: "Hazır vurgu renklerinden birini seçince kapanır.", keywords: "vurgu renk özel accent seçici", control: accentRow }),
+    row({ id: "col-reset", label: "Varsayılana dön", desc: "Düzenlenen temanın renklerini ve özel vurguyu sıfırlar. Tema paketleriyle kaydedilir ve geri alınabilir.", keywords: "renk sıfırla varsayılan reset geri al",
+      control: h("div", { class: "toolrow" }, resetBtn) }));
+  c.dataset.anchor = "renkler";
+  return c;
 }
 
 export { studio };

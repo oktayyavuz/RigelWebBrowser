@@ -6,7 +6,10 @@
 // Şema: { radius 0–20, density "sıkı|normal|ferah", font "system|inter|noto|mono|<ad>", fontSize 11–15,
 //         glass 0–100, shadow 0–3, bg { type "none|solid|gradient|image", color, from, to, angle,
 //         file (profil/rigel-bg/ içindeki ad), fit "cover|center", blur 0–40, dim 0–80 },
-//         accentCustom "#rrggbb", tabStyle "kart|hap|çizgi|düz", tabWidth 120–320 }
+//         accentCustom "#rrggbb", tabStyle "kart|hap|çizgi|düz", tabWidth 120–320,
+//         colors { dark|light: { bg, bar, surface, text, textDim, danger, accent } (#rrggbb; temaya göre) },
+//         border 0–3 (çizgi kalınlığı px; 0 = ince varsayılan, >0 = düz "mürekkep" çizgiler), shadowStyle "soft|hard"
+//         (sert = bulanıksız ofset gölge), heavy bool (kalın yazı) }
 
 export const PREF = "rigel.look";
 export const UNDO_PREF = "rigel.look.undo";
@@ -19,8 +22,28 @@ export const BG_DIR = "rigel-bg";
 export const DEFAULTS = {
   radius: 9, density: "normal", font: "system", fontSize: 13, glass: 0, shadow: 1,
   bg: { type: "none", color: "#101624", from: "#1d3557", to: "#0c0f16", angle: 160, file: "", fit: "cover", blur: 0, dim: 30 },
-  accentCustom: "", tabStyle: "kart", tabWidth: 220,
+  accentCustom: "", tabStyle: "kart", tabWidth: 220, border: 0, shadowStyle: "soft", heavy: false,
 };
+export const SHADOW_STYLES = ["soft", "hard"];
+// Renk belirteçleri: anahtar → CSS değişkeni. Varsayılanlar tokens.css ile aynı (tema başına).
+export const COLOR_KEYS = ["bg", "bar", "surface", "text", "textDim", "danger", "accent"];
+// Vurgu (colors[tema].accent) temaya göredir; varsayılanı seçili hazır vurgudur, bu yüzden COLOR_DEFAULTS'ta yok.
+export const BRUTAL_ACCENTS = [["#ffe135", "Sinyal sarısı"], ["#3d5afe", "Elektrik mavisi"], ["#ff3ea5", "Pembe"], ["#b8ff3d", "Asit yeşili"], ["#ff5a1f", "Kızıl turuncu"], ["#8b5cf6", "Mor"]];
+export const COLOR_VARS = { bg: "--bg", bar: "--bar", surface: "--surface", text: "--text", textDim: "--text-dim", danger: "--danger", accent: "--accent" };
+export const COLOR_DEFAULTS = {
+  dark: { bg: "#0c0f16", bar: "#0f131c", surface: "#151b27", text: "#e7ebf3", textDim: "#8d96a8", danger: "#e5484d" },
+  light: { bg: "#f4f6fa", bar: "#eef1f6", surface: "#ffffff", text: "#141a26", textDim: "#4f5a6c", danger: "#e5484d" },
+};
+// Renk özelleştirmesiyle türetilen değişkenlerin varsayılanları (maketlerde yalıtım için).
+export const TOKEN_DEFAULTS = {
+  dark: { "--bg": "#0c0f16", "--bar": "#0f131c", "--surface": "#151b27", "--surface-2": "#1c2433", "--hover": "rgba(255, 255, 255, 0.05)",
+    "--border": "rgba(255, 255, 255, 0.07)", "--border-2": "rgba(255, 255, 255, 0.12)", "--text": "#e7ebf3", "--text-dim": "#8d96a8", "--text-faint": "#5a6273",
+    "--danger": "#e5484d", "--on-danger": "#ffffff" },
+  light: { "--bg": "#f4f6fa", "--bar": "#eef1f6", "--surface": "#ffffff", "--surface-2": "#e6eaf1", "--hover": "rgba(20, 30, 50, 0.06)",
+    "--border": "rgba(20, 30, 50, 0.09)", "--border-2": "rgba(20, 30, 50, 0.16)", "--text": "#141a26", "--text-dim": "#4f5a6c", "--text-faint": "#8a93a3",
+    "--danger": "#e5484d", "--on-danger": "#ffffff" },
+};
+export const THEME_KEYS = ["dark", "light"];
 export const DENSITIES = ["sıkı", "normal", "ferah"];
 export const TAB_STYLES = ["kart", "hap", "çizgi", "düz"];
 export const FONTS = {
@@ -73,6 +96,20 @@ export function normalize(raw) {
     if (TAB_STYLES.includes(t)) out.tabStyle = t;
   }
   if ("tabWidth" in raw) out.tabWidth = clamp(raw.tabWidth, 120, 320, 220);
+  if ("border" in raw) out.border = clamp(raw.border, 0, 3, 0);
+  if (SHADOW_STYLES.includes(raw.shadowStyle)) out.shadowStyle = raw.shadowStyle;
+  if (raw.heavy === true) out.heavy = true;
+  if (raw.colors && typeof raw.colors === "object") {
+    const colors = {};
+    for (const t of THEME_KEYS) {
+      const src = raw.colors[t];
+      if (!src || typeof src !== "object") continue;
+      const c = {};
+      for (const k of COLOR_KEYS) if (hex(src[k], "")) c[k] = hex(src[k], "");
+      if (Object.keys(c).length) colors[t] = c;
+    }
+    if (Object.keys(colors).length) out.colors = colors;
+  }
   return out;
 }
 
@@ -111,14 +148,20 @@ export function bgFileUrl(file) {
   }
 }
 
-function luminance(h) {
+export function luminance(h) {
   const c = [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255).map(v => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
   return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
 }
+/** WCAG kontrast oranı (1–21) iki #rrggbb arasında. */
+export function contrast(a, b) {
+  const [x, y] = [luminance(a), luminance(b)].sort((m, n) => n - m);
+  return (x + 0.05) / (y + 0.05);
+}
 const fontStack = f => FONTS[f]?.[1] ?? `"${f.replace(/["\\;{}<>]/g, "")}", system-ui, sans-serif`;
 
-/** Görünümden { vars: {--ad: değer}, attrs: {öznitelik: değer} } üretir. Maketler de bunu kullanır. */
-export function compute(raw) {
+/** Görünümden { vars: {--ad: değer}, attrs: {öznitelik: değer} } üretir. Maketler de bunu kullanır.
+ *  `theme` ("dark" | "light"): renk özelleştirmesinin hangi tema için uygulanacağı. */
+export function compute(raw, theme = "dark") {
   const look = normalize(raw);
   const vars = {};
   const attrs = {};
@@ -176,23 +219,60 @@ export function compute(raw) {
     }
   }
   if ("shadow" in look && look.shadow !== 1) attrs["rigel-look-shadow"] = String(look.shadow);
-  if (look.accentCustom) {
-    const a = look.accentCustom;
-    vars["--accent"] = a;
-    vars["--accent-2"] = `color-mix(in srgb, ${a} 70%, white)`;
-    vars["--accent-ink"] = luminance(a) > 0.36 ? "#08101c" : "#ffffff";
+  // Renkler: yalnız o temada ayarlanmış olanlar yazılır; türev değişkenler (yüzey-2, çizgiler, soluk yazı)
+  // seçilen renklerden karıştırılır ki özel bir zeminde de okunaklı kalsın.
+  const col = look.colors?.[theme === "light" ? "light" : "dark"];
+  if (col) {
+    for (const k of COLOR_KEYS) if (col[k]) vars[COLOR_VARS[k]] = col[k];
+    if (col.surface) vars["--surface-2"] = "color-mix(in srgb, var(--surface) 90%, var(--text))";
+    if (col.text) {
+      vars["--hover"] = "color-mix(in srgb, var(--text) 6%, transparent)";
+      vars["--border"] = "color-mix(in srgb, var(--text) 9%, transparent)";
+      vars["--border-2"] = "color-mix(in srgb, var(--text) 16%, transparent)";
+    }
+    if (col.text || col.textDim) vars["--text-faint"] = "color-mix(in srgb, var(--text-dim) 60%, var(--bg))";
+    if (col.bg) vars["color-scheme"] = luminance(col.bg) > 0.4 ? "light" : "dark";
+    if (col.danger) vars["--on-danger"] = luminance(col.danger) > 0.45 ? "#111111" : "#ffffff";
   }
+  // Vurgu: temaya özel (colors[tema].accent) ya da eski genel özel vurgu (accentCustom). Üstündeki yazı kontrasta göre siyah/beyaz.
+  const accent = col?.accent || look.accentCustom;
+  if (accent) {
+    vars["--accent"] = accent;
+    vars["--accent-2"] = `color-mix(in srgb, ${accent} 70%, white)`;
+    vars["--accent-ink"] = contrast(accent, "#0b0f18") >= contrast(accent, "#ffffff") ? "#0b0f18" : "#ffffff";
+  }
+  // Çizgiler ve sert gölge ("Brütal"): çizgi/gölge rengi "mürekkep" = yazı rengi (açık temada siyah, koyuda krem).
+  // --border/--border-2 düz mürekkep olur (her yerdeki ince çizgiler); kalınlık look.css/tokens.css'te seçilmiş öğelere uygulanır.
+  if (look.border) {
+    vars["--rigel-bw"] = `${look.border}px`;
+    vars["--rigel-ink"] = "var(--text)";
+    vars["--border"] = "var(--rigel-ink)";
+    vars["--border-2"] = "var(--rigel-ink)";
+    attrs["rigel-look-border"] = String(look.border);
+  }
+  if (look.shadowStyle === "hard") {
+    const lvl = look.shadow ?? 1;
+    const big = [0, 4, 6, 8][lvl], sm = [0, 3, 4, 5][lvl];
+    vars["--rigel-ink"] = "var(--text)";
+    // Koyu temada gölge vurgu renginde (koyu zeminde mürekkep rengi görünmez), açıkta mürekkep.
+    const sink = theme === "light" ? "var(--rigel-ink)" : "var(--accent)";
+    vars["--shadow"] = big ? `${big}px ${big}px 0 ${sink}` : "none";
+    vars["--shadow-sm"] = sm ? `${sm}px ${sm}px 0 ${sink}` : "none";
+    vars["--rigel-hard-sm"] = vars["--shadow-sm"];
+    attrs["rigel-look-hard"] = "";
+  }
+  if (look.heavy) attrs["rigel-look-bold"] = "";
   if (look.tabStyle && look.tabStyle !== "kart") attrs["rigel-tabstyle"] = ASCII[look.tabStyle] ?? look.tabStyle;
   if ("tabWidth" in look) vars["--rigel-tab-width"] = `${look.tabWidth}px`;
   return { vars, attrs };
 }
 
-const ALL_ATTRS = ["rigel-look-img", "rigel-look-font", "rigel-look-fs", "rigel-look-bg", "rigel-look-glass", "rigel-look-shadow", "rigel-tabstyle"];
+const ALL_ATTRS = ["rigel-look-border", "rigel-look-hard", "rigel-look-bold", "rigel-look-img", "rigel-look-font", "rigel-look-fs", "rigel-look-bg", "rigel-look-glass", "rigel-look-shadow", "rigel-tabstyle"];
 const written = new WeakMap();
 
 /** Değişkenleri ve öznitelikleri öğeye yazar; artık olmayanları kaldırır (başkalarının satır içi stiline dokunmaz). */
 export function applyTo(el, look = read()) {
-  const { vars, attrs } = compute(look);
+  const { vars, attrs } = compute(look, el.getAttribute("data-rigel-theme") === "light" ? "light" : "dark");
   const prev = written.get(el) ?? new Set();
   for (const name of prev) if (!(name in vars)) el.style.removeProperty(name);
   for (const [k, v] of Object.entries(vars)) if (el.style.getPropertyValue(k) !== v) el.style.setProperty(k, v);
@@ -206,11 +286,15 @@ export function applyTo(el, look = read()) {
 function watchPref(win, fn) {
   const obs = { observe: fn };
   Services.prefs.addObserver(PREF, obs);
-  win.addEventListener("unload", () => Services.prefs.removeObserver(PREF, obs), { once: true });
+  // Renkler temaya göre olduğundan çözülmüş tema (data-rigel-theme) değişince de yeniden yazılır.
+  const mo = new win.MutationObserver(fn);
+  mo.observe(win.document.documentElement, { attributes: true, attributeFilter: ["data-rigel-theme"] });
+  win.addEventListener("unload", () => { Services.prefs.removeObserver(PREF, obs); mo.disconnect(); }, { once: true });
 }
 
 /** chrome://rigel sayfaları (theme/page.mjs çağırır). */
 export function initPage(doc = document) {
+  doc.documentElement.setAttribute("data-rigel-page", "");
   const apply = () => applyTo(doc.documentElement);
   watchPref(doc.defaultView, apply);
   apply();
@@ -234,7 +318,10 @@ export function init(win) {
   const accentObs = {
     observe() {
       const cur = read();
-      if (cur.accentCustom) { delete cur.accentCustom; write(cur); }
+      let changed = !!cur.accentCustom;
+      delete cur.accentCustom;
+      for (const t of THEME_KEYS) if (cur.colors?.[t]?.accent) { delete cur.colors[t].accent; changed = true; }
+      if (changed) write(cur);
     },
   };
   Services.prefs.addObserver("rigel.accent", accentObs);

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<!-- Rigel yeni sekme: saat, tarih, sık ziyaret edilen siteler. Eski CEF sürümündeki NewTab.svelte'nin karşılığı.
+<!-- Rigel yeni sekme: logo, saat, tarih/karşılama, arama kutusu, kısayollar; düzen, parçalar ve arka plan "Düzenle" kipinden
+     (edit.mjs) ya da Ayarlar › Yeni sekme'den özelleştirilir (config.mjs, rigel.newtab).
      chrome://rigel/content/newtab/newtab.html olarak sunulur; branding.sys.mjs yeni sekme ve ana sayfa yapar. -->
 <html lang="tr">
 <head>
@@ -13,8 +14,11 @@
   <script type="module" src="newtab.mjs"></script>
 </head>
 <body>
-  <main>
-    <svg class="logo" width="72" height="72" viewBox="0 0 32 32" fill="none" aria-label="Rigel">
+  <div id="bg" aria-hidden="true"></div>
+  <div id="stage" class="stage">
+    <main id="main" data-layout="center">
+      <header class="hero">
+        <svg class="logo" width="72" height="72" viewBox="0 0 32 32" fill="none" aria-label="Rigel">
       <defs>
         <linearGradient id="nt-ring" x1="3" y1="29" x2="29" y2="3" gradientUnits="userSpaceOnUse">
           <stop stop-color="#5b86e0"/><stop offset="0.6" stop-color="#5fa9dd"/><stop offset="1" stop-color="#7cc3dc"/>
@@ -28,23 +32,30 @@
       <circle cx="25.9" cy="7.6" r="2.5" fill="url(#nt-ring)"/>
       <path d="M16 6.4C16 11.1 18.9 15.3 23.6 16C18.9 16.7 16 20.9 16 25.6C16 20.9 13.1 16.7 8.4 16C13.1 15.3 16 11.1 16 6.4Z" fill="url(#nt-star)"/>
     </svg>
-    <div class="time" id="time"></div>
-    <div class="date" id="date"></div>
-    <p class="hint">Aramak ya da adres girmek için <kbd>Ctrl K</kbd> · <kbd>!yt</kbd> gibi kısayollar da çalışır</p>
-    <nav class="sites" id="sites" hidden></nav>
-  </main>
-  <footer class="quick" aria-label="Hızlı bağlantılar">
-    <a href="chrome://rigel/content/settings/settings.html#modlar"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 5.5l4.5 4.5-7.5 7.5-4.5.5.5-4.5z"/><path d="M4.5 19.5c2-.2 2.8-1.2 3-2"/></svg>Modlar</a>
-    <a href="chrome://rigel/content/store/store.html"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1 11.5H6z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>Mod mağazası</a>
-    <a href="chrome://rigel/content/settings/settings.html"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3.5v2.5M12 18v2.5M3.5 12H6M18 12h2.5M6 6l1.8 1.8M16.2 16.2L18 18M18 6l-1.8 1.8M7.8 16.2L6 18"/></svg>Ayarlar</a>
-  </footer>
-  <template id="site-tpl">
-    <div class="site">
-      <a><span class="ic"><img alt=""><span class="letter"></span></span><span class="name"></span></a>
-      <button class="hide" title="Bu siteyi gösterme" aria-label="Bu siteyi gösterme">
-        <svg width="11" height="11" viewBox="0 0 16 16"><path d="M3.5 3.5l9 9m0-9l-9 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-      </button>
-    </div>
-  </template>
+        <div class="hero-text">
+          <div class="greeting" id="greeting"></div>
+          <div class="time" id="time"></div>
+          <div class="date" id="date"></div>
+        </div>
+      </header>
+      <form class="search" id="search" role="search" autocomplete="off" spellcheck="false">
+        <svg class="sicon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>
+        <input id="q" type="text" aria-label="Ara ya da adres gir" autocomplete="off" spellcheck="false">
+        <span class="sbadge" id="sbadge" hidden></span>
+        <div class="sugg" id="sugg" role="listbox" hidden></div>
+      </form>
+      <nav class="sites" id="sites" aria-label="Kısayollar" hidden></nav>
+    </main>
+    <button class="editbtn" id="edit" type="button" title="Yeni sekmeyi düzenle">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17z"/><path d="M14 7l3 3"/></svg><span>Düzenle</span>
+    </button>
+    <footer class="quick" aria-label="Hızlı bağlantılar">
+      <a href="chrome://rigel/content/settings/settings.html#modlar"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 5.5l4.5 4.5-7.5 7.5-4.5.5.5-4.5z"/><path d="M4.5 19.5c2-.2 2.8-1.2 3-2"/></svg>Modlar</a>
+      <a href="chrome://rigel/content/store/store.html"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1 11.5H6z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>Mod mağazası</a>
+      <a href="chrome://rigel/content/settings/settings.html"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3.5v2.5M12 18v2.5M3.5 12H6M18 12h2.5M6 6l1.8 1.8M16.2 16.2L18 18M18 6l-1.8 1.8M7.8 16.2L6 18"/></svg>Ayarlar</a>
+    </footer>
+  </div>
+  <aside id="panel" class="panel" aria-label="Yeni sekmeyi düzenle" hidden></aside>
+  <div id="dlg" class="dlgwrap" hidden></div>
 </body>
 </html>

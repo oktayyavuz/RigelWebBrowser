@@ -184,6 +184,7 @@ export function seg(options, { get, set, names = [] }) {
   };
   refresh();
   watch(names, refresh);
+  box.refresh = refresh;
   return box;
 }
 

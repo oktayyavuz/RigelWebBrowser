@@ -61,10 +61,12 @@ function renderSearch(q) {
 }
 
 function route() {
-  const id = decodeURIComponent(location.hash.slice(1)).split("/")[0];
+  const [id, anchor] = decodeURIComponent(location.hash.slice(1)).split("/");
   if (search.value) search.value = "";
   renderSection(find(id));
   window.scrollTo(0, 0);
+  // #bölüm/bağ: ilgili kartı görünüme getir (ör. studyo/renkler).
+  if (anchor) requestAnimationFrame(() => main.querySelector(`[data-anchor="${CSS.escape(anchor)}"]`)?.scrollIntoView({ block: "start" }));
 }
 
 search.addEventListener("input", () => (search.value.trim() ? renderSearch(search.value) : route()));

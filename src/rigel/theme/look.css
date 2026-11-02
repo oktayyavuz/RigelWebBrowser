@@ -21,3 +21,67 @@
 :root[rigel-hide-menu] #PanelUI-button {
   display: none !important;
 }
+
+/* ---- Brütal: kalın düz çizgiler, sert gölge, kalın yazı ------------------------------------------
+   rigel.look.border (1–3 px) → [rigel-look-border], --rigel-bw, --rigel-ink (= yazı rengi); shadowStyle "hard" →
+   [rigel-look-hard] ve --shadow/--shadow-sm bulanıksız ofset. Köşeler zaten --rigel-radius (0 = köşeli). Her düzende çalışır. */
+/* Yüzen/kart öğeleri: çerçeve + sert gölge */
+:root:root[rigel-look-border] :is(.urlbar-background, #rigel-urlbar-simple, .rigel-omni, .rigel-crumb, .rigel-counter, .rigel-island, .rigel-nav,
+  .rgl-pal-card, .rgl-drawer, #rigel-toast, #rigel-dock, #rigel-dialog, .rgl-menu) {
+  border: var(--rigel-bw) solid var(--rigel-ink) !important;
+  outline: none !important;
+}
+:root:root[rigel-look-hard] :is(.rigel-island, .rgl-pal-card, #rigel-dock, #rigel-dialog) {
+  box-shadow: var(--rigel-hard-sm, none) !important;
+}
+/* Sekmeler: çerçeveli; seçili sekme vurgu rengiyle dolu, siyah (mürekkep) yazı */
+:root:root[rigel-look-border] .tabbrowser-tab .tab-background {
+  box-shadow: inset 0 0 0 var(--rigel-bw) var(--rigel-ink) !important;
+  background-image: none !important;
+}
+:root:root[rigel-look-border] .tabbrowser-tab .tab-background:is([selected], [multiselected]) {
+  background: var(--accent) !important;
+}
+:root:root[rigel-look-border] .tabbrowser-tab[selected] .tab-label, :root:root[rigel-look-border] .tabbrowser-tab[selected] .tab-close-button {
+  color: var(--accent-ink) !important;
+}
+:root:root[rigel-look-border] :is(.rigel-star, .rigel-dtab, .rigel-gchip) {
+  box-shadow: inset 0 0 0 var(--rigel-bw) var(--rigel-ink) !important;
+  border-radius: var(--rigel-radius, 0) !important;
+}
+:root:root[rigel-look-border] :is(.rigel-star.on, .rigel-dtab.on, .rigel-star.gm.on) {
+  background: var(--accent) !important;
+  color: var(--accent-ink) !important;
+}
+:root:root[rigel-look-border] :is(.rigel-star.on, .rigel-star.gm.on)::after { display: none !important; }
+:root:root[rigel-look-border] :is(.rigel-dtab.on) * { color: var(--accent-ink) !important; }
+/* Araç çubukları ve düğmeler */
+:root:root[rigel-look-border] :is(#PersonalToolbar, #TabsToolbar, #rigel-bookmarks) {
+  border-bottom: var(--rigel-bw) solid var(--rigel-ink) !important;
+}
+:root:root[rigel-look-border]:is([data-rigel-layout="klasik"], [data-rigel-layout="yanpanel"]) #nav-bar {
+  border-bottom: var(--rigel-bw) solid var(--rigel-ink) !important;
+}
+:root:root[rigel-look-border] :is(.toolbarbutton-1, .rigel-tool, .rigel-nb, .rigel-wbtn, .rigel-add):hover {
+  background: var(--accent) !important;
+  color: var(--accent-ink) !important;
+  outline: var(--rigel-bw) solid var(--rigel-ink) !important;
+}
+:root:root[rigel-look-border] :is(.toolbarbutton-1, .rigel-tool, .rigel-nb, .rigel-wbtn, .rigel-add):active {
+  background: var(--danger) !important;
+  color: var(--on-danger) !important;
+}
+:root:root[rigel-look-border] :is(menupopup, panel, tooltip, .rgl-menu) {
+  --arrowpanel-border-color: var(--rigel-ink) !important;
+  border-width: var(--rigel-bw) !important;
+}
+:root:root[rigel-look-hard] :is(menupopup, panel) { --panel-shadow-margin: 8px; }
+/* Kalın yazı */
+:root:root[rigel-look-bold] :is(.tab-label, .rigel-dtab, .rigel-gname, .gname, .rgl-pal-card .t, #urlbar-input, #rigel-urlbar-simple) {
+  font-weight: 700 !important;
+}
+/* Vurgu rengi metin olarak okunmaz (sarı kâğıt üstünde): bağlantılar yazı renginde, altı çizili */
+:root:root[rigel-look-border] :is(#PersonalToolbar, #rigel-bookmarks, .infobar, notification-message) :is(a, .text-link, label[is="text-link"]) {
+  color: var(--text) !important;
+  text-decoration: underline !important;
+}
