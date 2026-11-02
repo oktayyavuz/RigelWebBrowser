@@ -22,12 +22,34 @@ Ayrıntılı durum ve bilinen eksikler: [docs/DURUM.md](docs/DURUM.md). Plan: [d
 
 ## Kurulum
 
-Depo özel (private) olduğu için `curl | bash` çalışmaz; önce [GitHub CLI](https://cli.github.com/) ile giriş yapıp klonlayın.
+### Hızlı kurulum
+
+**Linux (x86_64):** son sürümü indirir, SHA256 ile doğrular ve kurar. Tekrar çalıştırmak günceller.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/oktayyavuz/rigeldesktop/main/kur.sh | bash
+```
+
+**Windows (x64, PowerShell):** son sürümün kurulum programını indirir, doğrular ve kurar (yönetici gerekmez).
+
+```powershell
+irm https://raw.githubusercontent.com/oktayyavuz/rigeldesktop/main/kur.ps1 | iex
+```
+
+**Arch Linux (AUR):**
+
+```bash
+yay -S rigel-browser-bin
+```
+
+Hazır dosyalar (tar.xz, AppImage, Windows kurulum programı ve zip) [Sürümler](https://github.com/oktayyavuz/rigeldesktop/releases/latest) sayfasında.
+
+### Kaynaktan kurulum
 
 ### Linux (x86_64)
 
 ```bash
-gh repo clone oktayyavuz/rigeldesktop
+git clone https://github.com/oktayyavuz/rigeldesktop
 cd rigeldesktop
 ./install.sh
 ```
@@ -53,7 +75,7 @@ Başlatıcı (`rigel`) profilin `chrome/utils` ve `chrome/JS` klasörlerini kuru
 ### Arch Linux (PKGBUILD)
 
 ```bash
-gh repo clone oktayyavuz/rigeldesktop
+git clone https://github.com/oktayyavuz/rigeldesktop
 cd rigeldesktop/packaging/arch
 makepkg -si
 ```

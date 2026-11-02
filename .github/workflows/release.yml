@@ -1,10 +1,10 @@
 name: Sürüm
 
-# v* etiketi itilince Linux ve Windows paketlerini derler, GitHub Sürümü olarak yükler.
-# (Henüz hiç çalıştırılmadı: yerelde `scripts/build.sh all` ile aynı adımlar.)
+# Linux ve Windows paketlerini derler, v<VERSION> etiketli GitHub Sürümü olarak yükler (sürüm varsa dosyaları yeniler).
+# Yerelde `scripts/build.sh all` ile aynı adımlar.
+# Elle çalıştırılır (Actions › Sürüm › Run workflow); sürümler şimdilik yerelde derlenip yüklenir.
 on:
-  push:
-    tags: ['v*']
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -18,7 +18,7 @@ jobs:
       - name: Etiket VERSION ile uyuşuyor mu?
         run: |
           v="$(tr -d '[:space:]' < VERSION)"
-          if [ "${GITHUB_REF_NAME}" != "v$v" ]; then
+          if [ "${GITHUB_REF_TYPE}" = "tag" ] && [ "${GITHUB_REF_NAME}" != "v$v" ]; then
             echo "Etiket (${GITHUB_REF_NAME}) VERSION dosyasıyla (v$v) uyuşmuyor." >&2
             exit 1
           fi
@@ -38,6 +38,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "${GITHUB_REF_NAME}" dist/* \
-            --title "Rigel ${GITHUB_REF_NAME#v}" \
+          t="v$(tr -d '[:space:]' < VERSION)"
+          gh release upload "$t" dist/* --clobber 2>/dev/null || gh release create "$t" dist/* \
+            --title "Rigel ${t#v}" \
             --notes "Firefox $(tr -d '[:space:]' < FIREFOX_VERSION) (tr) üzerine kurulu Rigel. Özetler: SHA256SUMS."
