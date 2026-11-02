@@ -27,7 +27,7 @@ optdepends=(
 options=('!strip' '!debug')
 source=("rigeldesktop-${pkgver}.tar.gz::https://github.com/oktayyavuz/rigeldesktop/archive/refs/tags/v${pkgver}.tar.gz"
         "firefox-${_ffver}.tar.xz::https://archive.mozilla.org/pub/firefox/releases/${_ffver}/linux-x86_64/tr/firefox-${_ffver}.tar.xz")
-sha256sums=('SKIP'
+sha256sums=('babf544afa43ab98de52f4c3a6c3858d2fe3fb730f97825cb9185e551e1edf95'
             '3de87bf6ad8b2b12371f79a61301eb7cc1a14072de96eff787c1fd01f220d305')
 
 _src="rigeldesktop-${pkgver}"
