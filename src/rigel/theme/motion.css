@@ -81,3 +81,18 @@
 }
 :root[data-rigel-layout="ada"] .rigel-star:active { transform: scale(0.9); }
 :root[data-rigel-layout="dock"] .rigel-dtab:active { transform: translateY(-1px) scale(0.98); }
+
+/* --- Yükleniyor göstergeleri hep daire: "Köşe yarıçapı" modu (rounded-off) kullanıcı katmanında `*::before { border-radius: 0 !important }`
+   yazıyor; border-radius ile daire yapan döner gösterge kareye dönüyordu. Halkalar bu yüzden maskeyle çizilir (kenar yarıçapına
+   bağlı değil): Ada halkası ada.css'te, Dock'unki burada. Yerel sekme çarkı (.tab-throbber) zaten modun "avatar" listesinde. */
+#rigel-dock .rigel-dtab .spin {
+  border: 0;
+  background: conic-gradient(from 0deg, transparent 0 10%, color-mix(in srgb, var(--accent) 25%, transparent) 40%, var(--accent));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px), #000 calc(100% - 0.5px), transparent 100%);
+}
+
+/* --- Menü çubuğu (Dosya Düzen Görünüm…) hiçbir düzende görünmez: Alt tuşu onu açmasın diye
+   prefs/rigel.js `ui.key.menuAccessKeyFocuses=false` yapar; bu kural erişim tuşu ve eklenti yollarına karşı ikinci güvence. */
+:root[data-rigel-layout] #toolbar-menubar {
+  display: none !important;
+}

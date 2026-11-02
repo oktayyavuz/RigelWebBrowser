@@ -29,7 +29,7 @@ const parts = [];
 
 async function start() {
   await whenStartedUp();
-  const mods = await Promise.all(["glance", "compact", "spaces", "groups", "containers"].map(n => import(`${BASE}zen/${n}.mjs`)));
+  const mods = await Promise.all(["glance", "compact", "spaces", "groups", "containers", "session"].map(n => import(`${BASE}zen/${n}.mjs`)));
   for (const mod of mods) {
     try {
       parts.push(mod.init(window));

@@ -102,6 +102,10 @@ tamam "Rigel $(<"$RIGEL_HOME/VERSION") -> $RIGEL_HOME"
 mkdir -p "$BIN_DIR"
 render "$HERE/share/rigel.sh.in" "RIGEL_HOME=$RIGEL_HOME" 'PROFILE_DEFAULT=$RIGEL_HOME/profile' > "$BIN_DIR/rigel.yeni"
 chmod 755 "$BIN_DIR/rigel.yeni"
+# Aynı başlatıcının bir kopyası kurulum klasöründe de durur (app/firefox betiği "../bin/rigel" ile bulur)
+mkdir -p "$RIGEL_HOME/bin"
+cp "$BIN_DIR/rigel.yeni" "$RIGEL_HOME/bin/rigel.yeni"
+mv -f "$RIGEL_HOME/bin/rigel.yeni" "$RIGEL_HOME/bin/rigel"
 mv -f "$BIN_DIR/rigel.yeni" "$BIN_DIR/rigel"
 tamam "Başlatıcı: $BIN_DIR/rigel"
 case ":$PATH:" in *":$BIN_DIR:"*) ;; *) uyari "$BIN_DIR PATH içinde değil; 'rigel' komutu için ekleyin." ;; esac

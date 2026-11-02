@@ -3,8 +3,8 @@
 // Firefox'un yatay sekme şeridi gizli kalır; sekme durumu gBrowser'dan okunur.
 
 import {
-  Disposer, adoptNavBarTools, bindTab, clusterTabs, el, favicon, groupChip, icon, isPrivate, liveTabs, logo, navButtons,
-  openAddress, tabLabel, tabUri, toggleTabsDrawer, uriParts, watchTabs, windowButtons, doCmd,
+  Disposer, adoptNavBarTools, bindTab, clusterTabs, containerOf, el, favicon, groupChip, groupLabelsOn, icon, isNewTabSpec, isPrivate,
+  liveTabs, logo, navButtons, openAddress, tabLabel, tabUri, toggleTabsDrawer, uriParts, watchTabs, windowButtons, doCmd,
 } from "./common.mjs";
 import { shownHost } from "./urlsimple.mjs";
 import { enableTabDnD } from "./tabdnd.mjs";
@@ -67,38 +67,169 @@ export function init(win) {
     else if (!busy && prog) prog.remove();
   };
 
-  const makeStar = tab => {
-    const star = el(doc, "div", {
-      class: "rigel-star", role: "tab", title: tabLabel(tab),
-      "aria-selected": String(tab.selected),
-    }, favicon(doc, tab, 18, true));
+  // --- Sekme yıldızları: sekme başına tek düğüm, yerinde güncellenir (yeniden kurulmaz) -----------
+  // Ses/yükleme gibi sık değişen öznitelikler düğümü yenilemez: simge yeniden yüklenmez, üzerine gelme ve
+  // animasyon durumu bozulmaz. Yeni düğüm girişte büyür, kapanan küçülüp çıkar.
+  const stars$ = new WeakMap();
+  const chips$ = new Map();
+  const addBtn = el(doc, "button", {
+    class: "rigel-add", title: "Yeni sekme (Ctrl+T)", onclick: () => doCmd(doc, "cmd_newNavigatorTab"),
+  }, icon(doc, "plus", 15));
+  const moreBtn = el(doc, "button", { class: "rigel-more", title: "Tüm sekmeler", onclick: e => toggleTabsDrawer(win, e) });
+  const pinSep = el(doc, "span", { class: "rigel-pinsep" });
+  const left = bar.querySelector(".rigel-left");
+  let firstRender = true;
+  let schedule = () => {};
+
+  const favKey = tab => {
+    const spec = tabUri(tab)?.spec ?? "";
+    const priv = /^(about|chrome):/.test(spec) || isNewTabSpec(spec);
+    return `${tab.getAttribute("image") || ""}|${priv ? spec : uriParts(tabUri(tab)).host}|${tab.label?.charAt(0) ?? ""}`;
+  };
+  const tooltip = tab => {
+    const label = tabLabel(tab);
+    const host = uriParts(tabUri(tab)).host;
+    const lines = [label];
+    if (host && host !== label) lines.push(shownHost(tabUri(tab), host));
+    if (tab.hasAttribute("muted")) lines.push("Sessize alındı · tıkla: sesi aç");
+    else if (tab.hasAttribute("soundplaying")) lines.push("Ses çalıyor · tıkla: sessize al");
+    if (tab.pinned) lines.push("Sabitlenmiş");
+    const c = containerOf(win, tab);
+    if (c) lines.push(c.label);
+    return lines.join("\n");
+  };
+
+  const syncBadge = (star, tab) => {
+    const muted = tab.hasAttribute("muted");
+    const playing = tab.hasAttribute("soundplaying");
+    let badge = star.querySelector(":scope > .rigel-badge");
+    if (!muted && !playing) {
+      badge?.remove();
+      return;
+    }
+    if (!badge) {
+      badge = el(doc, "span", { class: "rigel-badge", role: "button", "aria-label": "Sesi aç/kapat" });
+      // Rozet sesi açıp kapatır; sekmeyi seçmez, sürüklemeyi başlatmaz.
+      badge.addEventListener("click", e => {
+        e.stopPropagation();
+        e.preventDefault();
+        star.tab?.toggleMuteAudio?.();
+      });
+      badge.addEventListener("mousedown", e => e.stopPropagation());
+      badge.addEventListener("dblclick", e => e.stopPropagation());
+      badge.setAttribute("draggable", "false");
+      star.append(badge);
+    }
+    const state = muted ? "muted" : "playing";
+    if (badge.dataset.state !== state) {
+      badge.dataset.state = state;
+      badge.replaceChildren(icon(doc, muted ? "volumeOff" : "volume", 9));
+    }
+  };
+
+  const updateStar = (star, tab) => {
+    star.tab = tab;
+    star.title = tooltip(tab);
+    star.setAttribute("aria-selected", String(tab.selected));
     star.classList.toggle("on", tab.selected);
     star.classList.toggle("loading", tab.hasAttribute("busy"));
     star.classList.toggle("asleep", tab.hasAttribute("pending") || tab.hasAttribute("discarded"));
+    star.classList.toggle("pinned", tab.pinned);
     star.classList.toggle("private", priv);
-    if (tab.hasAttribute("soundplaying") || tab.hasAttribute("muted")) {
-      star.append(el(doc, "span", { class: "rigel-badge" },
-        icon(doc, tab.hasAttribute("muted") ? "volumeOff" : "volume", 9)));
+    star.classList.toggle("playing", tab.hasAttribute("soundplaying") && !tab.hasAttribute("muted"));
+    star.classList.toggle("muted", tab.hasAttribute("muted"));
+    if (tab.group) star.setAttribute("data-rigel-group", tab.group.color || "");
+    else star.removeAttribute("data-rigel-group");
+    const key = favKey(tab);
+    if (star.dataset.fav !== key) {
+      star.dataset.fav = key;
+      const old = star.querySelector(":scope > .rigel-fav");
+      const neu = favicon(doc, tab, 18, true);
+      if (old) old.replaceWith(neu);
+      else star.prepend(neu);
     }
+    syncBadge(star, tab);
+    return star;
+  };
+
+  const makeStar = tab => {
+    let star = stars$.get(tab);
+    if (star) return updateStar(star, tab);
+    star = el(doc, "div", { class: "rigel-star", role: "tab" });
+    stars$.set(tab, star);
     bindTab(win, star, tab);
     star.addEventListener("mouseenter", () => {
-      hovered = tab;
+      hovered = star.tab;
       renderIsland();
     });
     star.addEventListener("mouseleave", () => {
       hovered = null;
       renderIsland();
     });
+    updateStar(star, tab);
+    if (!firstRender) star.classList.add("entering");
+    star.addEventListener("animationend", e => {
+      if (e.animationName === "rigel-star-in") star.classList.remove("entering");
+    });
     return star;
   };
 
-  const render = () => {
+  const chipFor = (c, take) => {
+    const hasSel = c.tabs.some(t => t.selected);
+    const sig = [c.group.label, c.group.color, c.tabs.length, !!c.group.collapsed, hasSel, groupLabelsOn(), !take.length].join("|");
+    const hit = chips$.get(c.group);
+    if (hit?.sig === sig) return hit.chip;
+    const chip = groupChip(win, c.group, c.tabs.length, { hasSelected: hasSel });
+    chip.classList.add("gs");
+    if (!take.length) chip.classList.add("solo");
+    chips$.set(c.group, { chip, sig });
+    return chip;
+  };
+
+  const leave = node => {
+    node.tab = null;
+    node.classList.remove("entering");
+    node.classList.add("leaving");
+    node.style.pointerEvents = "none";
+    let done = false;
+    const end = () => {
+      if (done) return;
+      done = true;
+      node.remove();
+      schedule();
+    };
+    node.addEventListener("transitionend", e => e.propertyName === "width" && end());
+    win.setTimeout(end, 260);
+  };
+
+  const reconcile = desired => {
+    const want = new Set(desired);
+    for (const n of [...stars.children]) {
+      if (want.has(n) || n.classList.contains("leaving")) continue;
+      const closing = n.classList.contains("rigel-star") && n.tab && (n.tab.closing || !n.tab.isConnected);
+      if (closing && !firstRender) leave(n);
+      else n.remove();
+    }
+    let cur = stars.firstElementChild;
+    for (const n of desired) {
+      while (cur && cur.classList.contains("leaving") && cur !== n) cur = cur.nextElementSibling;
+      if (cur === n) {
+        cur = cur.nextElementSibling;
+        continue;
+      }
+      stars.insertBefore(n, cur);
+    }
+  };
+
+  const build = cap => {
     const tabs = liveTabs(gBrowser);
     const nodes = [];
     let shown = 0;
     let hiddenTabs = 0;
     for (const c of clusterTabs(tabs)) {
-      if (shown >= MAX_STARS) {
+      const hasSel = c.group ? c.tabs.some(t => t.selected) : c.tab.selected;
+      // Sığmayan sekmeler "+N" olur; etkin sekme her zaman görünür kalır.
+      if (shown >= cap && !hasSel) {
         hiddenTabs += c.group ? c.tabs.length : 1;
         continue;
       }
@@ -107,41 +238,59 @@ export function init(win) {
         shown++;
         // Sabitlenmişler grubunun sonunu ince bir çizgi ayırır.
         const next = tabs[tabs.indexOf(c.tab) + 1];
-        if (c.tab.pinned && next && !next.pinned) nodes.push(el(doc, "span", { class: "rigel-pinsep" }));
+        if (c.tab.pinned && next && !next.pinned) nodes.push(pinSep);
         continue;
       }
       // Grup: renkli kapsül. Düz kalır (sürükle-bırak çocukları doğrudan tarar): çip + üyeler, sınıflarla birleşir.
       // Daraltılmışsa yalnız çip (etkin sekme grubun içindeyse o da görünür, Firefox gibi).
       const members = c.group.collapsed ? c.tabs.filter(t => t.selected) : c.tabs;
-      const room = MAX_STARS - shown;
-      const take = members.slice(0, Math.max(1, room));
+      const room = cap - shown;
+      let take = shown >= cap ? members.filter(t => t.selected) : members.slice(0, Math.max(1, room));
+      if (shown < cap && !take.some(t => t.selected) && hasSel && !c.group.collapsed) take = [...take.slice(0, -1), c.tabs.find(t => t.selected)];
       hiddenTabs += c.group.collapsed ? 0 : members.length - take.length;
-      const chip = groupChip(win, c.group, c.tabs.length, { hasSelected: c.tabs.some(t => t.selected) });
-      chip.classList.add("gs");
-      nodes.push(chip);
-      if (!take.length) chip.classList.add("solo");
+      nodes.push(chipFor(c, take));
       take.forEach((tab, i) => {
         const star = makeStar(tab);
         star.classList.add("gm");
-        if (i === take.length - 1) star.classList.add("ge");
+        star.classList.toggle("ge", i === take.length - 1);
         nodes.push(star);
       });
       shown += take.length;
     }
-    if (hiddenTabs > 0) {
-      nodes.push(el(doc, "button", {
-        class: "rigel-more", title: "Tüm sekmeler", text: `+${hiddenTabs}`,
-        onclick: e => toggleTabsDrawer(win, e),
-      }));
+    // gm/ge yalnız grup üyelerinde kalsın (sekme gruptan çıkınca düğüm yeniden kullanılır).
+    for (const n of nodes) {
+      if (n.classList.contains("rigel-star") && !n.tab?.group) n.classList.remove("gm", "ge");
     }
-    nodes.push(el(doc, "button", {
-      class: "rigel-add", title: "Yeni sekme (Ctrl+T)", onclick: () => doCmd(doc, "cmd_newNavigatorTab"),
-    }, icon(doc, "plus", 15)));
-    stars.replaceChildren(...nodes);
+    if (hiddenTabs > 0) {
+      moreBtn.textContent = `+${hiddenTabs}`;
+      moreBtn.title = `Tüm sekmeler (${hiddenTabs} sekme daha)`;
+      nodes.push(moreBtn);
+    }
+    nodes.push(addBtn);
+    return nodes;
+  };
+
+  // Şeride kaç sekme sığar: ilk tahmin genişlikten, sonra taşma kalmayana dek azaltılır.
+  const render = () => {
+    const avail = left.getBoundingClientRect().right - stars.getBoundingClientRect().left - 12;
+    let cap = avail > 0 ? Math.max(3, Math.min(MAX_STARS, Math.floor(avail / 30))) : MAX_STARS;
+    for (let tries = 0; ; tries++) {
+      reconcile(build(cap));
+      const edge = stars.getBoundingClientRect().right + 0.5;
+      const over = [...stars.children].some(n => !n.classList.contains("leaving") && n.getBoundingClientRect().right > edge);
+      if (!over || cap <= 3 || tries > 8) break;
+      cap--;
+    }
+    for (const [g, v] of chips$) if (!g.isConnected) chips$.delete(g);
+    firstRender = false;
     renderIsland();
   };
 
-  watchTabs(win, d, render);
+  const watcher = watchTabs(win, d, render);
+  schedule = watcher;
+  const ro = new win.ResizeObserver(() => schedule());
+  ro.observe(left);
+  d.add(() => ro.disconnect());
   win.dump("[rigel] ada hazır\n");
   return () => d.run();
 }

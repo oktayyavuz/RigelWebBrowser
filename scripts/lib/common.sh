@@ -116,6 +116,8 @@ rigel_katmani() {
     n="$(basename "$f" .png)"; n="${n#icon}"
     [[ $n =~ ^[0-9]+$ ]] && cp "$f" "$app/browser/chrome/icons/default/default$n.png"
   done
+  # Oturum geri yükleme: "app/firefox" Rigel başlatıcısına yönlenen betik olur (../bin/rigel); ayrıntı packaging/linux/firefox-wrapper.sh
+  install -m755 "$ROOT/packaging/linux/firefox-wrapper.sh" "$app/firefox"
   return 0
 }
 

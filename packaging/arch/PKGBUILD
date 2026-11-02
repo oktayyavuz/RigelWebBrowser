@@ -65,6 +65,8 @@ package() {
   install -Dm644 "$_repo/vendor/fx-autoconfig/program/defaults/pref/config-prefs.js" "$app/defaults/pref/config-prefs.js"
   install -Dm644 "$_repo/distribution/policies.json" "$app/distribution/policies.json"
   install -Dm644 "$_repo/prefs/rigel.js" "$app/browser/defaults/preferences/rigel.js"
+  # Oturum geri yükleme: çıplak "app/firefox" çağrısı /usr/bin/rigel'e yönlenir (packaging/linux/firefox-wrapper.sh)
+  install -Dm755 "$_repo/packaging/linux/firefox-wrapper.sh" "$app/firefox"
   for s in "$_repo"/src/rigel/branding/content/icon*.png; do
     n="$(basename "$s" .png)"; n="${n#icon}"
     [[ $n =~ ^[0-9]+$ ]] && install -Dm644 "$s" "$app/browser/chrome/icons/default/default$n.png"

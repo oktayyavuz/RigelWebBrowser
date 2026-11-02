@@ -39,6 +39,10 @@ pref("browser.contentblocking.category", "strict");
 
 // Başlangıç: önceki oturumu geri yükle (alanlar/workspace'ler bunu kullanır)
 pref("browser.startup.page", 3);
+// "Yeni sekme aç" seçilse bile son oturum saklı kalır: açılışta "Önceki oturumu geri yükle" şeridi ve paletteki komut (zen/session.mjs).
+// Çökme sonrası da kurtarma açık kalır.
+pref("browser.sessionstore.resume_from_crash", true);
+pref("browser.sessionstore.interval", 15000);
 
 // Sekmeler
 pref("browser.tabs.unloadOnLowMemory", true);
@@ -54,6 +58,8 @@ pref("sidebar.animation.enabled", false);
 pref("sidebar.verticalTabs.dragToPinPromo.dismissed", true);
 pref("sidebar.new-sidebar.has-used", true);
 pref("browser.toolbars.bookmarks.visibility", "newtab");
+// Alt tuşu tek başına Firefox menü çubuğunu (Dosya Düzen Görünüm…) açmasın; çubuk ayrıca CSS'te gizli (theme/motion.css)
+pref("ui.key.menuAccessKeyFocuses", false);
 // Çerçevesiz pencere: sistem başlık çubuğu yok, pencere düğmelerini Rigel çizer
 pref("browser.tabs.inTitlebar", 1);
 pref("browser.tabs.hoverPreview.enabled", false);

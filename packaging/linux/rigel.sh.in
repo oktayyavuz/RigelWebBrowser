@@ -4,6 +4,27 @@
 # Ortam: RIGEL_HOME (uygulama dosyaları), RIGEL_PROFILE (profil klasörü).
 set -euo pipefail
 
+# Oturum geri yükleme: Firefox, oturum yöneticisine (XSMP) ve kendini yeniden başlatırken şu komutu bildirir:
+# "$MOZ_APP_LAUNCHER --sm-client-id <kimlik>" (MOZ_APP_LAUNCHER yoksa çıplak "<uygulama>/firefox": profilsiz, yani
+# Rigel yerine varsayılan Firefox açılırdı). Bu yüzden her açılışta kendimizi (ya da AppImage dosyasını) bildiriyoruz.
+if [[ -n ${APPIMAGE:-} && -f ${APPIMAGE:-} ]]; then
+  export MOZ_APP_LAUNCHER="$APPIMAGE"
+else
+  self="${BASH_SOURCE[0]}"
+  self="$(cd "$(dirname "$self")" && pwd)/$(basename "$self")"
+  export MOZ_APP_LAUNCHER="$self"
+fi
+
+# Bağımsız değişkenlerde bayrak var mı? (-bayrak, --bayrak ve --bayrak=değer). Yeniden başlatmada Firefox özgün
+# bağımsız değişkenlerini bize geri verir; aynı bayrağı ikinci kez eklemeyiz (yoksa "--profile" fazlalık kalırdı).
+has_flag() { # has_flag <ad> <argüman…>
+  local ad="$1" a; shift
+  for a in "$@"; do
+    case "$a" in "-$ad"|"--$ad"|"-$ad="*|"--$ad="*) return 0 ;; esac
+  done
+  return 1
+}
+
 RIGEL_HOME="${RIGEL_HOME:-@RIGEL_HOME@}"
 PROFILE="${RIGEL_PROFILE:-@PROFILE_DEFAULT@}"
 APP="$RIGEL_HOME/app"
@@ -52,4 +73,8 @@ fi
 
 # --name/--class rigel: Wayland app_id ve X11 WM_CLASS "rigel" olur (görev çubuğu rigel.desktop ile eşler).
 # Rigel zaten açıksa adres/pencere isteği çalışan örneğe gider.
-exec "$APP/firefox" --name rigel --class rigel --profile "$PROFILE" ${args[@]+"${args[@]}"} "$@"
+ident=()
+has_flag name "$@" || ident+=(--name rigel)
+has_flag class "$@" || ident+=(--class rigel)
+has_flag profile "$@" || ident+=(--profile "$PROFILE")
+exec "$APP/firefox" ${ident[@]+"${ident[@]}"} ${args[@]+"${args[@]}"} "$@"

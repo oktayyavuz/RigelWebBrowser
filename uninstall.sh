@@ -65,7 +65,7 @@ fi
 onay "Rigel kaldırılsın mı? ($RIGEL_HOME)" || { echo "Vazgeçildi."; exit 1; }
 
 bilgi "Kaldırılıyor"
-rm -rf "$RIGEL_HOME/app" "$RIGEL_HOME/rigel" "$RIGEL_HOME/utils" "$RIGEL_HOME/VERSION" \
+rm -rf "$RIGEL_HOME/app" "$RIGEL_HOME/bin" "$RIGEL_HOME/rigel" "$RIGEL_HOME/utils" "$RIGEL_HOME/VERSION" \
        "$RIGEL_HOME"/.app-yeni.* "$RIGEL_HOME"/.rigel-yeni.* "$RIGEL_HOME/app.eski" "$RIGEL_HOME/rigel.eski" "$RIGEL_HOME/utils.eski"
 rm -f "$BIN_DIR/rigel" "$BIN_DIR/rigel.yeni" "$APPS_DIR/rigel.desktop" "$ICONS_DIR/scalable/apps/rigel.svg"
 for d in "$ICONS_DIR"/*x*/apps; do rm -f "$d/rigel.png"; done

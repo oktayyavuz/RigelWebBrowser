@@ -202,6 +202,9 @@ rigel_katmani() {
     n="$(basename "$f" .png)"; n="${n#icon}"
     [[ $n =~ ^[0-9]+$ ]] && cp "$f" "$app/browser/chrome/icons/default/default$n.png"
   done
+  # Mozilla'nın küçük "firefox" başlatıcısı yerine Rigel'e yönlendiren betik: oturum yöneticisi geri yüklerken
+  # çıplak "app/firefox --sm-client-id …" çalıştırır; bu betik onu Rigel profiliyle açar (packaging/linux/firefox-wrapper.sh).
+  install -m755 "$ROOT/packaging/linux/firefox-wrapper.sh" "$app/firefox"
   tamam "Rigel katmanı hazır"
 }
 
@@ -231,6 +234,10 @@ baslatici() {
   render "$ROOT/packaging/linux/rigel.sh.in" \
     "RIGEL_HOME=$RIGEL_HOME" 'PROFILE_DEFAULT=$RIGEL_HOME/profile' > "$BIN_DIR/rigel.yeni"
   chmod 755 "$BIN_DIR/rigel.yeni"
+  # Aynı başlatıcının bir kopyası kurulum klasöründe de durur (app/firefox betiği "../bin/rigel" ile bulur)
+  mkdir -p "$RIGEL_HOME/bin"
+  cp "$BIN_DIR/rigel.yeni" "$RIGEL_HOME/bin/rigel.yeni"
+  mv -f "$RIGEL_HOME/bin/rigel.yeni" "$RIGEL_HOME/bin/rigel"
   mv -f "$BIN_DIR/rigel.yeni" "$BIN_DIR/rigel"
   tamam "Başlatıcı: $BIN_DIR/rigel"
   case ":$PATH:" in *":$BIN_DIR:"*) ;; *) uyari "$BIN_DIR PATH içinde değil; 'rigel' komutu için ekleyin." ;; esac

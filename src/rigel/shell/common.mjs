@@ -27,6 +27,7 @@ export const ICONS = {
   dots: '<circle cx="6" cy="12" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/><circle cx="18" cy="12" r="1.2" fill="currentColor"/>',
   edit: '<path d="M14.5 5.5l4 4L8 20H4v-4z"/>',
   ungroup: '<rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/><path d="M14 7h6M4 17h6"/>',
+  history: '<path d="M4 12a8 8 0 1 0 2.3-5.6M4 4.5v3.5h3.5"/><path d="M12 8v4.5l3 2"/>',
   blank: "",
 };
 
