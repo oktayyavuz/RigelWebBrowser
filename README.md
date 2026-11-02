@@ -4,6 +4,10 @@ Firefox (Gecko) tabanlı, [Zen Browser](https://zen-browser.app/)'dan esinlenen 
 Derleme yok: Mozilla'nın resmî Firefox ikilisi, [fx-autoconfig](https://github.com/MrOtherGuy/fx-autoconfig) ve Rigel'in kendi arayüz kodu (`src/rigel/`) bir araya gelir.
 Tüm Firefox özellikleri (kodekler, uzantılar, PiP) olduğu gibi çalışır.
 
+<p align="center">
+  <img src="docs/ekran/ada.png" alt="Rigel, Ada düzeni: üstte tek şerit, altında yer imi çubuğu ve Vikipedi sayfası" width="900">
+</p>
+
 ## Özellikler
 
 - **Beş düzen:** Ada, Yörünge Dock, Komuta, Yan Panel, Klasik. `Ctrl+Shift+L` ile yeniden başlatmadan değişir.
@@ -18,7 +22,55 @@ Ayrıntılı durum ve bilinen eksikler: [docs/DURUM.md](docs/DURUM.md). Plan: [d
 
 ## Ekran görüntüleri
 
-> Yer tutucu. Ekran görüntüleri `design/` altına eklenecek (logo: `design/logo.svg`).
+<p align="center">
+  <img src="docs/ekran/ada.png" alt="Ada düzeni" width="900"><br>
+  <sub><b>Ada</b> Tek üst şerit: sekmeler küçük ikonlar olarak durur, adres ortadaki adada yer alır; sayfa ekranı doldurur.</sub>
+</p>
+
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <img src="docs/ekran/klasik.png" alt="Klasik düzen"><br>
+      <sub><b>Klasik</b> Üstte yatay sekmeler, adres çubuğu ve yer imleri; alışık olduğun düzen.</sub>
+    </td>
+    <td width="50%" valign="top">
+      <img src="docs/ekran/yanpanel.png" alt="Yan Panel düzeni"><br>
+      <sub><b>Yan Panel</b> Solda dikey sekmeler ve adres; sayfa tam yükseklikte.</sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <img src="docs/ekran/palet.png" alt="Ctrl+K paleti"><br>
+      <sub><b>Palet (Ctrl+K)</b> Açık sekmeler, yer imleri, geçmiş ve komutlar tek kutuda.</sub>
+    </td>
+    <td width="50%" valign="top">
+      <img src="docs/ekran/yeni-sekme.png" alt="Yeni sekme sayfası"><br>
+      <sub><b>Yeni sekme</b> Fotoğraf arka planı, saat, karşılama ve kısayollar.</sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <img src="docs/ekran/gorunum.png" alt="Görünüm stüdyosu"><br>
+      <sub><b>Görünüm stüdyosu</b> Köşe, yoğunluk, yazı, arka plan ve hazır tema paketleri; anında uygulanır.</sub>
+    </td>
+    <td width="50%" valign="top">
+      <img src="docs/ekran/brutal.png" alt="Brütal tema paketi"><br>
+      <sub><b>Brütal teması</b> Kalın çizgi ve sert gölge; koyu ve açık için ayrı renkler.</sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <img src="docs/ekran/ayarlar.png" alt="Ayarlar, Görünüm sayfası"><br>
+      <sub><b>Ayarlar</b> Düzen, tema ve vurgu rengi tek yerden seçilir.</sub>
+    </td>
+    <td width="50%" valign="top">
+      <img src="docs/ekran/modlar.png" alt="Mod mağazası"><br>
+      <sub><b>Mod mağazası</b> CSS modlarıyla arayüzü ve web sayfalarını biçimlendir.</sub>
+    </td>
+  </tr>
+</table>
+
+<sub>Görüntüler Rigel'in koyu temasında, 1600x1000 pencerede alınmıştır.</sub>
 
 ## Kurulum
 
@@ -36,10 +88,10 @@ curl -fsSL https://raw.githubusercontent.com/oktayyavuz/rigeldesktop/main/kur.sh
 irm https://raw.githubusercontent.com/oktayyavuz/rigeldesktop/main/kur.ps1 | iex
 ```
 
-**Arch Linux (AUR):**
+**Arch Linux:** AUR paketi henüz yayımlanmadı. O zamana dek depodaki PKGBUILD ile derlenebilir (Rigel sürüm etiketini ve Mozilla'nın Firefox arşivini indirir):
 
 ```bash
-yay -S rigel-browser-bin
+git clone https://github.com/oktayyavuz/rigeldesktop && cd rigeldesktop/packaging/aur && makepkg -si
 ```
 
 Hazır dosyalar (tar.xz, AppImage, Windows kurulum programı ve zip) [Sürümler](https://github.com/oktayyavuz/rigeldesktop/releases/latest) sayfasında.
