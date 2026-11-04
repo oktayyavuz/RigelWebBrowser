@@ -3,8 +3,12 @@
 // çiplerini çizer (shell/common.mjs groupChip, drawers/tabs.mjs); Yan Panel ve Klasik'te Firefox'un kendi şeridi
 // (zen/zen.css). Alanlarla uyum (grup tek alanda yaşar) zen/spaces.mjs'te.
 //
-// API: Rigel.groups = { colors, list, create, edit, addTo, removeFrom, toggle, collapse, ungroup, close, moveToSpace,
-//                       menu(olay, grup), addMenu(olay, sekmeler), nativeStrip }
+// Gruplar kalıcıdır: "Grubu kapat" grubu Firefox'un saklanan gruplarına (SessionStore.savedGroups) koyar, son
+// sekmesi kapanan grup da kendiliğinden saklanır. Saklananlar "Gruplar" menüsünden ve paletten geri açılır.
+//
+// API: Rigel.groups = { colors, list, create, edit, addTo, removeFrom, toggle, collapse, ungroup, close, remove,
+//                       moveToSpace, menu(olay, grup), addMenu(olay, sekmeler), saved(), openSaved(id),
+//                       forgetSaved(id), savedMenu(olay), nativeStrip }
 // Tercihler: rigel.groups.showLabels (varsayılan true), rigel.groups.collapseOnSwitch (varsayılan false).
 
 import { toast } from "./util.mjs";
@@ -130,19 +134,79 @@ export function init(win) {
     else for (const t of [...group.tabs]) gBrowser.ungroupTab(t);
     changed();
   }
-  async function closeGroup(group) {
+  // --- Saklanan gruplar --------------------------------------------------------------
+  const SS = () => win.SessionStore;
+  const privateWin = win.PrivateBrowsingUtils?.isWindowPrivate?.(win) ?? root.hasAttribute("privatebrowsingmode");
+  const saved = () => (privateWin ? [] : [...(SS()?.savedGroups ?? [])].sort((a, b) => (b.closedAt ?? 0) - (a.closedAt ?? 0)));
+  const isSaved = id => saved().some(g => g.id === id);
+  const deleting = new WeakSet();
+  function saveGroup(group) {
+    if (privateWin || !group?.isConnected || isSaved(group.id)) return false;
+    try {
+      group.save();
+      return true;
+    } catch (e) {
+      console.error("Rigel: grup saklanamadı", e);
+      return false;
+    }
+  }
+  function openSaved(id) {
+    try {
+      const g = SS().openSavedTabGroup(id, win);
+      g?.tabs?.[0] && (gBrowser.selectedTab = g.tabs[0]);
+    } catch (e) {
+      console.error("Rigel: saklanan grup açılamadı", e);
+    }
+    later();
+    changed();
+  }
+  function forgetSaved(id) {
+    try { SS().forgetSavedTabGroup(id); } catch {}
+    later();
+    changed();
+  }
+
+  /** Grubu kapatır ama silmez: Gruplar menüsünden geri açılır. Gizli pencerede saklanamaz, düz kapatılır. */
+  function closeGroup(group) {
+    if (!group?.isConnected) return;
+    if (privateWin) return removeGroup(group);
+    const name = groupName(group);
+    if (typeof group.saveAndClose === "function") group.saveAndClose();
+    else {
+      saveGroup(group);
+      gBrowser.removeTabGroup(group, { animate: true });
+    }
+    toast(win, `Grup saklandı: ${name}. Gruplar menüsünden geri açabilirsin.`);
+    later();
+    changed();
+  }
+  /** Grubu ve sekmelerini kalıcı olarak kapatır (saklanmaz). */
+  async function removeGroup(group) {
     if (!group?.isConnected) return;
     const n = group.tabs?.length ?? 0;
     if (n > 1) {
       const ok = await dlg().confirm({
-        title: "Grubu kapat", danger: true, okLabel: "Kapat",
-        message: `"${groupName(group)}" grubundaki ${n} sekme kapatılacak.`,
+        title: "Grubu sil", danger: true, okLabel: "Sil",
+        message: `"${groupName(group)}" grubu ve içindeki ${n} sekme kapatılacak; grup saklanmayacak.`,
       });
       if (!ok || !group.isConnected) return;
     }
+    deleting.add(group);
     gBrowser.removeTabGroup(group, { animate: true });
     changed();
   }
+
+  // Son sekmesi kapanan grup kaybolmasın: kapanmadan hemen önce saklanır. (Başka pencereye taşınan sekme hariç.)
+  on(gBrowser.tabContainer, "TabClose", e => {
+    const group = e.target.group;
+    if (!group || deleting.has(group) || e.detail?.adoptedBy || win.closed || win.gBrowser?._windowIsClosing) return;
+    const left = (group.tabs ?? []).filter(t => t !== e.target && !t.closing);
+    if (!left.length && saveGroup(group)) {
+      toast(win, `Grup saklandı: ${groupName(group)}. Gruplar menüsünden geri açabilirsin.`);
+      later();
+      win.setTimeout(changed, 0);
+    }
+  });
   function moveToSpace(group, id) {
     spaces()?.moveGroup?.(group, id);
     changed();
@@ -229,7 +293,44 @@ export function init(win) {
     }
     items.push({ sep: true });
     items.push({ label: "Grubu dağıt", icon: "ungroup", run: () => ungroup(group) });
-    items.push({ label: "Grubu kapat", icon: "close", danger: true, run: () => closeGroup(group) });
+    items.push({ label: privateWin ? "Grubu kapat" : "Grubu kapat ve sakla", icon: "close", run: () => closeGroup(group) });
+    items.push({ label: "Grubu sil", icon: "close", danger: true, run: () => removeGroup(group) });
+    popMenu(event, items);
+  }
+
+  /** Gruplar menüsü: açık gruplar (tıkla: geç) ve saklanan gruplar (tıkla: geri aç). */
+  function savedMenu(event) {
+    const open = groups();
+    const kept = saved();
+    const items = [];
+    if (open.length) {
+      items.push({ header: "Açık gruplar" });
+      for (const g of open) {
+        items.push({
+          label: groupName(g), color: g.color || "gray", hint: `${g.tabs?.length ?? 0} sekme`,
+          run: () => {
+            if (g.collapsed) g.collapsed = false;
+            const t = g.tabs?.find(x => !x.hidden) ?? g.tabs?.[0];
+            if (t) gBrowser.selectedTab = t;
+          },
+        });
+      }
+    }
+    if (kept.length) {
+      if (items.length) items.push({ sep: true });
+      items.push({ header: "Saklanan gruplar" });
+      for (const g of kept) {
+        items.push({ label: g.name || "Adsız grup", color: g.color || "gray", hint: `${g.tabs?.length ?? 0} sekme · aç`, run: () => openSaved(g.id) });
+      }
+      items.push({ sep: true });
+      items.push({ label: "Saklanan bir grubu sil…", icon: "close", danger: true, run: () => forgetMenu(event) });
+    }
+    if (!items.length) items.push({ header: "Henüz grup yok" });
+    popMenu(event, items);
+  }
+  function forgetMenu(event) {
+    const items = [{ header: "Kalıcı olarak silinecek grubu seç" }];
+    for (const g of saved()) items.push({ label: g.name || "Adsız grup", color: g.color || "gray", danger: true, run: () => forgetSaved(g.id) });
     popMenu(event, items);
   }
 
@@ -321,7 +422,9 @@ export function init(win) {
         when: () => !!sel()?.group, run: () => toggle(sel()?.group),
       },
       { id: "zen.group.ungroupAll", label: "Grubu dağıt", sub: "sekmeler açık kalır", icon: "folder", when: () => !!sel()?.group, run: () => ungroup(sel()?.group) },
-      { id: "zen.group.close", label: "Grubu kapat", sub: "gruptaki sekmeleri kapatır", icon: "folder", when: () => !!sel()?.group, run: () => closeGroup(sel()?.group) },
+      { id: "zen.group.close", label: "Grubu kapat ve sakla", sub: "sonra Gruplar'dan geri açılır", icon: "folder", when: () => !!sel()?.group, run: () => closeGroup(sel()?.group) },
+      { id: "zen.group.delete", label: "Grubu sil", sub: "sekmeleri kapatır, saklamaz", icon: "folder", when: () => !!sel()?.group, run: () => removeGroup(sel()?.group) },
+      { id: "zen.group.menu", label: "Gruplar", sub: "açık ve saklanan gruplar", icon: "folder", run: () => savedMenu(null) },
       {
         id: "zen.group.collapseAll", label: "Tüm grupları daralt", icon: "folder",
         when: () => groups().some(g => !g.collapsed), run: () => groups().forEach(g => collapse(g, true)),
@@ -341,6 +444,13 @@ export function init(win) {
         icon: "folder", run: () => flip(GROUP_PREFS.collapseOnSwitch, false),
       },
     ];
+    for (const g of saved()) {
+      out.push({
+        id: `zen.group.saved.${g.id}`,
+        label: `Saklanan grubu aç: ${g.name || "Adsız grup"}`, sub: `${g.tabs?.length ?? 0} sekme`, icon: "folder",
+        when: () => isSaved(g.id), run: () => openSaved(g.id),
+      });
+    }
     for (const g of gBrowser.tabGroups ?? []) {
       const live = () => g.isConnected && !g.hidden;
       out.push({
@@ -376,12 +486,13 @@ export function init(win) {
       refresh();
     }, 50);
   };
-  for (const ev of ["TabGroupCreate", "TabGroupRemoved"]) on(win, ev, later);
+  for (const ev of ["TabGroupCreate", "TabGroupRemoved", "TabGroupSaved"]) on(win, ev, later);
 
   win.Rigel ??= {};
   const api = {
     colors: GROUP_COLORS, list: () => groups(), create: newGroup, edit: editGroup, addTo, removeFrom, toggle, collapse,
-    ungroup, close: closeGroup, moveToSpace, menu: groupMenu, addMenu, nativeStrip: stripVisible, changed,
+    ungroup, close: closeGroup, remove: removeGroup, moveToSpace, menu: groupMenu, addMenu, nativeStrip: stripVisible, changed,
+    saved, openSaved, forgetSaved, savedMenu,
   };
   win.Rigel.groups = api;
 

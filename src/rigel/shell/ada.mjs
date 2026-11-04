@@ -76,6 +76,12 @@ export function init(win) {
     class: "rigel-add", title: "Yeni sekme (Ctrl+T)", onclick: () => doCmd(doc, "cmd_newNavigatorTab"),
   }, icon(doc, "plus", 15));
   const moreBtn = el(doc, "button", { class: "rigel-more", title: "Tüm sekmeler", onclick: e => toggleTabsDrawer(win, e) });
+  // Saklanan gruplar varsa şeritte bir "Gruplar" düğmesi durur: kapanan gruplar buradan geri açılır.
+  const groupsBtn = el(doc, "button", {
+    class: "rigel-more rigel-groupsbtn", onclick: e => win.Rigel?.groups?.savedMenu?.(e),
+  }, icon(doc, "folder", 14));
+  const groupsCount = el(doc, "span", { class: "rigel-groupsn" });
+  groupsBtn.append(groupsCount);
   const pinSep = el(doc, "span", { class: "rigel-pinsep" });
   const left = bar.querySelector(".rigel-left");
   let firstRender = true;
@@ -265,6 +271,12 @@ export function init(win) {
       moreBtn.textContent = `+${hiddenTabs}`;
       moreBtn.title = `Tüm sekmeler (${hiddenTabs} sekme daha)`;
       nodes.push(moreBtn);
+    }
+    const kept = win.Rigel?.groups?.saved?.().length ?? 0;
+    if (kept) {
+      groupsCount.textContent = String(kept);
+      groupsBtn.title = `Gruplar: ${kept} saklanan grup`;
+      nodes.push(groupsBtn);
     }
     nodes.push(addBtn);
     return nodes;

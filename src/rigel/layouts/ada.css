@@ -168,6 +168,11 @@
     color: var(--text-faint);
     flex: none;
   }
+  .rigel-groupsbtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+  }
   .rigel-more:hover,
   .rigel-add:hover {
     background: var(--hover);
