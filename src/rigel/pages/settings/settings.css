@@ -131,6 +131,7 @@ main option { background: var(--surface); color: var(--text); }
 .stackbox { display: flex; flex-direction: column; gap: 10px; }
 .addrow { display: flex; gap: 8px; flex-wrap: wrap; }
 .addrow .grow { flex: 1; min-width: 200px; }
+.addrow .muted { align-self: center; color: var(--text-dim); font-size: 12.5px; }
 .fold summary { cursor: pointer; color: var(--text-dim); padding: 4px 0 10px; }
 .fold input { width: 100%; margin-bottom: 8px; }
 /* Yerleşik !kısayol listesi: duyarlı sütunlar, sayfa kaydırılır (iç kaydırma yok); her satır tek satır, uzun ad kısalır (ipucunda tamamı). */
