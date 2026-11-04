@@ -281,13 +281,18 @@ export function init(win) {
 
   // --- Sekme olayları ------------------------------------------------------------
   const tc = gBrowser.tabContainer;
+  // Ctrl+T / "+" ile açılan boş sekme: "geçerli sekmenin yanında aç" açıkken Firefox onu yanındaki grubun içine
+  // koyar. Boş sekme gruba ait değildir; grubun hemen arkasına alınır. Bağlantıdan açılanlar grupta kalır.
+  let openingBlank = false;
   d.on(tc, "TabOpen", e => {
     const tab = e.target;
     if (tab.pinned) return;
+    const blank = openingBlank;
     // Oturumdan gelen sekmelerin değeri birazdan yazılır (SSTabRestoring); şimdilik etkin alan.
     if (!tab.hasAttribute("rigel-space")) tab.setAttribute("rigel-space", active);
     win.setTimeout(() => {
       if (tab.closing || !tab.parentNode) return;
+      if (blank && tab.group) gBrowser.ungroupTab(tab);
       syncTab(tab);
     }, 0);
   });
@@ -630,8 +635,13 @@ export function init(win) {
         if (ctr && where === "tab" && isNewTab && params && params.userContextId == null && !isPrivate) {
           params = { ...params, userContextId: ctr };
         }
+        openingBlank = where === "tab" && isNewTab;
       } catch {}
-      return origOpen.call(this, url, where, params);
+      try {
+        return origOpen.call(this, url, where, params);
+      } finally {
+        openingBlank = false;
+      }
     };
     d.add(() => {
       win.openTrustedLinkIn = origOpen;
