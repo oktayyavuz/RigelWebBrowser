@@ -5,7 +5,7 @@
 # Firefox /opt/rigel/app altına kurulur; sistemdeki Firefox'a dokunulmaz. Profil: ~/.local/share/rigel/profile.
 
 pkgname=rigel-browser-bin
-pkgver=0.1.0
+pkgver=0.1.1
 pkgrel=1
 _ffver=158.0.1
 pkgdesc='Firefox tabanlı, Zen tarzı web tarayıcısı (Türkçe arayüz)'
