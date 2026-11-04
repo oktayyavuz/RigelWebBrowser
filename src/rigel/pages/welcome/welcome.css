@@ -359,6 +359,9 @@ h2 { font-size: 28px; line-height: 1.2; font-weight: 650; letter-spacing: -.4px;
 .chip > svg { color: var(--accent); flex: none; }
 .chip small { font-size: 11px; }
 .chip b { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chip.defbrowser { grid-column: 1 / -1; }
+.chip.defbrowser.on { cursor: default; border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+.chip.defbrowser.on b { color: var(--accent); }
 
 /* --- Dar pencere: şerit üstte yatay ilerleme olur ---------------------------------------------- */
 @media (max-width: 980px) {

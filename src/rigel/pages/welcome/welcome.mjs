@@ -4,6 +4,7 @@
 import {
   h, icon, getPref, setPref, watch, toggle, chromeWin, engineList, engineIcon, disposeAll, searchService, LAYOUTS, ACCENTS,
 } from "../settings/ui.mjs";
+import { isWin, isDefaultBrowser, makeDefaultBrowser } from "../settings/defaultbrowser.mjs";
 
 const STEPS = [
   { name: "Hoş geldin" },
@@ -383,6 +384,21 @@ function readyScene() {
   const [cSearch, vSearch] = chip("search", "Arama", "…", 4);
   const [cPriv] = chip("shield", "Gizlilik", currentPreset()?.name ?? "Özel", 5);
   engineList().then(({ def }) => (vSearch.textContent = def?.name ?? "")).catch(() => {});
+  // Varsayılan tarayıcı: Rigel değilse tek tıkla yapılır (Windows'ta Varsayılan uygulamalar açılır).
+  const vDef = h("b", { text: "…" });
+  const cDef = h("button", { type: "button", class: "chip defbrowser", title: "Bağlantılar Rigel'de açılsın" },
+    ico("check", 16), h("span", { class: "txt" }, h("small", { text: "Varsayılan tarayıcı" }), vDef));
+  const showDef = v => {
+    vDef.textContent = v === true ? "Rigel" : isWin() ? "Seç…" : "Rigel'i yap";
+    cDef.classList.toggle("on", v === true);
+  };
+  cDef.onclick = async () => {
+    if (cDef.classList.contains("on")) return;
+    cDef.disabled = true;
+    try { showDef(await makeDefaultBrowser()); } catch { showDef(false); }
+    cDef.disabled = false;
+  };
+  isDefaultBrowser().then(showDef).catch(() => showDef(false));
   const tip = (combo, title, desc, i) => {
     const t = h("div", { class: "tip" }, keycaps(combo), h("span", { class: "txt" }, h("b", { text: title }), h("small", { html: desc })));
     t.style.setProperty("--i", i);
@@ -396,7 +412,7 @@ function readyScene() {
         tip(keyOf("palette", "Ctrl+K"), "Palet", "Adres, arama, açık sekmeler ve tüm komutlar tek kutuda.", 0),
         tip(keyOf("layout.cycle", "Ctrl+Shift+L"), "Düzen değiştir", "Beş düzen arasında gez; hangisi sana uyuyorsa.", 1),
         tip("Alt+tık", "Göz at", "Bir bağlantıya <kbd>Alt</kbd> ile tıkla, sayfadan ayrılmadan önizle.", 2)),
-      h("div", { class: "summary" }, cLayout, cTheme, cSearch, cPriv)),
+      h("div", { class: "summary" }, cLayout, cTheme, cSearch, cPriv, cDef)),
     h("footer", { class: "actions" },
       backBtn(),
       h("span", { class: "grow" }),
