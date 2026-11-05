@@ -27,7 +27,7 @@ optdepends=(
 options=('!strip' '!debug')
 source=("RigelWebBrowser-${pkgver}.tar.gz::https://github.com/oktayyavuz/RigelWebBrowser/archive/refs/tags/v${pkgver}.tar.gz"
         "firefox-${_ffver}.tar.xz::https://archive.mozilla.org/pub/firefox/releases/${_ffver}/linux-x86_64/tr/firefox-${_ffver}.tar.xz")
-sha256sums=('1fa040e47085be77c38af88fe356413c12ef597f590f5b89be6572d2337f425a'
+sha256sums=('bacbe68cff519d0ec8d497ddbd93b274f8809a58e69c3ead477c9f97a6f53273'
             '3de87bf6ad8b2b12371f79a61301eb7cc1a14072de96eff787c1fd01f220d305')
 
 _src="RigelWebBrowser-${pkgver}"

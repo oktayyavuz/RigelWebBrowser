@@ -1,6 +1,6 @@
 pkgbase = rigel-browser-bin
 	pkgdesc = Firefox tabanlı, Zen tarzı web tarayıcısı (Türkçe arayüz)
-	pkgver = 0.1.0
+	pkgver = 0.1.1
 	pkgrel = 1
 	url = https://github.com/oktayyavuz/RigelWebBrowser
 	arch = x86_64
@@ -25,9 +25,9 @@ pkgbase = rigel-browser-bin
 	conflicts = rigel-browser
 	options = !strip
 	options = !debug
-	source = RigelWebBrowser-0.1.0.tar.gz::https://github.com/oktayyavuz/RigelWebBrowser/archive/refs/tags/v0.1.0.tar.gz
+	source = RigelWebBrowser-0.1.1.tar.gz::https://github.com/oktayyavuz/RigelWebBrowser/archive/refs/tags/v0.1.1.tar.gz
 	source = firefox-158.0.1.tar.xz::https://archive.mozilla.org/pub/firefox/releases/158.0.1/linux-x86_64/tr/firefox-158.0.1.tar.xz
-	sha256sums = 1fa040e47085be77c38af88fe356413c12ef597f590f5b89be6572d2337f425a
+	sha256sums = bacbe68cff519d0ec8d497ddbd93b274f8809a58e69c3ead477c9f97a6f53273
 	sha256sums = 3de87bf6ad8b2b12371f79a61301eb7cc1a14072de96eff787c1fd01f220d305
 
 pkgname = rigel-browser-bin
